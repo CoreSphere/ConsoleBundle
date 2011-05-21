@@ -1,0 +1,134 @@
+{% extends 'CoreSphereConsoleBundle:Console:layout.html.twig'  %}
+
+{% block title %}{{ 'console.headline.index'|trans }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/coresphereconsole/css/console.css') }}" type="text/css" />
+{% endblock %}
+
+{% block content %}
+    <h1>Console</h1>
+    <div id="coresphere_consolebundle_console">
+        <p class="working_dir">Working directory: <strong>{{ working_dir }}</strong></p>
+        <div id="coresphere_consolebundle_log_container">
+            <ol id="coresphere_consolebundle_log">
+
+            </ol>
+        </div>
+        <div id="coresphere_consolebundle_prompt">
+            <input name="coresphere_consolebundle_input" id="coresphere_consolebundle_input" type="text" />
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(function() {
+
+        var filters = {
+
+            'clear' : function() {
+                log.html('');
+
+                return '';
+            }
+
+        }
+
+        var input = $('#coresphere_consolebundle_input');
+        var log_container = $('#coresphere_consolebundle_log_container');
+        var log = $('#coresphere_consolebundle_log');
+
+        input.focus();
+        log.append('<li>Type <code>list</code> to get a list of all commands.</li>');
+
+
+        if( ! localStorage['coresphere_console_history']) {
+            localStorage['coresphere_console_history'] = '[]';
+        }
+
+        var history = JSON.parse(localStorage['coresphere_console_history']);
+
+        history = history.slice(-20);
+
+        var current_history = history.length;
+
+        $(window).bind('keydown', function(event) {
+            var val = input.val();
+            if(event.which == 13) {
+                input.attr('disabled', true);
+                var command = val;
+
+                if(val.length) {
+                    history.push(val);
+                    current_history = history.length;
+                    input.val('');
+
+                    localStorage['coresphere_console_history'] = JSON.stringify(history);
+                }
+
+                if(command.substr(0,1) === '.') {
+                    var filter = command.substr(1);
+
+                    if(filters[filter]) {
+                        command = filters[filter].call(null);
+                    }
+
+                }
+
+                if(command.length) {
+                    log.append('<li class="loading"> &gt; '+val+'<br/><pre>Loading...</pre></li>');
+
+                    $.ajax({
+                         url: '{{ path('console_exec') }}',
+                         type: "POST",
+                         data: ({"command" : command}),
+                         dataType: "json"
+                     })
+
+                     .success(function(json) {
+                         log.append('<li> &gt; '+val+'<br/><pre>'+json.output+'</pre></li>');
+                     })
+
+                     .error(function(xhr, msg, error) {
+                         log.append('<li class="error"> &gt; '+val+'<br/><pre>['+msg+'] '+error+'</pre></li>');
+                     })
+
+                     .complete(function() {
+                         log.find('.loading').remove();
+                         input.attr('disabled', false).focus();
+                         log_container.scrollTop(log.outerHeight());
+
+                     })
+
+                     ;
+                }
+
+                 event.preventDefault();
+
+             } else if(event.which == 38) {
+                 // UP
+                 current_history--;
+                 if(current_history<0) {
+                     current_history = 0;
+                 } else {
+                     input.val(history[current_history]);
+                 }
+
+                 event.preventDefault();
+             } else if(event.which == 40) {
+                // DOWN
+                current_history++;
+                if(current_history>history.length) {
+                     current_history = history.length;
+                 } else {
+                    input.val(history[current_history]);
+                }
+
+                event.preventDefault();
+             }
+        });
+    });
+
+</script>
+{% endblock %}

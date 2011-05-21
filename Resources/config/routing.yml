@@ -1,0 +1,13 @@
+console:
+    pattern:  /console/
+    defaults: { _controller: CoreSphereConsoleBundle:Console:index }
+    requirements:
+        _method: GET
+
+
+console_exec:
+    pattern:  /console.{_format}
+    defaults: { _controller: CoreSphereConsoleBundle:Console:exec, _format: json }
+    requirements:
+        _method: POST
+        _format: json|html
