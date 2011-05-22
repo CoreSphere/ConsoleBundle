@@ -4,6 +4,12 @@ namespace CoreSphere\ConsoleBundle\Output;
 
 use Symfony\Component\Console\Output\Output;
 
+
+/**
+ * StringOutput
+ *
+ * Collects console output into a string.
+ */
 class StringOutput extends Output
 {
     protected $output = '';
