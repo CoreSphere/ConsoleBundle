@@ -12,6 +12,8 @@ class ConsoleController extends Controller
 {
     public function indexAction()
     {
+        chdir($this->container->getParameter('kernel.root_dir') . '/..');
+
         return $this->render('CoreSphereConsoleBundle:Console:index.html.twig', array(
             'working_dir' => getcwd()
         ));
