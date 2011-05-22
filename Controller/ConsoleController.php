@@ -26,13 +26,10 @@ class ConsoleController extends Controller
         $request = $this->get('request');
         $command = $request->request->get('command');
 
-        // TODO: CLEAN THIS UP
-
+        # Cache can not be warmed up as classes can not be redefined during one request
         if(preg_match('/cache:clear/', $command)) {
             $command .= ' --no-warmup';
         }
-
-        // ----------
 
         $input = new StringInput($command);
         $output = new StringOutput();
