@@ -87,7 +87,7 @@
                      })
 
                      .success(function(json) {
-                         log.append('<li> &gt; '+val+'<br/><pre>'+json.output+'</pre></li>');
+                         log.append('<li> &gt; '+val+'<br/><pre>'+json.output.replace(/^\s+|\s+$/g,"")+'</pre></li>');
                      })
 
                      .error(function(xhr, msg, error) {

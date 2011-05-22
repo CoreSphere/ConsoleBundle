@@ -3,7 +3,7 @@
 	padding: 0.2em;
 	background: rgba(50,50,50,1);
 	color: rgba(240,240,240,1);
-	font-family: Courier;
+	font-family: monospace;
 }
 
 #coresphere_consolebundle_console .working_dir {
