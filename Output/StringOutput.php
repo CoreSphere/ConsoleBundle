@@ -14,8 +14,6 @@ class StringOutput extends Output
     }
 
     public function getOutput() {
-        $output = $this->output;
-
         return $this->output;
     }
 }
