@@ -18,6 +18,7 @@
         <div id="coresphere_consolebundle_prompt" class="console_prompt">
             <div id="coresphere_consolebundle_input" contenteditable="true" class="console_input"></div>
         </div>
+        <div id="coresphere_consolebundle_suggestions" class="console_suggestions"></div>
     </div>
 {% endblock %}
 
@@ -25,25 +26,45 @@
 <script>
     $(function() {
 
-        var filters = {
+        var commands = {% include "CoreSphereConsoleBundle:Console:command_list.json.twig" %},
 
-            'clear' : function() {
-                log.html('');
+            filters         = {
 
-                return '';
-            }
+                'clear' : function() {
+                    log.html('');
 
-        }
+                    return '';
+                }
 
-        var htmlEscape = function(input) {
-            return input.split("&").join("&amp;").split( "<").join("&lt;").split(">").join("&gt;")
-        }
+            },
+            htmlEscape      = function(input) {
+                return input.split("&").join("&amp;").split( "<").join("&lt;").split(">").join("&gt;")
+            },
+            placeCaretAtEnd = function (el) {
+                el.focus();
+                if (typeof window.getSelection != "undefined"
+                        && typeof document.createRange != "undefined") {
+                    var range = document.createRange();
+                    range.selectNodeContents(el);
+                    range.collapse(false);
+                    var sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } else if (typeof document.body.createTextRange != "undefined") {
+                    var textRange = document.body.createTextRange();
+                    textRange.moveToElementText(el);
+                    textRange.collapse(false);
+                    textRange.select();
+                }
+            },
+            input           = $('#coresphere_consolebundle_input'),
+            log_container   = $('#coresphere_consolebundle_log_container'),
+            log             = $('#coresphere_consolebundle_log'),
+            suggestion_box  = $('#coresphere_consolebundle_suggestions')
 
-        var input = $('#coresphere_consolebundle_input');
-        var log_container = $('#coresphere_consolebundle_log_container');
-        var log = $('#coresphere_consolebundle_log');
+        ;
 
-        input.focus();
+        placeCaretAtEnd(input[0]);
         log.append('<li>Type <code class="console_command">list</code> to get a list of all commands.</li>');
 
 
@@ -55,15 +76,54 @@
 
         history = history.slice(-20);
 
-        var current_history = history.length;
-        var enabled = true;
+        var current_history = history.length,
+            enabled = true,
+            enable_suggestions = true,
+            current_suggestion_base;
 
         $(input).bind('keydown', function(event) {
             if( ! enabled) {
                 return;
             }
+
             var val = input.text();
-            if(event.which == 13 && !event.shiftKey) {
+
+            if(event.which === 9) {
+                event.preventDefault();
+                var active = suggestion_box.find('.active');
+
+                if( active.size() ) {
+                    var sug = active.text();
+                    var i = sug.indexOf(':', val.length)+1;
+                    i = i>0 ? i : sug.length;
+                    input.text(sug.substr(0, i));
+                    suggestion_box.text('');
+
+                    placeCaretAtEnd(input[0]);
+
+                } else if( suggestion_box.find('li').size() ) {
+                    var sug = suggestion_box.find('li').first().text();
+                    var i = sug.indexOf(':', val.length)+1;
+                    i = i>0 ? i : sug.length;
+                    input.text(sug.substr(0, i));
+                    suggestion_box.text('');
+
+                    placeCaretAtEnd(input[0]);
+
+                }
+            } else if(event.which === 13 && !event.shiftKey) {
+                var active = suggestion_box.find('.active');
+
+                if( active.size() ) {
+                    input.text(val = active.text());
+                    suggestion_box.text('');
+
+                    placeCaretAtEnd(input[0]);
+
+                    event.preventDefault();
+                    return;
+                }
+
                 var command = val;
                 input.text('');
 
@@ -85,7 +145,7 @@
                 }
 
                 if(command.length) {
-                    log.append('<li class="loading"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><pre>Loading...</pre></li>');
+                    log.append('<li class="loading"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">Loading...</div></li>');
 
                     enabled = false;
 
@@ -97,7 +157,8 @@
                      })
 
                      .success(function(json) {
-                         log.append('<li><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">'+json.output.replace(/^\s+|\s+$/g,"")+'</div></li>');
+                         var answer = json.output.replace(/^\s+|\s+$/g,"");
+                         log.append('<li><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">'+(answer.length?answer:'Complete')+'</div></li>');
                      })
 
                      .error(function(xhr, msg, error) {
@@ -108,7 +169,7 @@
                          log.find('.loading').remove();
                          enabled = true;
                          log_container.scrollTop(log.outerHeight());
-                         input.focus();
+                         placeCaretAtEnd(input[0]);
                      })
 
                      ;
@@ -116,32 +177,112 @@
 
                  event.preventDefault();
 
-             } else if(event.which == 38) {
-                 // UP
-                 current_history--;
-                 if(current_history<0) {
-                     current_history = 0;
-                 } else {
-                     input.text(history[current_history]);
-                 }
+             } else if(event.which === 38 || event.which === 40) {
+                 var current_suggestions = suggestion_box.find('li'),
+                      active_suggestion = current_suggestions.filter('.active'),
+                      next;
 
-                 event.preventDefault();
-             } else if(event.which == 40) {
-                // DOWN
-                current_history++;
-                if(current_history>history.length) {
-                     current_history = history.length;
-                 } else {
-                    input.text(history[current_history]);
+                 if(event.which === 38) {
+                     // UP
+
+                     if(current_suggestions.size()) {
+                         next = active_suggestion.size() ? active_suggestion.removeClass('active').prev() : current_suggestions.last();
+                         next.addClass('active').text()
+                     } else {
+                         current_history--;
+                         if(current_history<0) {
+                             current_history = 0;
+                         } else {
+                              input.text(history[current_history]);
+                         }
+                     }
+                  } else {
+                     // DOWN
+
+                     if(current_suggestions.size()) {
+                         next = active_suggestion.size() ? active_suggestion.removeClass('active').next() : current_suggestions.first();
+                         next.addClass('active').text()
+                     } else {
+                         current_history++;
+                         if(current_history>history.length) {
+                             current_history = history.length;
+                         } else {
+                             input.text(history[current_history]);
+                         }
+                     }
+
+                  }
+
+                   placeCaretAtEnd(input[0]);
+                   enable_suggestions = false;
+
+                   event.preventDefault();
+             }
+
+             if(event.which<37 || event.which>40) {
+                 enable_suggestions = true;
+             }
+
+        })
+
+        .bind('keyup', function(event) {
+            if(enable_suggestions) {
+                var val = input.text(),
+                    suggestions = [],
+                    any = 0;
+
+
+                if(val.length) {
+                    current_suggestion_base = val;
+                    for(var index in commands) {
+                        if(new RegExp('^'+val).test(commands[index])) {
+                            suggestions.push(commands[index]);
+                            any++;
+                        }
+                        if(commands[index] === val) {
+                            any--;
+                        }
+                    }
                 }
 
-                event.preventDefault();
-             }
-        });
+                if(any) {
+                    suggestion_box.html('<h2 class="suggestion_head">Did you mean:</h2><ul><li class="active">'+suggestions.join('</li><li>')+'</li></ul>');
+                } else {
+                    suggestion_box.text('');
+                }
+            }
+        })
 
-        $(window).delegate('.console_command', 'click', function(event) {
-           input.text($(this).text()).select().focus();
-        });
+
+        ;
+
+        $(window)
+
+        .delegate('.console_command', 'click', function(event) {
+           enable_suggestions = true;
+           input.text($(this).text()).trigger('keyup');
+           placeCaretAtEnd(input[0]);
+        })
+
+        .delegate('#coresphere_consolebundle_suggestions li', 'mouseover', function(event) {
+            var $this = $(this);
+
+            suggestion_box.find('.active').removeClass('active');
+            $this.addClass('active');
+            placeCaretAtEnd(input[0]);
+        })
+
+        .delegate('#coresphere_consolebundle_suggestions li', 'click', function(event) {
+            var $this = $(this);
+
+            suggestion_box.find('.active').removeClass('active');
+            $this.addClass('active');
+            input.text($this.text());
+            placeCaretAtEnd(input[0]);
+        })
+
+
+        ;
     });
 
 </script>

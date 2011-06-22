@@ -79,3 +79,30 @@
 .console_command:hover {
 	border: 1px solid rgba(140,140,140,0.6);
 }
+
+.suggestion_head {
+	font-weight: bold;
+	font-size: 1em;
+	margin: 0.2em 0 0 0;
+	padding: 0.5em;
+	background-color: rgba(100,180,100,0.3);
+}
+
+.console_suggestions ul {
+	margin: 0; padding: 0;
+
+	background-color: rgba(200,200,200, 1);
+	color: rgba(5,5,5,1);
+}
+
+.console_suggestions li {
+	list-style: none;
+	line-height: 1.5;
+	padding: 0.3em 3em 0.3em 0.5em;
+	cursor: pointer;
+}
+
+.console_suggestions .active {
+	background-color: rgba(50,50,50,0.2);
+	font-weight: bold;
+}
