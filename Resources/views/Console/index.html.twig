@@ -278,6 +278,7 @@
             suggestion_box.find('.active').removeClass('active');
             $this.addClass('active');
             input.text($this.text());
+            suggestion_box.text('');
             placeCaretAtEnd(input[0]);
         })
 
