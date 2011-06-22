@@ -37,7 +37,7 @@ class ConsoleController extends Controller
         $command = $request->request->get('command');
 
         # Cache can not be warmed up as classes can not be redefined during one request
-        if(preg_match('/cache:clear/', $command)) {
+        if(preg_match('/^cache:clear/', $command)) {
             $command .= ' --no-warmup';
         }
 
