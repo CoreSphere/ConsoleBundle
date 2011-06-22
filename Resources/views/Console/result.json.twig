@@ -1,6 +1,6 @@
 {% autoescape false %}
 {
     "command" : {{ input|escape|json_encode }},
-    "output" : {{ output|escape|json_encode }}
+    "output" : {{ output|json_encode }}
 }
 {% endautoescape %}

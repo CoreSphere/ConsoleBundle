@@ -1,57 +1,81 @@
-#coresphere_consolebundle_console {
+.console {
 	position: relative;
 	padding: 0.2em;
-	background: rgba(50,50,50,1);
+	background-color: rgba(50,50,50,1);
 	color: rgba(240,240,240,1);
 	font-family: monospace;
 }
 
-#coresphere_consolebundle_console .working_dir {
+.console_working_dir {
 	margin: 0;
 	padding: 0.2em;
-	background: rgba(5,5,5,1);
+	background-color: rgba(5,5,5,1);
 }
 
-#coresphere_consolebundle_log_container {
+.console_log_container {
 	height: 400px;
 	overflow: auto;
 }
 
-#coresphere_consolebundle_log_container::-webkit-scrollbar{height:12px;width:12px;}
-#coresphere_consolebundle_log_container::-webkit-scrollbar-track-piece{margin-bottom:10px;background-color: transparent;border-bottom-left-radius:6px 6px;border-bottom-right-radius:6px 6px;border-top-left-radius:6px 6px;border-top-right-radius:6px 6px;}
-#coresphere_consolebundle_log_container::-webkit-scrollbar-thumb:vertical{height:25px;background-color:rgba(1,1,1,0.3);-webkit-border-radius:6px;}
-#coresphere_consolebundle_log_container::-webkit-scrollbar-thumb:horizontal{width:25px;background-color:rgba(1,1,1,0.3);-webkit-border-radius:6px;}
+.console_log_container::-webkit-scrollbar{height:12px;width:12px;background-color:transparent;}
+.console_log_container::-webkit-scrollbar-track-piece{padding: 2em;margin-bottom:10px;background-color:transparent;}
+.console_log_container::-webkit-scrollbar-thumb:vertical,
+.console_log_container::-webkit-scrollbar-thumb:horizontal {background-color:rgba(255,255,255,0.4); border-radius: 3px;}
+.console_log_container::-webkit-scrollbar-thumb:vertical{height:25px}
+.console_log_container::-webkit-scrollbar-thumb:horizontal{width:25px}
 
-#coresphere_consolebundle_log {
+.console_log {
 	padding: 0 0.8em;
 }
 
-#coresphere_consolebundle_log li {
-	padding: 0.5em 0;
-}
-
-#coresphere_consolebundle_log .error {
+.console_log .error {
 	color: rgba(255, 160, 160, 1);
 }
 
-#coresphere_consolebundle_log code {
-	background: rgba(1,1,1,0.3);
-	padding: 3px;
-}
-
-#coresphere_consolebundle_prompt {
-	width: 100%;
+.console_prompt {
 	clear: both;
-	background: rgba(240,240,240, 1);
+	background-color: rgba(240,240,240, 1);
 	color: rgba(30, 30, 30,1);
 
 }
 
-#coresphere_consolebundle_input {
-	background: transparent;
+.console_input {
+	line-height: 1.5em;
+	padding: 0.5em;
+	background-color: transparent;
 	border: none;
 	font-family: inherit;
 	color: inherit;
 	outline: none;
-	width: 80%;
+}
+
+.console_log_input {
+	margin: 1em 0 0 0;
+	padding: 0.4em 0.5em;
+	background-color: rgba(0,0,0,0.2);
+	border-color: rgba(240,240,240,0.3);
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+}
+
+.console_log_output {
+	white-space: pre-wrap;
+	margin: 0;
+	margin: 0 0 1em 0;
+	padding: 1em 0.5em 2em 2em;
+	background-color: rgba(60,60,60,0.4);
+	border-color: rgba(240,240,240,0.3);
+	border-width: 0 1px 1px 1px;
+	border-style: solid;
+}
+
+.console_command {
+	background-color: rgba(1,1,1,0.3);
+	padding: 3px;
+	border: 1px solid transparent;
+	cursor: pointer;
+}
+
+.console_command:hover {
+	border: 1px solid rgba(140,140,140,0.6);
 }

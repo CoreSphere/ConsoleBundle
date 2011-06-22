@@ -8,15 +8,15 @@
 
 {% block content %}
     <h1>Console</h1>
-    <div id="coresphere_consolebundle_console">
-        <p class="working_dir">Working directory: <strong>{{ working_dir }}</strong></p>
-        <div id="coresphere_consolebundle_log_container">
-            <ol id="coresphere_consolebundle_log">
+    <div id="coresphere_consolebundle_console" class="console">
+        <p class="console_working_dir">Working directory: <strong>{{ working_dir }}</strong></p>
+        <div id="coresphere_consolebundle_log_container" class="console_log_container">
+            <ol id="coresphere_consolebundle_log" class="console_log">
 
             </ol>
         </div>
-        <div id="coresphere_consolebundle_prompt">
-            <input name="coresphere_consolebundle_input" id="coresphere_consolebundle_input" type="text" />
+        <div id="coresphere_consolebundle_prompt" class="console_prompt">
+            <div id="coresphere_consolebundle_input" contenteditable="true" class="console_input"></div>
         </div>
     </div>
 {% endblock %}
@@ -35,12 +35,16 @@
 
         }
 
+        var htmlEscape = function(input) {
+            return input.split("&").join("&amp;").split( "<").join("&lt;").split(">").join("&gt;")
+        }
+
         var input = $('#coresphere_consolebundle_input');
         var log_container = $('#coresphere_consolebundle_log_container');
         var log = $('#coresphere_consolebundle_log');
 
         input.focus();
-        log.append('<li>Type <code>list</code> to get a list of all commands.</li>');
+        log.append('<li>Type <code class="console_command">list</code> to get a list of all commands.</li>');
 
 
         if( ! localStorage['coresphere_console_history']) {
@@ -52,20 +56,24 @@
         history = history.slice(-20);
 
         var current_history = history.length;
+        var enabled = true;
 
-        $(window).bind('keydown', function(event) {
-            var val = input.val();
-            if(event.which == 13) {
-                input.attr('disabled', true);
+        $(input).bind('keydown', function(event) {
+            if( ! enabled) {
+                return;
+            }
+            var val = input.text();
+            if(event.which == 13 && !event.shiftKey) {
                 var command = val;
+                input.text('');
 
-                if(val.length) {
+                if(val.length && history[ history.length-1 ] !== val) {
                     history.push(val);
-                    current_history = history.length;
-                    input.val('');
-
                     localStorage['coresphere_console_history'] = JSON.stringify(history);
                 }
+
+                current_history = history.length;
+
 
                 if(command.substr(0,1) === '.') {
                     var filter = command.substr(1);
@@ -77,7 +85,9 @@
                 }
 
                 if(command.length) {
-                    log.append('<li class="loading"> &gt; '+val+'<br/><pre>Loading...</pre></li>');
+                    log.append('<li class="loading"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><pre>Loading...</pre></li>');
+
+                    enabled = false;
 
                     $.ajax({
                          url: '{{ path('console_exec') }}',
@@ -87,18 +97,18 @@
                      })
 
                      .success(function(json) {
-                         log.append('<li> &gt; '+val+'<br/><pre>'+json.output.replace(/^\s+|\s+$/g,"")+'</pre></li>');
+                         log.append('<li><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">'+json.output.replace(/^\s+|\s+$/g,"")+'</div></li>');
                      })
 
                      .error(function(xhr, msg, error) {
-                         log.append('<li class="error"> &gt; '+val+'<br/><pre>['+msg+'] '+error+'</pre></li>');
+                         log.append('<li class="error"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div>['+msg+'] '+error+'</div></li>');
                      })
 
                      .complete(function() {
                          log.find('.loading').remove();
-                         input.attr('disabled', false).focus();
+                         enabled = true;
                          log_container.scrollTop(log.outerHeight());
-
+                         input.focus();
                      })
 
                      ;
@@ -112,7 +122,7 @@
                  if(current_history<0) {
                      current_history = 0;
                  } else {
-                     input.val(history[current_history]);
+                     input.text(history[current_history]);
                  }
 
                  event.preventDefault();
@@ -122,11 +132,15 @@
                 if(current_history>history.length) {
                      current_history = history.length;
                  } else {
-                    input.val(history[current_history]);
+                    input.text(history[current_history]);
                 }
 
                 event.preventDefault();
              }
+        });
+
+        $(window).delegate('.console_command', 'click', function(event) {
+           input.text($(this).text()).select().focus();
         });
     });
 
