@@ -41,6 +41,8 @@ class ConsoleController extends Controller
         }
 
         $input = new StringInput($command);
+        $input->setInteractive(FALSE);
+
         $output = new StringOutput();
 
         $env = $this;
