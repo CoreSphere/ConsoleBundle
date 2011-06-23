@@ -43,6 +43,14 @@
             htmlEscape      = function(input) {
                 return input.split("&").join("&amp;").split( "<").join("&lt;").split(">").join("&gt;")
             },
+
+            regexpEscaper = new RegExp(
+                '(\\' + [
+                    '.', '*', '+', '?', '|',
+                    '(', ')', '[', ']', '{', '}', '\\'
+                ].join('|\\') + ')', 'g'
+            ),
+
             placeCaretAtEnd = function (el) {
                 el.focus();
                 if (typeof window.getSelection != "undefined"
@@ -251,10 +259,10 @@
                     var active_suggestion = suggestion_box.find('.active').text();
                     current_suggestion_base = val;
                     for(var index in commands) {
-                        if(new RegExp('^'+val).test(commands[index])) {
+                        if(new RegExp('^'+val.replace(regexpEscaper, '\\$1')).test(commands[index])) {
                             best_suggestions.push(commands[index]);
                             any++;
-                        } else if(new RegExp(val).test(commands[index])) {
+                        } else if(new RegExp(val.replace(regexpEscaper, '\\$1')).test(commands[index])) {
                             other_suggestions.push(commands[index]);
                             any++;
                         }
