@@ -10,8 +10,8 @@
     <h1>{{ 'coresphere_console.headline.index'|trans }}</h1>
     <div id="coresphere_consolebundle_console" class="console">
         <div class="console_info_bar">
-            {{ 'coresphere_console.working_directory'|trans }}: <strong>{{ working_dir }}</strong> |
-            {{ 'coresphere_console.environment'|trans }}: <strong>{{ environment }}</strong>
+            {{ 'coresphere_console.working_directory'|trans }}: <strong>{{ working_dir }}</strong>
+            <span class="env_info">{{ 'coresphere_console.environment'|trans }}: <strong>{{ environment }}</strong></span>
         </div>
         <div id="coresphere_consolebundle_log_container" class="console_log_container">
             <ol id="coresphere_consolebundle_log" class="console_log">
