@@ -88,6 +88,12 @@
 	background-color: rgba(100,180,100,0.3);
 }
 
+.match {
+	font-weight: bold;
+	color: rgba(20,100,20,1);
+	background-color: rgba(0,0,0,0.2);
+}
+
 .console_suggestions ul {
 	margin: 0; padding: 0;
 

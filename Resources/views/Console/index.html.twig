@@ -94,19 +94,13 @@
 
                 if( active.size() ) {
                     var sug = active.text();
-                    var i = sug.indexOf(':', val.length)+1;
-                    i = i>0 ? i : sug.length;
-                    input.text(sug.substr(0, i));
-                    suggestion_box.text('');
+                    input.text(sug.substr(0, sug.length));
 
                     placeCaretAtEnd(input[0]);
 
                 } else if( suggestion_box.find('li').size() ) {
                     var sug = suggestion_box.find('li').first().text();
-                    var i = sug.indexOf(':', val.length)+1;
-                    i = i>0 ? i : sug.length;
-                    input.text(sug.substr(0, i));
-                    suggestion_box.text('');
+                    input.text(sug.substr(0, sug.length));
 
                     placeCaretAtEnd(input[0]);
 
@@ -115,13 +109,15 @@
                 var active = suggestion_box.find('.active');
 
                 if( active.size() ) {
-                    input.text(val = active.text());
-                    suggestion_box.text('');
+                    if(val !== active.text()) {
+                        input.text(val = active.text());
+                        suggestion_box.text('');
 
-                    placeCaretAtEnd(input[0]);
+                        placeCaretAtEnd(input[0]);
 
-                    event.preventDefault();
-                    return;
+                        event.preventDefault();
+                        return;
+                    }
                 }
 
                 var command = val;
@@ -162,7 +158,7 @@
                      })
 
                      .error(function(xhr, msg, error) {
-                         log.append('<li class="error"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div>['+msg+'] '+error+'</div></li>');
+                         log.append('<li class="error"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">['+msg+'] '+error+'</div></li>');
                      })
 
                      .complete(function() {
@@ -187,6 +183,7 @@
 
                      if(current_suggestions.size()) {
                          next = active_suggestion.size() ? active_suggestion.removeClass('active').prev() : current_suggestions.last();
+                         //next = next.size() ? next : current_suggestions.last();
                          next.addClass('active').text()
                      } else {
                          current_history--;
@@ -201,6 +198,7 @@
 
                      if(current_suggestions.size()) {
                          next = active_suggestion.size() ? active_suggestion.removeClass('active').next() : current_suggestions.first();
+                         next = next.size() ? next : current_suggestions.first();
                          next.addClass('active').text()
                      } else {
                          current_history++;
@@ -217,9 +215,13 @@
                    enable_suggestions = false;
 
                    event.preventDefault();
+             } else if(event.which === 27) {
+                 input.text('');
+                 placeCaretAtEnd(input[0]);
              }
 
-             if(event.which<37 || event.which>40) {
+
+             if((event.which<37 || event.which>40) && event.which!==9) {
                  enable_suggestions = true;
              }
 
@@ -228,7 +230,9 @@
         .bind('keyup', function(event) {
             if(enable_suggestions) {
                 var val = input.text(),
-                    suggestions = [],
+                    best_suggestions = [],
+                    other_suggestions = [],
+                    suggestions
                     any = 0;
 
 
@@ -236,16 +240,22 @@
                     current_suggestion_base = val;
                     for(var index in commands) {
                         if(new RegExp('^'+val).test(commands[index])) {
-                            suggestions.push(commands[index]);
+                            best_suggestions.push(commands[index].replace(val, '<strong class="match">'+val+'</strong>'));
+                            any++;
+                        } else if(new RegExp(val).test(commands[index])) {
+                            other_suggestions.push(commands[index].replace(val, '<strong class="match">'+val+'</strong>'));
                             any++;
                         }
                         if(commands[index] === val) {
                             any--;
                         }
                     }
+
+                    suggestions = best_suggestions.concat(other_suggestions);
                 }
 
                 if(any) {
+                    enable_suggestions = false;
                     suggestion_box.html('<h2 class="suggestion_head">Did you mean:</h2><ul><li class="active">'+suggestions.join('</li><li>')+'</li></ul>');
                 } else {
                     suggestion_box.text('');
