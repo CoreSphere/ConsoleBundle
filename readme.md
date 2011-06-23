@@ -52,12 +52,12 @@ Installation
 Tips
 ----
 
- * Type '''.clear''' to clear the console window
+ * Type ```.clear``` to clear the console window
 
 Preview
 -------
 
-<img src="http://static.laszlokorte.de/github/coresphere_console.png" width="800" alt="Screenshot" />
+<img src="http://static.laszlokorte.de/github/coresphere_console.png" width="900" alt="Screenshot" />
 
 
 Dependencies
