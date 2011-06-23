@@ -11,17 +11,17 @@
     <div id="coresphere_consolebundle_console" class="console">
         <div class="console_info_bar">
             {{ 'coresphere_console.working_directory'|trans }}: <strong>{{ working_dir }}</strong>
-            <span class="env_info">{{ 'coresphere_console.environment'|trans }}: <strong>{{ environment }}</strong></span>
+            <span class="console_env_info">{{ 'coresphere_console.environment'|trans }}: <strong>{{ environment }}</strong></span>
         </div>
-        <div id="coresphere_consolebundle_log_container" class="console_log_container">
-            <ol id="coresphere_consolebundle_log" class="console_log">
+        <div class="console_log_container">
+            <ol class="console_log">
 
             </ol>
         </div>
-        <div id="coresphere_consolebundle_prompt" class="console_prompt">
-            <div id="coresphere_consolebundle_input" contenteditable="true" class="console_input"></div>
+        <div class="console_prompt">
+            <div contenteditable="true" class="console_input"></div>
         </div>
-        <div id="coresphere_consolebundle_suggestions" class="console_suggestions"></div>
+        <div class="console_suggestions"></div>
     </div>
 {% endblock %}
 
@@ -68,10 +68,11 @@
                     textRange.select();
                 }
             },
-            input           = $('#coresphere_consolebundle_input'),
-            log_container   = $('#coresphere_consolebundle_log_container'),
-            log             = $('#coresphere_consolebundle_log'),
-            suggestion_box  = $('#coresphere_consolebundle_suggestions')
+            coresphere_console         = $('#coresphere_consolebundle_console')
+            input           = coresphere_console.find('.console_input'),
+            log_container   = coresphere_console.find('.console_log_container'),
+            log             = coresphere_console.find('.console_log'),
+            suggestion_box  = coresphere_console.find('.console_suggestions')
 
         ;
 
@@ -152,7 +153,7 @@
                 }
 
                 if(command.length) {
-                    log.append('<li class="loading"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">{{ 'coresphere_console.loading'|trans }}</div></li>');
+                    log.append('<li class="console_loading"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">{{ 'coresphere_console.loading'|trans }}</div></li>');
 
                     enabled = false;
 
@@ -169,7 +170,7 @@
                                         + htmlEscape(val)
 
                                         + ( json.environment!=='{{ environment }}' ?
-                                            '<span class="env_info">{{ 'coresphere_console.environment'|trans }}: <strong>'
+                                            '<span class="console_env_info">{{ 'coresphere_console.environment'|trans }}: <strong>'
                                             + json.environment
                                             + '</strong></span>'
                                             :
@@ -183,11 +184,11 @@
                      })
 
                      .error(function(xhr, msg, error) {
-                         log.append('<li class="error"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">['+msg+'] '+error+'</div></li>');
+                         log.append('<li class="console_error"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">['+msg+'] '+error+'</div></li>');
                      })
 
                      .complete(function() {
-                         log.find('.loading').remove();
+                         log.find('.console_loading').remove();
                          enabled = true;
                          log_container.scrollTop(log.outerHeight());
                          placeCaretAtEnd(input[0]);
@@ -293,7 +294,7 @@
                         active_suggestion = best_suggestions[0];
                     }
                     enable_suggestions = false;
-                    var htmlcode  = '<h2 class="suggestion_head">{{ 'coresphere_console.suggestion_head'|trans }}:</h2>';
+                    var htmlcode  = '<h2 class="console_suggestion_head">{{ 'coresphere_console.suggestion_head'|trans }}</h2>';
                         htmlcode += '<ul>';
                         for(var index in suggestions) {
                             htmlcode += suggestions[index]===active_suggestion?'<li class="active">' : '<li>';
@@ -324,7 +325,6 @@
             ) {
                 return;
             }
-            console.log(event.target);
             suggestion_box.hide();
         })
 

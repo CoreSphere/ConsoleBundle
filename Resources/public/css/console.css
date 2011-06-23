@@ -8,7 +8,7 @@
 
 .console_info_bar {
 	margin: 0;
-	padding: 0.2em;
+	padding: 0.2em 15px 0.2em 0.2em;
 	background-color: rgba(5,5,5,1);
 }
 
@@ -28,7 +28,7 @@
 	padding: 0 0.8em;
 }
 
-.console_log .error {
+.console_error {
 	color: rgba(255, 160, 160, 1);
 }
 
@@ -47,6 +47,11 @@
 	font-family: inherit;
 	color: inherit;
 	outline: none;
+}
+
+.console_input * {
+	background-color: transparent !important;
+	color: inherit !important;
 }
 
 .console_log_input {
@@ -80,7 +85,7 @@
 	border: 1px solid rgba(140,140,140,0.6);
 }
 
-.suggestion_head {
+.console_suggestion_head {
 	font-weight: bold;
 	font-size: 1em;
 	margin: 0.2em 0 0 0;
@@ -122,7 +127,7 @@
 	font-weight: bold;
 }
 
-.env_info {
+.console_env_info {
 	color: rgba(200,200,200,0.7);
 	float: right;
 }
