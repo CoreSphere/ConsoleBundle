@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\StringInput;
 
 use CoreSphere\ConsoleBundle\Output\StringOutput;
 use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterStyle;
+use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
 
 class ConsoleController extends Controller
 {
@@ -58,7 +59,7 @@ class ConsoleController extends Controller
         $formatter->setStyle('info',     new HtmlOutputFormatterStyle('green'));
         $formatter->setStyle('comment',  new HtmlOutputFormatterStyle('yellow'));
         $formatter->setStyle('question', new HtmlOutputFormatterStyle('black', 'cyan'));
-
+        $output->setFormatter(new HtmlOutputFormatterDecorator($formatter));
 
         $env = $this;
         $debug = true;
