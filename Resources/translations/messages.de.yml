@@ -1,3 +1,9 @@
-console:
+coresphere_console:
     headline:
         index: "Konsole"
+    working_directory: 'Arbeitsverzeichnis'
+    environment: 'Umgebung'
+    welcome_message: 'Schreibe %command% um eine Liste mit allen verfügbaren Befehlen zu bekommen.'
+    loading: 'Lade...'
+    suggestion_head: 'Meintest du:'
+    empty_response: 'Fertig!'

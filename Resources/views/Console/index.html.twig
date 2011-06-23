@@ -1,17 +1,17 @@
 {% extends 'CoreSphereConsoleBundle:Console:layout.html.twig'  %}
 
-{% block title %}{{ 'console.headline.index'|trans }}{% endblock %}
+{% block title %}{{ 'coresphere_console.headline.index'|trans }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('bundles/coresphereconsole/css/console.css') }}" type="text/css" />
 {% endblock %}
 
 {% block content %}
-    <h1>Console</h1>
+    <h1>{{ 'coresphere_console.headline.index'|trans }}</h1>
     <div id="coresphere_consolebundle_console" class="console">
         <div class="console_info_bar">
-            Working directory: <strong>{{ working_dir }}</strong> |
-            Environment: <strong>{{ environment }}</strong>
+            {{ 'coresphere_console.working_directory'|trans }}: <strong>{{ working_dir }}</strong> |
+            {{ 'coresphere_console.environment'|trans }}: <strong>{{ environment }}</strong>
         </div>
         <div id="coresphere_consolebundle_log_container" class="console_log_container">
             <ol id="coresphere_consolebundle_log" class="console_log">
@@ -68,7 +68,7 @@
         ;
 
         placeCaretAtEnd(input[0]);
-        log.append('<li>Type <code class="console_command">list</code> to get a list of all commands.</li>');
+        log.append('<li>{{ 'coresphere_console.welcome_message'|trans({'%command%':'<code class="console_command">list</code>'})|raw }}</li>');
 
 
         if( ! localStorage['coresphere_console_history']) {
@@ -144,7 +144,7 @@
                 }
 
                 if(command.length) {
-                    log.append('<li class="loading"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">Loading...</div></li>');
+                    log.append('<li class="loading"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">{{ 'coresphere_console.loading'|trans }}</div></li>');
 
                     enabled = false;
 
@@ -157,7 +157,7 @@
 
                      .success(function(json) {
                          var answer = json.output.replace(/^\s+|\s+$/g,"");
-                         log.append('<li><div class="console_log_input">&gt; '+htmlEscape(val)+'<span class="env_info">Environment: <strong>'+json.environment+'</strong></span></div><div class="console_log_output">'+(answer.length?answer:'Complete')+'</div></li>');
+                         log.append('<li><div class="console_log_input">&gt; '+htmlEscape(val)+'<span class="env_info">{{ 'coresphere_console.environment'|trans }}: <strong>'+json.environment+'</strong></span></div><div class="console_log_output">'+(answer.length?answer:'{{ 'coresphere_console.empty_response'|trans }}')+'</div></li>');
                      })
 
                      .error(function(xhr, msg, error) {
@@ -172,6 +172,8 @@
                      })
 
                      ;
+                } else {
+                    placeCaretAtEnd(input[0]);
                 }
 
                  event.preventDefault();
@@ -269,7 +271,7 @@
                         active_suggestion = best_suggestions[0];
                     }
                     enable_suggestions = false;
-                    var htmlcode  = '<h2 class="suggestion_head">Did you mean:</h2>';
+                    var htmlcode  = '<h2 class="suggestion_head">{{ 'coresphere_console.suggestion_head'|trans }}:</h2>';
                         htmlcode += '<ul>';
                         for(var index in suggestions) {
                             htmlcode += suggestions[index]===active_suggestion?'<li class="active">' : '<li>';
