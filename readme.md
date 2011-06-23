@@ -3,6 +3,14 @@ ConsoleBundle
 
 This bundle allows you accessing the symfony2 console via your browser.
 
+Features
+--------
+
+ * Colored output
+ * Autocompletion for command names
+ * Local command history (localStorage)
+ * cache:clear works
+
 
 Installation
 ------------
