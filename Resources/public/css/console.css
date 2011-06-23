@@ -6,7 +6,7 @@
 	font-family: monospace;
 }
 
-.console_working_dir {
+.console_info_bar {
 	margin: 0;
 	padding: 0.2em;
 	background-color: rgba(5,5,5,1);
@@ -111,4 +111,9 @@
 .console_suggestions .active {
 	background-color: rgba(50,50,50,0.2);
 	font-weight: bold;
+}
+
+.env_info {
+	color: rgba(200,200,200,0.5);
+	float: right;
 }

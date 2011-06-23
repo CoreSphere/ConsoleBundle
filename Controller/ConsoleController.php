@@ -25,15 +25,17 @@ class ConsoleController extends Controller
     {
         chdir($this->container->getParameter('kernel.root_dir') . '/..');
 
+        $kernel = $this->get('kernel');
         $application = $this->getApplication();
 
-        foreach ($this->get('kernel')->getBundles() as $bundle) {
+        foreach ($kernel->getBundles() as $bundle) {
             $bundle->registerCommands($application);
         }
 
         return $this->render('CoreSphereConsoleBundle:Console:index.html.twig', array(
             'working_dir' => getcwd(),
-            'commands' => $application->all()
+            'environment' => $kernel->getEnvironment(),
+            'commands' => $application->all(),
         ));
     }
 
@@ -71,6 +73,7 @@ class ConsoleController extends Controller
         return $this->render('CoreSphereConsoleBundle:Console:result.' . $_format . '.twig', array(
             'input' => $command,
             'output' => $output->getOutput(),
+            'environment' => $input->getParameterOption(array('--env', '-e'), $this->get('kernel')->getEnvironment()),
         ));
     }
 

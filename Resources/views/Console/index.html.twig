@@ -9,7 +9,10 @@
 {% block content %}
     <h1>Console</h1>
     <div id="coresphere_consolebundle_console" class="console">
-        <p class="console_working_dir">Working directory: <strong>{{ working_dir }}</strong></p>
+        <div class="console_info_bar">
+            Working directory: <strong>{{ working_dir }}</strong> |
+            Environment: <strong>{{ environment }}</strong>
+        </div>
         <div id="coresphere_consolebundle_log_container" class="console_log_container">
             <ol id="coresphere_consolebundle_log" class="console_log">
 
@@ -154,7 +157,7 @@
 
                      .success(function(json) {
                          var answer = json.output.replace(/^\s+|\s+$/g,"");
-                         log.append('<li><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">'+(answer.length?answer:'Complete')+'</div></li>');
+                         log.append('<li><div class="console_log_input">&gt; '+htmlEscape(val)+'<span class="env_info">Environment: <strong>'+json.environment+'</strong></span></div><div class="console_log_output">'+(answer.length?answer:'Complete')+'</div></li>');
                      })
 
                      .error(function(xhr, msg, error) {
