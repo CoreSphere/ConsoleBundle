@@ -49,6 +49,17 @@ Installation
 
         ./app/console assets:install web
 
+Tips
+----
+
+ * Type '''.clear''' to clear the console window
+
+Preview
+-------
+
+<img src="http://static.laszlokorte.de/github/coresphere_console.png" width="800" alt="Screenshot" />
+
+
 Dependencies
 ------------
 
