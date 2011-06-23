@@ -164,8 +164,22 @@
                      })
 
                      .success(function(json) {
-                         var answer = json.output.replace(/^\s+|\s+$/g,"");
-                         log.append('<li><div class="console_log_input">&gt; '+htmlEscape(val)+'<span class="env_info">{{ 'coresphere_console.environment'|trans }}: <strong>'+json.environment+'</strong></span></div><div class="console_log_output">'+(answer.length?answer:'{{ 'coresphere_console.empty_response'|trans }}')+'</div></li>');
+                         var answer = json.output.replace(/^\s+|\s+$/g,""),
+                             htmlcode = '<li><div class="console_log_input">&gt; '
+                                        + htmlEscape(val)
+
+                                        + ( json.environment!=='{{ environment }}' ?
+                                            '<span class="env_info">{{ 'coresphere_console.environment'|trans }}: <strong>'
+                                            + json.environment
+                                            + '</strong></span>'
+                                            :
+                                            ''
+                                        )
+
+                                        + '</div><div class="console_log_output">'
+                                        + (answer.length?answer:'{{ 'coresphere_console.empty_response'|trans }}')
+                                        + '</div></li>';
+                         log.append(htmlcode);
                      })
 
                      .error(function(xhr, msg, error) {

@@ -66,21 +66,40 @@ class ConsoleController extends Controller
         $env = $this;
         $debug = true;
 
-        $application = $this->getApplication();
+        $application = $this->getApplication($input);
         $application->setAutoExit(FALSE);
         $application->run($input, $output);
 
         return $this->render('CoreSphereConsoleBundle:Console:result.' . $_format . '.twig', array(
             'input' => $command,
             'output' => $output->getOutput(),
-            'environment' => $input->getParameterOption(array('--env', '-e'), $this->get('kernel')->getEnvironment()),
+            'environment' => $this->getKernel($input)->getEnvironment(),
         ));
     }
 
-    protected function getApplication()
+    protected function getApplication($input = NULL)
     {
-        $kernel = $this->get('kernel');
+        $kernel = $this->getKernel($input);
+
 
         return new Application($kernel);
+    }
+
+    protected function getKernel($input = NULL)
+    {
+        $currentKernel = $this->get('kernel');
+
+        if($input === NULL) {
+            return $currentKernel;
+        }
+
+        $env = $input->getParameterOption(array('--env', '-e'), 'dev');
+        $debug = !$input->hasParameterOption(array('--no-debug', ''));
+
+        if($currentKernel->getEnvironment() === $env && $currentKernel->isDebug()===$debug) {
+            return $currentKernel;
+        }
+
+        return new \AppKernel($env, $debug);
     }
 }
