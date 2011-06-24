@@ -153,6 +153,8 @@
                 }
 
                 if(command.length) {
+                    log.find('li:not(.console_loading) .console_log_output').last().hide();
+
                     log.append('<li class="console_loading"><div class="console_log_input">'+htmlEscape(val)+'</div><div class="console_log_output">{{ 'coresphere_console.loading'|trans }}</div></li>');
 
                     enabled = false;
@@ -182,10 +184,8 @@
                                         + '</div></li>';
 
 
-                        var recent = log.find('li:not(.console_loading) .console_log_output').last();
-                        log.append(htmlcode);
-                        recent.hide();
-                     })
+                    log.append(htmlcode);
+                    })
 
                      .error(function(xhr, msg, error) {
                          log.append('<li class="console_error"><div class="console_log_input">'+htmlEscape(val)+'</div><div class="console_log_output">['+msg+'] '+error+'</div></li>');
