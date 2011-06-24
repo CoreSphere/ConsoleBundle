@@ -370,6 +370,11 @@
             placeCaretAtEnd(input[0]);
         })
 
+        .delegate('.console_log_input', 'click', function() {
+            $(this).next('.console_log_output').stop().slideToggle(100);
+        })
+
+
         ;
     });
 
