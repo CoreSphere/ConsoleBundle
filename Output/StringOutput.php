@@ -21,14 +21,14 @@ use Symfony\Component\Console\Output\Output;
  */
 class StringOutput extends Output
 {
-    protected $output = '';
+    protected $buffer = '';
 
     public function doWrite($message, $newline)
     {
-        $this->output .= $message . ($newline===TRUE ? PHP_EOL : '');
+        $this->buffer .= $message . ($newline===TRUE ? PHP_EOL : '');
     }
 
-    public function getOutput() {
-        return $this->output;
+    public function getBuffer() {
+        return $this->buffer;
     }
 }

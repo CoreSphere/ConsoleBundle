@@ -72,7 +72,7 @@ class ConsoleController extends Controller
 
         return $this->render('CoreSphereConsoleBundle:Console:result.' . $_format . '.twig', array(
             'input' => $command,
-            'output' => $output->getOutput(),
+            'output' => $output->getBuffer(),
             'environment' => $this->getKernel($input)->getEnvironment(),
         ));
     }
