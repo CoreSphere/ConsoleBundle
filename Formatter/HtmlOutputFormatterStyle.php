@@ -16,7 +16,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 
 class HtmlOutputFormatterStyle implements OutputFormatterStyleInterface
 {
-    static private $availableForegroundColors = array(
+    static private $colors = array(
         'black'     => 'rgba(0,0,0,1)',
         'red'       => 'rgba(230,50,50,1)',
         'green'     => 'rgba(50,230,50,1)',
@@ -26,16 +26,7 @@ class HtmlOutputFormatterStyle implements OutputFormatterStyleInterface
         'cyan'      => 'rgba(50,230,230,1)',
         'white'     => 'rgba(250,250,250,1)',
     );
-    static private $availableBackgroundColors = array(
-        'black'     => 'rgba(0,0,0,1)',
-        'red'       => 'rgba(230,50,50,1)',
-        'green'     => 'rgba(50,230,50,1)',
-        'yellow'    => 'rgba(230,230,50,1)',
-        'blue'      => 'rgba(50,50,230,1)',
-        'magenta'   => 'rgba(230,50,150,1)',
-        'cyan'      => 'rgba(50,230,230,1)',
-        'white'     => 'rgba(250,250,250,1)',
-    );
+
     static private $availableOptions = array(
         'bold'          => 'font-weight:bold',
         'underscore'    => 'text-decoration:underline',
@@ -80,15 +71,15 @@ class HtmlOutputFormatterStyle implements OutputFormatterStyleInterface
             return;
         }
 
-        if (!isset(static::$availableForegroundColors[$color])) {
+        if (!isset(static::$colors[$color])) {
             throw new \InvalidArgumentException(sprintf(
                 'Invalid foreground color specified: "%s". Expected one of (%s)',
                 $color,
-                implode(', ', array_keys(static::$availableForegroundColors))
+                implode(', ', array_keys(static::$colors))
             ));
         }
 
-        $this->foreground = static::$availableForegroundColors[$color];
+        $this->foreground = static::$colors[$color];
     }
 
     /**
@@ -104,15 +95,15 @@ class HtmlOutputFormatterStyle implements OutputFormatterStyleInterface
             return;
         }
 
-        if (!isset(static::$availableBackgroundColors[$color])) {
+        if (!isset(static::$colors[$color])) {
             throw new \InvalidArgumentException(sprintf(
                 'Invalid background color specified: "%s". Expected one of (%s)',
                 $color,
-                implode(', ', array_keys(static::$availableBackgroundColors))
+                implode(', ', array_keys(static::$colors))
             ));
         }
 
-        $this->background = static::$availableBackgroundColors[$color];
+        $this->background = static::$colors[$color];
     }
 
     /**
