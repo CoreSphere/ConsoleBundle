@@ -180,7 +180,11 @@
                                         + '</div><div class="console_log_output">'
                                         + (answer.length?answer:'{{ 'coresphere_console.empty_response'|trans }}')
                                         + '</div></li>';
-                         log.append(htmlcode);
+
+
+                        var recent = log.find('li:not(.console_loading) .console_log_output').last();
+                        log.append(htmlcode);
+                        recent.hide();
                      })
 
                      .error(function(xhr, msg, error) {
