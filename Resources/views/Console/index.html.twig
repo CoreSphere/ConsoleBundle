@@ -332,6 +332,10 @@
             suggestion_box.hide();
         })
 
+        .bind('focus', function(event) {
+            placeCaretAtEnd(input[0]);
+        })
+
         ;
 
         coresphere_console
