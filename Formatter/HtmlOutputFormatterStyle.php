@@ -39,6 +39,7 @@ class HtmlOutputFormatterStyle implements OutputFormatterStyleInterface
     static private $availableOptions = array(
         'bold'          => 'font-weight:bold',
         'underscore'    => 'text-decoration:underline',
+        'conceal'       => 'visibility:hidden',
     );
 
     private $foreground;
