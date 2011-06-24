@@ -57,21 +57,23 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 
     function format($message)
     {
-        return $this->escape($message);
+        return $this->formatter->format($this->unescape(htmlspecialchars($message, ENT_QUOTES, 'UTF-8')));
     }
 
-    protected function escape($message)
+    protected function unescape($message)
     {
-        return preg_replace_callback(OutputFormatter::FORMAT_PATTERN, array($this, 'escapeCallback'), $message);
+        $new_pattern = htmlspecialchars(OutputFormatter::FORMAT_PATTERN, ENT_QUOTES, 'UTF-8');
+        return preg_replace_callback($new_pattern, array($this, 'doFormat'), $message);
     }
 
-    protected function escapeCallback($match)
+    protected function doFormat($matches)
     {
-        $formated = $this->formatter->format($match[2]);
-        if($formated===$match[2]) {
-            return $this->formatter->format('<'.$match[1].'>'.htmlspecialchars($match[2], ENT_QUOTES, 'UTF-8').'</'.$match[1].'>');
+        $input = "<{$matches[1]}>{$this->unescape($matches[2])}</{$matches[1]}>";
+
+        if($input === ($output=$this->formatter->format($input))) {
+            return "&lt;{$matches[1]}&gt;{$this->unescape($matches[2])}&lt;/{$matches[1]}&gt;";
         } else {
-            return $this->formatter->format('<'.$match[1].'>'.$this->escape($match[2]).'</'.$match[1].'>');
+            return $output;
         }
     }
 }
