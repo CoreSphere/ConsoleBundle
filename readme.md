@@ -45,7 +45,20 @@ Installation
             return $bundles;
         }
 
- 5. run the assets:install command to install the css file
+ 5. Add the stylesheet block to your template file
+
+        <!-- /app/Resources/views/base.html.twig -->
+
+        {% block stylesheets %}{% endblock %}
+
+ 6. Include jQuery
+
+        <!-- /app/Resources/views/base.html.twig -->
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+
+
+ 7. run the assets:install command to install the css file
 
         ./app/console assets:install web
 
@@ -64,4 +77,5 @@ Dependencies
 ------------
 
  * jQuery
+ * Twig
  * AsseticBundle
