@@ -187,7 +187,7 @@ class HtmlOutputFormatterStyle implements OutputFormatterStyleInterface
             $styles[] = "background-color:{$this->background}";
         }
         if (count($this->options)) {
-            $styles = array_merge($codes, $this->options);
+            $styles = array_merge($styles, $this->options);
         }
 
         return sprintf('<span style="%s">%s</span>', implode(';', $styles), $text);
