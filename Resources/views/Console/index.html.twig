@@ -332,13 +332,17 @@
             suggestion_box.hide();
         })
 
+        ;
+
+        coresphere_console
+
         .delegate('.console_command', 'click', function(event) {
            enable_suggestions = true;
            input.text($(this).text()).trigger('keyup');
            placeCaretAtEnd(input[0]);
         })
 
-        .delegate('#coresphere_consolebundle_suggestions li', 'mouseover', function(event) {
+        .delegate('.console_suggestions li', 'mouseover', function(event) {
             var $this = $(this);
 
             suggestion_box.find('.active').removeClass('active');
@@ -346,12 +350,12 @@
             placeCaretAtEnd(input[0]);
         })
 
-        .delegate('#coresphere_consolebundle_suggestions li', 'mousedown', function(event) {
+        .delegate('.console_suggestions li', 'mousedown', function(event) {
             suggestion_box.stop(true);
             placeCaretAtEnd(input[0]);
         })
 
-        .delegate('#coresphere_consolebundle_suggestions li', 'click', function(event) {
+        .delegate('.console_suggestions li', 'click', function(event) {
             event.stopPropagation();
             var $this = $(this);
 
