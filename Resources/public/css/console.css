@@ -59,6 +59,10 @@
 	line-height: 1.3;
 }
 
+.console_log_input:before {
+	content: "> ";
+}
+
 .console_log_output {
 	white-space: pre-wrap;
 	margin: 0;

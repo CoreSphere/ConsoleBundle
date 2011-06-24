@@ -153,7 +153,7 @@
                 }
 
                 if(command.length) {
-                    log.append('<li class="console_loading"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">{{ 'coresphere_console.loading'|trans }}</div></li>');
+                    log.append('<li class="console_loading"><div class="console_log_input">'+htmlEscape(val)+'</div><div class="console_log_output">{{ 'coresphere_console.loading'|trans }}</div></li>');
 
                     enabled = false;
 
@@ -166,7 +166,7 @@
 
                      .success(function(json) {
                          var answer = json.output.replace(/^\s+|\s+$/g,""),
-                             htmlcode = '<li><div class="console_log_input">&gt; '
+                             htmlcode = '<li><div class="console_log_input">'
                                         + htmlEscape(val)
 
                                         + ( json.environment!=='{{ environment }}' ?
@@ -184,7 +184,7 @@
                      })
 
                      .error(function(xhr, msg, error) {
-                         log.append('<li class="console_error"><div class="console_log_input">&gt; '+htmlEscape(val)+'</div><div class="console_log_output">['+msg+'] '+error+'</div></li>');
+                         log.append('<li class="console_error"><div class="console_log_input">'+htmlEscape(val)+'</div><div class="console_log_output">['+msg+'] '+error+'</div></li>');
                      })
 
                      .complete(function() {
