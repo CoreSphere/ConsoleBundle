@@ -12,6 +12,7 @@
 namespace CoreSphere\ConsoleBundle\Formatter;
 
 
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 
@@ -61,7 +62,7 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 
     protected function escape($message)
     {
-        return preg_replace_callback('#<([a-z][a-z0-9_=;-]+)>(.*?)</\\1?>#is', array($this, 'escapeCallback'), $message);
+        return preg_replace_callback(OutputFormatter::FORMAT_PATTERN, array($this, 'escapeCallback'), $message);
     }
 
     protected function escapeCallback($match)
