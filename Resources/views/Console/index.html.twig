@@ -164,11 +164,11 @@
                          type: "POST",
                          data: ({"command" : command}),
                          dataType: "json"
-                     })
+                    })
 
-                     .success(function(json) {
-                         var answer = json.output.replace(/^\s+|\s+$/g,""),
-                             htmlcode = '<li><div class="console_log_input">'
+                    .success(function(json) {
+                        var answer = json.output.replace(/^\s+|\s+$/g,""),
+                            htmlcode = '<li><div class="console_log_input">'
                                         + htmlEscape(val)
 
                                         + ( json.environment!=='{{ environment }}' ?
@@ -187,18 +187,18 @@
                     log.append(htmlcode);
                     })
 
-                     .error(function(xhr, msg, error) {
-                         log.append('<li class="console_error"><div class="console_log_input">'+htmlEscape(val)+'</div><div class="console_log_output">['+msg+'] '+error+'</div></li>');
-                     })
+                    .error(function(xhr, msg, error) {
+                        log.append('<li class="console_error"><div class="console_log_input">'+htmlEscape(val)+'</div><div class="console_log_output">['+msg+'] '+error+'</div></li>');
+                    })
 
-                     .complete(function() {
-                         log.find('.console_loading').remove();
-                         enabled = true;
-                         log_container.scrollTop(log.outerHeight());
-                         placeCaretAtEnd(input[0]);
-                     })
+                    .complete(function() {
+                        log.find('.console_loading').remove();
+                        enabled = true;
+                        log_container.scrollTop(log.outerHeight());
+                        placeCaretAtEnd(input[0]);
+                    })
 
-                     ;
+                    ;
                 } else {
                     placeCaretAtEnd(input[0]);
                 }
@@ -206,62 +206,62 @@
                  event.preventDefault();
 
              } else if(event.which === 38 || event.which === 40) {
-                 var current_suggestions = suggestion_box.find('li'),
-                      active_suggestion = current_suggestions.filter('.active'),
-                      next;
+                var current_suggestions = suggestion_box.find('li'),
+                    active_suggestion = current_suggestions.filter('.active'),
+                    next;
 
-                 if(event.which === 38) {
-                     // UP
+                if(event.which === 38) {
+                    // UP
 
-                     if(current_suggestions.size()) {
-                         next = active_suggestion.size() ? active_suggestion.removeClass('active').prev() : current_suggestions.last();
-                         //next = next.size() ? next : current_suggestions.last();
-                         next.addClass('active').text()
-                     } else {
-                         current_history--;
-                         if(current_history<0) {
-                             current_history = 0;
-                         } else {
-                              input.text(history[current_history]);
-                         }
-                     }
-                  } else {
-                     // DOWN
+                    if(current_suggestions.size()) {
+                        next = active_suggestion.size() ? active_suggestion.removeClass('active').prev() : current_suggestions.last();
 
-                     if(current_suggestions.size()) {
-                         next = active_suggestion.size() ? active_suggestion.removeClass('active').next() : current_suggestions.first();
-                         next = next.size() ? next : current_suggestions.first();
-                         next.addClass('active').text()
-                     } else {
-                         current_history++;
-                         if(current_history>=history.length) {
-                             current_history = history.length;
-                             input.text('');
-                         } else {
-                             input.text(history[current_history]);
-                         }
-                     }
+                        next.addClass('active').text()
+                    } else {
+                        current_history--;
+                        if(current_history<0) {
+                            current_history = 0;
+                        } else {
+                            input.text(history[current_history]);
+                        }
+                    }
+                } else {
+                    // DOWN
 
-                  }
+                    if(current_suggestions.size()) {
+                        next = active_suggestion.size() ? active_suggestion.removeClass('active').next() : current_suggestions.first();
+                        next = next.size() ? next : current_suggestions.first();
+                        next.addClass('active').text()
+                    } else {
+                        current_history++;
+                        if(current_history>=history.length) {
+                            current_history = history.length;
+                            input.text('');
+                        } else {
+                            input.text(history[current_history]);
+                        }
+                    }
 
-                   placeCaretAtEnd(input[0]);
-                   enable_suggestions = false;
+                }
 
-                   event.preventDefault();
-             } else if(event.which === 27) {
-                 if(suggestion_box.find('li').size()) {
-                     suggestion_box.text('');
-                 } else {
-                     input.text('');
-                 }
-                 enable_suggestions = false;
-                 placeCaretAtEnd(input[0]);
-             }
+                placeCaretAtEnd(input[0]);
+                enable_suggestions = false;
+
+                event.preventDefault();
+            } else if(event.which === 27) {
+                if(suggestion_box.find('li').size()) {
+                    suggestion_box.text('');
+                } else {
+                    input.text('');
+                }
+                enable_suggestions = false;
+                placeCaretAtEnd(input[0]);
+            }
 
 
-             if((event.which<37 || event.which>40) && event.which !== 27) {
-                 enable_suggestions = true;
-             }
+            if((event.which<37 || event.which>40) && event.which !== 27) {
+                enable_suggestions = true;
+            }
 
         })
 
@@ -312,11 +312,10 @@
             }
         })
 
-
-
         .bind('focus', function(event) {
             suggestion_box.show();
         })
+
         ;
 
         $(window)
@@ -341,9 +340,9 @@
         coresphere_console
 
         .delegate('.console_command', 'click', function(event) {
-           enable_suggestions = true;
-           input.text($(this).text()).trigger('keyup');
-           placeCaretAtEnd(input[0]);
+            enable_suggestions = true;
+            input.text($(this).text()).trigger('keyup');
+            placeCaretAtEnd(input[0]);
         })
 
         .delegate('.console_suggestions li', 'mouseover', function(event) {
@@ -373,7 +372,6 @@
         .delegate('.console_log_input', 'click', function() {
             $(this).next('.console_log_output').stop().slideToggle(100);
         })
-
 
         ;
     });
