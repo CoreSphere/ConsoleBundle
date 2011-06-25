@@ -61,7 +61,7 @@ Installation
 
         <!-- /app/Resources/views/base.html.twig -->
 
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryuery/1.6.1/jquery.min.js"></script>
 
 
  8. run the assets:install command to install the css and js files
@@ -99,7 +99,6 @@ Tested with:
 Todo
 ----
 
- * Extract javascript as jQuery plugin into seperate file
  * Write Javascript tests
  * Add console as "pop up" to web developer toolbar
  * Figure out how to allow interactive mode (possible? extreme hacky?)
