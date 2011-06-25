@@ -30,9 +30,9 @@
 {{ parent() }}
 <script src="{{ asset('bundles/coresphereconsole/js/console.js') }}"></script>
 <script>
-    $(function () {
+    jQuery(function () {
 
-        var coresphere_console = new CoreSphereConsole($('#coresphere_consolebundle_console'), {
+        var coresphere_console = new CoreSphereConsole(jQuery('#coresphere_consolebundle_console'), {
             'commands' : {% include "CoreSphereConsoleBundle:Console:command_list.json.twig" %},
             'post_path' : '{{ path('console_exec') }}',
             'environment' : '{{ environment }}',
