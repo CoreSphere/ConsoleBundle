@@ -3,6 +3,7 @@
 {% block title %}{{ 'coresphere_console.headline.index'|trans }}{% endblock %}
 
 {% block stylesheets %}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/coresphereconsole/css/console.css') }}" type="text/css" />
 {% endblock %}
 
@@ -26,6 +27,7 @@
 {% endblock %}
 
 {% block javascripts %}
+{{ parent() }}
 <script src="{{ asset('bundles/coresphereconsole/js/console.js') }}"></script>
 <script>
     $(function () {
