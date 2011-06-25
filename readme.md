@@ -45,20 +45,26 @@ Installation
             return $bundles;
         }
 
- 5. Add the stylesheet block to your template file
+ 5. Add the stylesheets block to your template file
 
         <!-- /app/Resources/views/base.html.twig -->
 
         {% block stylesheets %}{% endblock %}
 
- 6. Include jQuery
+ 6. Add the javascripts block to your template file
+
+        <!-- /app/Resources/views/base.html.twig -->
+
+        {% block javascripts %}{% endblock %}
+
+ 7. Include jQuery
 
         <!-- /app/Resources/views/base.html.twig -->
 
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 
 
- 7. run the assets:install command to install the css file
+ 8. run the assets:install command to install the css and js files
 
         ./app/console assets:install web
 
