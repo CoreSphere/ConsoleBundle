@@ -93,7 +93,7 @@ class ConsoleController extends Controller
             return $currentKernel;
         }
 
-        $env = $input->getParameterOption(array('--env', '-e'), 'dev');
+        $env = $input->getParameterOption(array('--env', '-e'), $currentKernel->getEnvironment());
         $debug = !$input->hasParameterOption(array('--no-debug', ''));
 
         if($currentKernel->getEnvironment() === $env && $currentKernel->isDebug()===$debug) {
