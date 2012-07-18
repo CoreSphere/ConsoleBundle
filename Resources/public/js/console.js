@@ -351,7 +351,7 @@ window.CoreSphereConsole = (function (window) {
 
         $(window)
 
-            .bind('mousedown.coresphere_console', function () {
+            .bind('mousedown.coresphere_console', function (event) {
                 var $target = $(event.target);
                 if ($target.is('.console_input')
                         || $target.is('.console_suggestions')
@@ -413,10 +413,8 @@ window.CoreSphereConsole = (function (window) {
             url: this.options.post_path,
             type: "POST",
             data: ({"command" : command}),
-            dataType: "json"
-        })
-
-            .success(function (json) {
+            dataType: "json",
+            success: function (json) {
                 var answer = json.output.replace(/^\s+|\s+$/g, ""),
                     htmlcode = '<li><div class="console_log_input">'
                                 + helpers.htmlEscape(command)
@@ -435,18 +433,17 @@ window.CoreSphereConsole = (function (window) {
 
 
                 this_console.log.append(htmlcode);
-            })
-
-            .error(function (xhr, msg, error) {
+            },
+            error: function (xhr, msg, error) {
                 this_console.log.append('<li class="console_error"><div class="console_log_input">' + helpers.htmlEscape(command) + '</div><div class="console_log_output">[' + msg + '] ' + error + '</div></li>');
-            })
-
-            .complete(function () {
+            },
+            complete: function () {
                 this_console.log.find('.console_loading').remove();
                 this_console.unlock();
                 this_console.log_container.scrollTop(this_console.log.outerHeight());
                 this_console.focus();
-            });
+            }
+        });
     };
 
     return Console;
