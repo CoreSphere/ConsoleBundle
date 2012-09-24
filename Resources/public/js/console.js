@@ -133,23 +133,23 @@ window.CoreSphereConsole = (function (window) {
 
         this.base
 
-            .delegate('.console_command', 'click.coresphere_console', function () {
+            .on('click.coresphere_console', '.console_command', function () {
                 enable_suggestions = true;
                 this_console.setValue($(this).text()).trigger('keyup');
                 this_console.focus();
             })
 
-            .delegate('.console_suggestions li', 'mouseover.coresphere_console', function () {
+            .on('mouseover.coresphere_console', '.console_suggestions li', function () {
                 var $this = $(this);
 
-                this_console.suggestion_box.find('.' + this.options.active_suggestion_class).removeClass(this.options.active_suggestion_class);
-                $this.addClass(this.options.active_suggestion_class);
+                this_console.suggestion_box.find('.' + this_console.options.active_suggestion_class).removeClass(this_console.options.active_suggestion_class);
+                $this.addClass(this_console.options.active_suggestion_class);
                 this_console.active_suggestion = $this.text();
 
                 this_console.focus();
             })
 
-            .delegate('.console_suggestions li', 'click.coresphere_console', function (event) {
+            .on('click.coresphere_console', '.console_suggestions li', function (event) {
                 event.stopPropagation();
                 var $this = $(this);
                 this_console.setValue($this.text());
@@ -157,11 +157,11 @@ window.CoreSphereConsole = (function (window) {
                 this_console.focus();
             })
 
-            .delegate('.console_log_input', 'click.coresphere_console', function () {
+            .on('click.coresphere_console', '.console_log_input', function () {
                 $(this).next('.console_log_output').stop().slideToggle(100);
             })
 
-            .delegate('.console_input', 'keydown.coresphere_console', function (event) {
+            .on('keydown.coresphere_console', '.console_input', function (event) {
                 var val,
                     command,
                     filter,
@@ -233,13 +233,13 @@ window.CoreSphereConsole = (function (window) {
                 } else if (event.which === keys.up || event.which === keys.down) {
 
                     current_suggestions = this_console.suggestion_box.find('li');
-                    active_suggestion = current_suggestions.filter('.' + this.options.active_suggestion_class);
+                    active_suggestion = current_suggestions.filter('.' + this_console.options.active_suggestion_class);
 
                     if (event.which === keys.up) {
                         if (current_suggestions.size()) {
-                            next = active_suggestion.size() ? active_suggestion.removeClass(this.options.active_suggestion_class).prev() : current_suggestions.last();
+                            next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).prev() : current_suggestions.last();
                             next = next.size() ? next : current_suggestions.last();
-                            this_console.active_suggestion = next.addClass(this.options.active_suggestion_class).text();
+                            this_console.active_suggestion = next.addClass(this_console.options.active_suggestion_class).text();
                         } else {
                             this_console.history_position -= 1;
                             if (this_console.history_position < 0) {
@@ -252,9 +252,9 @@ window.CoreSphereConsole = (function (window) {
                         // DOWN
 
                         if (current_suggestions.size()) {
-                            next = active_suggestion.size() ? active_suggestion.removeClass(this.options.active_suggestion_class).next() : current_suggestions.first();
+                            next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).next() : current_suggestions.first();
                             next = next.size() ? next : current_suggestions.first();
-                            this_console.active_suggestion = next.addClass(this.options.active_suggestion_class).text();
+                            this_console.active_suggestion = next.addClass(this_console.options.active_suggestion_class).text();
                         } else {
                             this_console.history_position += 1;
                             if (this_console.history_position >= this_console.history.length) {
@@ -288,7 +288,7 @@ window.CoreSphereConsole = (function (window) {
                 }
             })
 
-            .delegate('.console_input', 'keyup.coresphere_console', function () {
+            .on('keyup.coresphere_console', '.console_input', function () {
 
                 if (enable_suggestions) {
                     var val = this_console.getValue(),
@@ -345,13 +345,13 @@ window.CoreSphereConsole = (function (window) {
 
             })
 
-            .delegate('.console_input', 'focus.coresphere_console', function () {
+            .on('focus.coresphere_console', '.console_input', function () {
                 this_console.suggestion_box.show();
             });
 
-        $(window)
+        $(window.document)
 
-            .bind('mousedown.coresphere_console', function () {
+            .on('mousedown.coresphere_console', function (event) {
                 var $target = $(event.target);
                 if ($target.is('.console_input')
                         || $target.is('.console_suggestions')
@@ -362,14 +362,14 @@ window.CoreSphereConsole = (function (window) {
                 this_console.suggestion_box.hide();
             })
 
-            .bind('focus.coresphere_console', function () {
+            .on('focus.coresphere_console', function () {
                 this_console.focus();
             });
     };
 
     Console.prototype.unbindEvents = function () {
-        this.base.undelegate('.coresphere_console');
-        window.unbind('.coresphere_console');
+        this.base.off('.coresphere_console');
+        $(window.document).off('.coresphere_console');
     };
 
 
@@ -416,7 +416,7 @@ window.CoreSphereConsole = (function (window) {
             dataType: "json"
         })
 
-            .success(function (json) {
+            .done(function (json) {
                 var answer = json.output.replace(/^\s+|\s+$/g, ""),
                     htmlcode = '<li><div class="console_log_input">'
                                 + helpers.htmlEscape(command)
@@ -437,11 +437,11 @@ window.CoreSphereConsole = (function (window) {
                 this_console.log.append(htmlcode);
             })
 
-            .error(function (xhr, msg, error) {
+            .fail(function (xhr, msg, error) {
                 this_console.log.append('<li class="console_error"><div class="console_log_input">' + helpers.htmlEscape(command) + '</div><div class="console_log_output">[' + msg + '] ' + error + '</div></li>');
             })
 
-            .complete(function () {
+            .then(function () {
                 this_console.log.find('.console_loading').remove();
                 this_console.unlock();
                 this_console.log_container.scrollTop(this_console.log.outerHeight());
