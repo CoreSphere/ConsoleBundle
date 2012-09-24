@@ -1,0 +1,9 @@
+coresphere_console:
+    headline:
+        index: "Console"
+    working_directory: 'Répertoire de travail'
+    environment: 'Environnement'
+    welcome_message: 'Tapez %command% pour obtenir la liste de toutes les commandes.'
+    loading: 'Chargement en cours...'
+    suggestion_head: 'Essayez plutôt :'
+    empty_response: 'Commande exécutée ! (Mais réponse vide)'
