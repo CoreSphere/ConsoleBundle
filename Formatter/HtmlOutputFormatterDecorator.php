@@ -68,10 +68,10 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 
     protected function doFormat($matches)
     {
-        $input = "<{$matches[1]}>{$this->unescape($matches[2])}</{$matches[1]}>";
+        $input = "<{$matches[2]}{$matches[3]}>{$this->unescape($matches[4])}</{$matches[2]}{$matches[3]}>";
 
         if($input === ($output=$this->formatter->format($input))) {
-            return "&lt;{$matches[1]}&gt;{$this->unescape($matches[2])}&lt;/{$matches[1]}&gt;";
+            return "&lt;{$matches[2]}{$matches[3]}&gt;{$this->unescape($matches[4])}&lt;/{$matches[2]}{$matches[3]}&gt;";
         } else {
             return $output;
         }
