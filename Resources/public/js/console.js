@@ -136,13 +136,13 @@ window.CoreSphereConsole = (function (window) {
 
         this.base
 
-            .on('click.coresphere_console', '.console_command', function () {
+            .on('click.coresphere_console', '.console_command', function (e) {
                 enable_suggestions = true;
                 this_console.setValue($(this).text()).trigger('keyup');
                 this_console.focus();
             })
 
-            .on('mouseover.coresphere_console', '.console_suggestions li', function () {
+            .on('mouseover.coresphere_console', '.console_suggestions li', function (e) {
                 var $this = $(this);
 
                 this_console.suggestion_box.find('.' + this_console.options.active_suggestion_class).removeClass(this_console.options.active_suggestion_class);
@@ -152,19 +152,19 @@ window.CoreSphereConsole = (function (window) {
                 this_console.focus();
             })
 
-            .on('click.coresphere_console', '.console_suggestions li', function (event) {
-                event.stopPropagation();
+            .on('click.coresphere_console', '.console_suggestions li', function (e) {
+                e.stopPropagation();
                 var $this = $(this);
                 this_console.setValue($this.text());
                 this_console.clearSuggestions();
                 this_console.focus();
             })
 
-            .on('click.coresphere_console', '.console_log_input', function () {
+            .on('click.coresphere_console', '.console_log_input', function (e) {
                 $(this).next('.console_log_output').stop().slideToggle(100);
             })
 
-            .on('keydown.coresphere_console', '.console_input', function (event) {
+            .on('keydown.coresphere_console', '.console_input', function (e) {
                 var val,
                     command,
                     filter,
@@ -178,9 +178,9 @@ window.CoreSphereConsole = (function (window) {
 
                 val = this_console.getValue();
 
-                if (event.which === keys.tab) {
+                if (e.which === keys.tab) {
 
-                    event.preventDefault();
+                    e.preventDefault();
 
                     if (this_console.active_suggestion) {
                         this_console.setValue(this_console.active_suggestion);
@@ -190,7 +190,7 @@ window.CoreSphereConsole = (function (window) {
                         this_console.focus();
                     }
 
-                } else if (event.which === keys.enter && !event.shiftKey) {
+                } else if (e.which === keys.enter && !e.shiftKey) {
 
                     if (this_console.active_suggestion) {
                         if (val !== this_console.active_suggestion) {
@@ -198,7 +198,7 @@ window.CoreSphereConsole = (function (window) {
                             this_console.clearSuggestions();
                             this_console.focus();
 
-                            event.preventDefault();
+                            e.preventDefault();
                             return;
                         }
                     }
@@ -229,14 +229,14 @@ window.CoreSphereConsole = (function (window) {
                         this_console.focus();
                     }
 
-                    event.preventDefault();
+                    e.preventDefault();
 
-                } else if (event.which === keys.up || event.which === keys.down) {
+                } else if (e.which === keys.up || e.which === keys.down) {
 
                     current_suggestions = this_console.suggestion_box.find('li');
                     active_suggestion = current_suggestions.filter('.' + this_console.options.active_suggestion_class);
 
-                    if (event.which === keys.up) {
+                    if (e.which === keys.up) {
                         if (current_suggestions.size()) {
                             next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).prev() : current_suggestions.last();
                             next = next.size() ? next : current_suggestions.last();
@@ -271,9 +271,9 @@ window.CoreSphereConsole = (function (window) {
                     this_console.focus();
                     enable_suggestions = false;
 
-                    event.preventDefault();
+                    e.preventDefault();
 
-                } else if (event.which === keys.escape) {
+                } else if (e.which === keys.escape) {
 
                     if (this_console.suggestion_box.find('li').size()) {
                         this_console.suggestion_box.text('');
@@ -284,12 +284,12 @@ window.CoreSphereConsole = (function (window) {
                     this_console.focus();
                 }
 
-                if ((event.which < keys.left || event.which > keys.down) && event.which !== keys.escape) {
+                if ((e.which < keys.left || e.which > keys.down) && e.which !== keys.escape) {
                     enable_suggestions = true;
                 }
             })
 
-            .on('keyup.coresphere_console', '.console_input', function () {
+            .on('keyup.coresphere_console', '.console_input', function (e) {
 
                 if (enable_suggestions) {
                     var val = this_console.getValue(),
@@ -346,14 +346,14 @@ window.CoreSphereConsole = (function (window) {
 
             })
 
-            .on('focus.coresphere_console', '.console_input', function () {
+            .on('focus.coresphere_console', '.console_input', function (e) {
                 this_console.suggestion_box.show();
             });
 
         $(window.document)
 
-            .on('mousedown.coresphere_console', function (event) {
-                var $target = $(event.target);
+            .on('mousedown.coresphere_console', function (e) {
+                var $target = $(e.target);
                 if ($target.is('.console_input')
                         || $target.is('.console_suggestions')
                         || $target.is('.console_suggestions li')
@@ -363,7 +363,7 @@ window.CoreSphereConsole = (function (window) {
                 this_console.suggestion_box.hide();
             })
 
-            .on('focus.coresphere_console', function () {
+            .on('focus.coresphere_console', function (e) {
                 this_console.focus();
             });
     };
