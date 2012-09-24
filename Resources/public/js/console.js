@@ -118,10 +118,12 @@ window.CoreSphereConsole = (function (window) {
     };
 
     Console.prototype.pushHistory = function (val) {
-        this.history.push(val);
-        this.history_position = this.history.length;
+        if (val.length && this.history[this.history.length - 1] !== val) {
+            this.history.push(val);
+            window.localStorage.coresphere_console_history = JSON.stringify(this.history);
+        }
 
-        window.localStorage.coresphere_console_history = JSON.stringify(this.history);
+        this.history_position = this.history.length;
     };
 
     Console.prototype.clearHistory = function () {
@@ -205,9 +207,7 @@ window.CoreSphereConsole = (function (window) {
 
                     this_console.setValue('');
 
-                    if (val.length && this_console.history[this_console.history.length - 1] !== val) {
-                        this_console.pushHistory(val);
-                    }
+                    this_console.pushHistory(val);
 
                     if (command.substr(0, 1) === '.') {
                         filter = command.substr(1);
