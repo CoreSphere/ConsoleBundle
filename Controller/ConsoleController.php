@@ -63,9 +63,6 @@ class ConsoleController extends Controller
         $formatter->setStyle('question', new HtmlOutputFormatterStyle('black', 'cyan'));
         $output->setFormatter(new HtmlOutputFormatterDecorator($formatter));
 
-        $env = $this;
-        $debug = true;
-
         $application = $this->getApplication($input);
         $application->setAutoExit(FALSE);
         $application->run($input, $output);
