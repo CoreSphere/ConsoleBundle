@@ -45,19 +45,7 @@ Installation
             return $bundles;
         }
 
- 5. Add the stylesheets block to your template file
-
-        <!-- /app/Resources/views/base.html.twig -->
-
-        {% block stylesheets %}{% endblock %}
-
- 6. Add the javascripts block to your template file
-
-        <!-- /app/Resources/views/base.html.twig -->
-
-        {% block javascripts %}{% endblock %}
-
- 8. run the assets:install command to install the css and js files
+ 5. run the assets:install command to install the css and js files
 
         ./app/console assets:install web
 
