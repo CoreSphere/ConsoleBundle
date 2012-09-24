@@ -57,13 +57,6 @@ Installation
 
         {% block javascripts %}{% endblock %}
 
- 7. Include jQuery
-
-        <!-- /app/Resources/views/base.html.twig -->
-
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryuery/1.6.1/jquery.min.js"></script>
-
-
  8. run the assets:install command to install the css and js files
 
         ./app/console assets:install web
