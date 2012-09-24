@@ -42,6 +42,7 @@ window.CoreSphereConsole = (function (window) {
                 var regexp = new RegExp(
                     '(\\' + [
                         '.', '*', '+', '?', '|',
+                        '^', '$',
                         '(', ')', '[', ']', '{', '}', '\\'
                     ].join('|\\') + ')',
                     'g'
