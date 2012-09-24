@@ -9,27 +9,21 @@ Features
  * Colored output
  * Autocompletion for command names
  * Local command history (localStorage)
- * cache:clear works
+ * ```cache:clear``` works
 
 
 Installation
 ------------
 
- 1. Download the Bundle into vendors/bundles/CoreSphere/ConsoleBundle
- 2. Add this line to your autoloader
+ 1. Add ```coresphere/console-bundle``` to your composer.json file and run ```composer.phar install```
 
-        // app/autoload.php
-        $loader->registerNamespaces(array(
-            'CoreSphere'          => array(__DIR__ . '/../vendor/bundles'),
-        ));
-
- 3. Add the following route to your routing configuration
+ 2. Add the following route to your routing configuration
 
         #app/config/routing_dev.yml
         console:
             resource: "@CoreSphereConsoleBundle/Resources/config/routing.yml"
 
- 4. Register the bundle in you AppKernel in the development section
+ 3. Register the bundle in you AppKernel in the development section
 
         // app/ApplicationKernel.php
         public function registerBundles()
@@ -45,7 +39,7 @@ Installation
             return $bundles;
         }
 
- 5. run the assets:install command to install the css and js files
+ 4. run the assets:install command to install the css and js files
 
         ./app/console assets:install web
 
