@@ -20,9 +20,13 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 {
     private $formatter;
 
+    private $htmlPattern;
+
+
     public function __construct($formatter)
     {
         $this->formatter = $formatter;
+        $this->htmlPattern = htmlspecialchars(OutputFormatter::FORMAT_PATTERN, ENT_QUOTES, 'UTF-8');
     }
 
 
@@ -57,23 +61,21 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 
     function format($message)
     {
-        return $this->formatter->format($this->unescape(htmlspecialchars($message, ENT_QUOTES, 'UTF-8')));
-    }
+        $escaped = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 
-    protected function unescape($message)
-    {
-        $new_pattern = htmlspecialchars(OutputFormatter::FORMAT_PATTERN, ENT_QUOTES, 'UTF-8');
-        return preg_replace_callback($new_pattern, array($this, 'doFormat'), $message);
+        return preg_replace_callback($this->htmlPattern, array($this, 'doFormat'), $escaped);
     }
 
     protected function doFormat($matches)
     {
-        $input = "<{$matches[2]}{$matches[3]}>{$this->unescape($matches[4])}</{$matches[2]}{$matches[3]}>";
+        $input = sprintf("%s<%s%s>%s", $matches[1], $matches[2], $matches[3], $matches[4]);
 
-        if($input === ($output=$this->formatter->format($input))) {
-            return "&lt;{$matches[2]}{$matches[3]}&gt;{$this->unescape($matches[4])}&lt;/{$matches[2]}{$matches[3]}&gt;";
+        if(($formatted = $this->formatter->format($input)) !== $this->formatter->format(sprintf('\\%s', $input))) {
+            $output = $formatted;
         } else {
-            return $output;
+            $output = substr($this->formatter->format(sprintf('<>%s', $matches[0])), 2);
         }
+
+        return $output;
     }
 }

@@ -42,13 +42,21 @@ class HtmlOutputFormatterDecoratorTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(
-            '<span style="color:rgba(50,230,50,1)">a&lt;script&gt;&lt;info&gt;evil();</span>&lt;/script&gt;', $decorated_formatter->format(
-                '<info>a<script><info>evil();</info></script>'
+            '<span style="color:rgba(50,230,50,1)">a</span>'.
+            '<span style="color:rgba(50,230,50,1)">&lt;script&gt;</span>'.
+            '<span style="color:rgba(250,250,250,1);background-color:rgba(230,50,50,1)">evil();</span>'.
+            '<span style="color:rgba(50,230,50,1)">&lt;/script&gt;</span>'
+            , $decorated_formatter->format(
+                '<info>a<script><error>evil();</error></script>'
             )
         );
 
         $this->assertSame(
-            '<span style="color:rgba(50,230,50,1)">a&amp;lt;&lt;script&gt;&lt;info&gt;evil();</span>&lt;/script&gt;', $decorated_formatter->format(
+            '<span style="color:rgba(50,230,50,1)">a&amp;lt;</span>'.
+            '<span style="color:rgba(50,230,50,1)">&lt;script&gt;</span>'.
+            '<span style="color:rgba(50,230,50,1)">evil();</span>'.
+            '<span style="color:rgba(50,230,50,1)">&lt;/script&gt;</span>'
+            , $decorated_formatter->format(
                 '<info>a&lt;<script><info>evil();</info></script>'
             )
         );
