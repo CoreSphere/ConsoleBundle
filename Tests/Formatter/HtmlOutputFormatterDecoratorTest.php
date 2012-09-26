@@ -12,9 +12,9 @@
 namespace CoreSphere\ConsoleBundle\Tests\Formatter;
 
 use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
-use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterStyle;
 
 use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class HtmlOutputFormatterDecoratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,10 +24,10 @@ class HtmlOutputFormatterDecoratorTest extends \PHPUnit_Framework_TestCase
         $raw_formatter = new OutputFormatter(true);
         $decorated_formatter = new HtmlOutputFormatterDecorator($raw_formatter);
 
-        $decorated_formatter->setStyle('error',    new HtmlOutputFormatterStyle('white', 'red'));
-        $decorated_formatter->setStyle('info',     new HtmlOutputFormatterStyle('green'));
-        $decorated_formatter->setStyle('comment',  new HtmlOutputFormatterStyle('yellow'));
-        $decorated_formatter->setStyle('question', new HtmlOutputFormatterStyle('black', 'cyan'));
+        $decorated_formatter->setStyle('error',    new OutputFormatterStyle('white', 'red'));
+        $decorated_formatter->setStyle('info',     new OutputFormatterStyle('green'));
+        $decorated_formatter->setStyle('comment',  new OutputFormatterStyle('yellow'));
+        $decorated_formatter->setStyle('question', new OutputFormatterStyle('black', 'cyan'));
 
         $this->assertSame(
             'a&lt;script&gt;evil();&lt;/script&gt;a', $decorated_formatter->format(
