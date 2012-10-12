@@ -3,9 +3,15 @@
 	padding: 0.2em;
 	background-color: rgba(50,50,50,1);
 	color: rgba(240,240,240,1);
-	font-family: monospace,monospace;
+	font-family: Consolas, "Liberation Mono", Courier, monospace;
 	font-size: 0.9em;
-	border-radius: 0.5em;
+	border: 5px solid rgba(210,210,210,1);
+	margin: 0 0 10em 0;
+}
+
+.console::after {
+	clear: both;
+	content: '';
 }
 
 .console_info_bar {
@@ -30,20 +36,61 @@
 
 .console_prompt {
 	clear: both;
-	background-color: rgba(240,240,240, 1);
+	background-color: rgba(255,255,255, 1);
 	color: rgba(30, 30, 30,1);
-	border-radius: 0.3em;
+	position: relative;
+}
+
+.console_prompt::before {
+	position: absolute;
+	left:0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	content: '$ ';
+	line-height: 1.5em;
+	padding: 0.5em;
 }
 
 .console_input {
-	line-height: 1.5em;
-	min-height: 1.5em;
-	padding: 0.5em;
 	background-color: transparent;
 	border: none;
 	font-family: inherit;
 	color: inherit;
 	outline: none;
+
+	line-height: 1.5em;
+	min-height: 1.5em;
+	padding: 0.5em 0.5em 0.5em 1.5em;
+	position: relative;
+	z-index: 10;
+}
+
+[data-before]::before {
+	content: attr(data-before);
+	color: inherit;
+	background: inherit;
+	text-decoration: underline;
+	opacity: 0.1;
+}
+
+.console_input_background {
+	line-height: 1.5em;
+	min-height: 1.5em;
+	padding: 0.5em 0.5em 0.5em 1.5em;
+	background-color: transparent;
+	border: none;
+	font-family: inherit;
+	color: inherit;
+	outline: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	color: inherit;
+	opacity: 0.7;
+	z-index: 0;
 }
 
 .console_input * {
@@ -100,32 +147,36 @@
 	font-weight: bold;
 	margin: 0.2em 0 0 0;
 	padding: 0.5em;
-	background-color: rgba(20,20,20,1);
+	color: rgba(40,40,40,1);
+	background-color: rgba(255,255,255,1);
 	font-size: 1em;
-
-	border-radius: 0.2em 0.2em 0 0;
+	font-family: sans-serif;
 }
 
 .match {
 	font-weight: bold;
-	background-color: rgba(250, 250, 50, 0.5);
+	background-color: rgba(261, 223, 15, 0.8);
+	border-radius: 0.3em;
+	padding: 0.2em;
+	box-shadow: 1px 1px 3px rgba(40,40,40,0.4);
 }
 
 .console_suggestions {
 	position: absolute;
 	top: 100%;
+	margin-top: 5px;
 	left: 0;
 	right: 0;
 	z-index: 100;
-	padding: 0 0 10em 0;
+	box-shadow: 0 -1px 6px rgba(40,40,40,0.5);
+	overflow: hidden;
 }
 
 .console_suggestions ul {
 	margin: 0; padding: 0;
 
-	background-color: rgba(200,200,200, 1);
+	background-color: rgba(250,250,250, 1);
 	color: rgba(5,5,5,1);
-	border: 1px solid rgba(10,10,10,1);
 }
 
 .console_suggestions li {
@@ -136,7 +187,7 @@
 }
 
 .console_suggestions .active {
-	background-color: rgba(50,50,50,0.2);
+	background-color: rgba(50,50,50,0.1);
 	font-weight: bold;
 }
 
