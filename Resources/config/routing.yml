@@ -10,4 +10,4 @@ console_exec:
     defaults: { _controller: CoreSphereConsoleBundle:Console:exec, _format: json }
     requirements:
         _method: POST
-        _format: json|html
+        _format: json
