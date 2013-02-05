@@ -11,10 +11,9 @@ window.CoreSphereConsole = (function (window) {
     "use strict";
 
     if (typeof window.jQuery === "undefied") {
-        window.alert('jQuery has not been loaded');
+        window.alert('CoreSphere/ConsoleBundle: jQuery ist required but has not been loaded.');
         return;
     }
-
     var $ = window.jQuery,
 
         default_options = {
@@ -77,6 +76,7 @@ window.CoreSphereConsole = (function (window) {
         keys = {
             'tab' : 9,
             'enter' : 13,
+            'space' : 32,
             'escape' : 27,
             'left' : 37,
             'up' : 38,
@@ -88,8 +88,8 @@ window.CoreSphereConsole = (function (window) {
             this.options = $.extend(default_options, options);
 
             this.base             = base_element;
-            this.input            = base_element.find('.console_input');
-            this.input_background = base_element.find('.console_input_background');
+            this.input            = base_element.find('[data-prompt]');
+            this.input_background = base_element.find('[data-suggestion-preview]');
             this.log_container    = base_element.find('.console_log_container');
             this.log              = base_element.find('.console_log');
             this.suggestion_box   = base_element.find('.console_suggestions');
@@ -138,33 +138,36 @@ window.CoreSphereConsole = (function (window) {
 
             .on('click.coresphere_console', '.console_command', function (e) {
                 enable_suggestions = true;
-                this_console.setValue($(this).text()).trigger('keyup');
+                this_console.setValue($(this).attr('data-command')).trigger('keyup');
                 this_console.focus();
+                console.log('a');
+
             })
 
-            .on('mouseover.coresphere_console', '.console_suggestions li', function (e) {
+            .on('mouseover.coresphere_console', '.console_suggestions [data-command]', function (e) {
                 var $this = $(this);
 
                 this_console.suggestion_box.find('.' + this_console.options.active_suggestion_class).removeClass(this_console.options.active_suggestion_class);
                 $this.addClass(this_console.options.active_suggestion_class);
-                this_console.setActiveSuggestion($this.text());
+                this_console.setActiveSuggestion($this.attr('data-command'));
 
                 this_console.focus();
             })
 
-            .on('click.coresphere_console', '.console_suggestions li', function (e) {
+            .on('click.coresphere_console', '.console_suggestions [data-command]', function (e) {
                 e.stopPropagation();
-                var $this = $(this);
-                this_console.setValue($this.text());
+                var $this = $(e.currentTarget);
+                this_console.setValue($this.attr('data-command'));
                 this_console.clearSuggestions();
                 this_console.focus();
             })
 
             .on('click.coresphere_console', '.console_log_input', function (e) {
+                e.stopPropagation();
                 $(this).next('.console_log_output').stop().slideToggle(100);
             })
 
-            .on('keydown.coresphere_console', '.console_input', function (e) {
+            .on('keydown.coresphere_console', '[data-prompt]', function (e) {
                 var val,
                     command,
                     filter,
@@ -188,6 +191,14 @@ window.CoreSphereConsole = (function (window) {
 
                     this_console.focus();
 
+                } else if(e.which === keys.space) {
+                    if (this_console.active_suggestion) {
+                        if(this_console.active_suggestion.indexOf(this_console.getValue()) + this_console.getValue().length === this_console.active_suggestion.length) {
+                            this_console.setValue(this_console.active_suggestion);
+                        }
+                    }
+
+                    this_console.focus();
                 } else if (e.which === keys.enter && !e.shiftKey) {
 
                     if (this_console.active_suggestion) {
@@ -238,7 +249,7 @@ window.CoreSphereConsole = (function (window) {
                         if (current_suggestions.size()) {
                             next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).prev() : current_suggestions.last();
                             next = next.size() ? next : current_suggestions.last();
-                            this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                            this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).attr('data-command'));
                         } else {
                             this_console.history_position -= 1;
                             if (this_console.history_position < 0) {
@@ -254,7 +265,7 @@ window.CoreSphereConsole = (function (window) {
                             next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).next() : current_suggestions.first();
                             next = next.size() ? next : current_suggestions.first();
 
-                            this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                            this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).attr('data-command'));
                         } else {
                             this_console.history_position += 1;
                             if (this_console.history_position >= this_console.history.length) {
@@ -288,17 +299,19 @@ window.CoreSphereConsole = (function (window) {
                 }
             })
 
-            .on('keyup.coresphere_console', '.console_input', function (e) {
+            .on('keyup.coresphere_console', '[data-prompt]', function (e) {
 
                 if (enable_suggestions) {
                     var val = this_console.getValue(),
+                        valStart = this_console.getValueStart(),
                         best_suggestions = [],
                         other_suggestions = [],
                         suggestions,
                         any = 0,
                         htmlcode,
                         index,
-                        j;
+                        j,
+                        details;
 
 
                     if (val.length) {
@@ -310,15 +323,17 @@ window.CoreSphereConsole = (function (window) {
                                 other_suggestions.push(this_console.options.commands[index]);
                                 any += 1;
                             }
-                            if (this_console.options.commands[index] === val) {
-                                any -= 1;
+                            if (this_console.options.commands[index] === valStart) {
+                                any = -1;
+                                break;
                             }
                         }
 
                         suggestions = best_suggestions.concat(other_suggestions);
+                        suggestions = suggestions.slice(0,4);
                     }
 
-                    if (any) {
+                    if (any > 0) {
                         if (!this_console.active_suggestion || suggestions.indexOf(this_console.active_suggestion) < 0) {
                             this_console.setActiveSuggestion(suggestions[0]);
                         } else {
@@ -331,9 +346,28 @@ window.CoreSphereConsole = (function (window) {
                         htmlcode  = '<h2 class="console_suggestion_head">' + this_console.options.lang.suggestion_head + '</h2>';
                         htmlcode += '<ul>';
                         for (index = 0, j = suggestions.length; index < j; index += 1) {
-                            htmlcode += suggestions[index] === this_console.active_suggestion ? '<li class="active">' : '<li>';
-                            htmlcode += suggestions[index].replace(val, '<strong class="match">' + val + '</strong>') + '</li>';
+
+                            htmlcode += suggestions[index] === this_console.active_suggestion ? '<li class="active"' : '<li';
+                            htmlcode += ' data-command="'+suggestions[index]+'">';
+                            htmlcode += suggestions[index].replace(val, '<strong class="match">' + val + '</strong>');
+
+                            htmlcode += this_console.commandArgumentsHelp(suggestions[index]);
+
+                            htmlcode += '</li>';
                         }
+                        htmlcode += '</ul>';
+                        this_console.suggestion_box.html(htmlcode);
+                    } else if(any<0) {
+                        htmlcode  = '<h2 class="console_suggestion_head">' + this_console.options.lang.detail_suggestion_head + '</h2>';
+                        htmlcode += '<ul>';
+                        details = this_console.options.command_details[valStart];
+
+                        htmlcode += '<li class="active">';
+
+                        htmlcode += '<strong class="match">' + valStart + '</strong>';
+                        htmlcode += this_console.commandArgumentsHelp(valStart);
+
+                        htmlcode += '</li>';
                         htmlcode += '</ul>';
                         this_console.suggestion_box.html(htmlcode);
                     } else {
@@ -345,7 +379,7 @@ window.CoreSphereConsole = (function (window) {
 
             })
 
-            .on('focus.coresphere_console', '.console_input', function (e) {
+            .on('focus.coresphere_console', '[data-prompt]', function (e) {
                 this_console.suggestion_box.show();
             });
 
@@ -354,19 +388,59 @@ window.CoreSphereConsole = (function (window) {
             .on('mousedown.coresphere_console', function (e) {
                 var $target = $(e.target);
                 this_console.focus();
-                if ($target.is('.console_input')
+                if ($target.is('[data-prompt]')
                         || $target.is('.console_suggestions')
-                        || $target.is('.console_suggestions li')
+                        || $target.closest('.console_suggestions').size()
                         ) {
 
                     return;
                 }
+                this_console.focus();
                 this_console.suggestion_box.hide();
             })
 
             .on('focus.coresphere_console', function (e) {
                 this_console.focus();
             });
+    };
+
+    Console.prototype.commandArgumentsHelp = function(command) {
+        var htmlcode = '',
+            details = this.options.command_details[command],
+            argIndex,
+            arg,
+            optIndex,
+            opt;
+
+        htmlcode += '<span class="console_suggestion_arguments">';
+
+
+        for(optIndex=0;optIndex<details.options.length; optIndex++) {
+            htmlcode += ' ';
+            arg = '--'+details.options[optIndex].name;
+            if(details.options[optIndex].accepts_value) {
+                if(details.options[optIndex].requires_value) {
+                    arg+= '="..."';
+                } else {
+                    arg+= '[="..."]';
+                }
+            }
+            arg = '['+arg+']';
+            htmlcode += arg;
+        }
+
+        for(argIndex=0;argIndex<details.arguments.length; argIndex++) {
+            htmlcode += ' ';
+            arg = details.arguments[argIndex].name;
+            if(!arg.required) {
+                arg = '['+arg+']';
+            }
+            htmlcode += arg;
+        }
+
+        htmlcode += '</span>';
+
+        return htmlcode;
     };
 
     Console.prototype.unbindEvents = function () {
@@ -389,6 +463,10 @@ window.CoreSphereConsole = (function (window) {
 
     Console.prototype.getValue = function () {
         return this.input.text();
+    };
+
+    Console.prototype.getValueStart = function () {
+        return this.getValue().replace(/^\s+/, ' ').replace(/\s+$/, ' ').split(' ')[0];
     };
 
     Console.prototype.setValue = function (val) {

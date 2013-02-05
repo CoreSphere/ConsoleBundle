@@ -6,4 +6,5 @@ coresphere_console:
     welcome_message: 'Type %command% to get a list of all commands.'
     loading: 'Loading...'
     suggestion_head: 'Did you mean:'
+    detail_suggestion_head: 'Help for the current command:'
     empty_response: 'Complete!'

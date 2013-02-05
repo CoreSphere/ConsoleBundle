@@ -6,4 +6,5 @@ coresphere_console:
     welcome_message: 'Schreibe %command% um eine Liste mit allen verfügbaren Befehlen zu bekommen.'
     loading: 'Lade...'
     suggestion_head: 'Meintest du:'
+    detail_suggestion_head: 'Hilfe zu diesem Befehl:'
     empty_response: 'Fertig!'

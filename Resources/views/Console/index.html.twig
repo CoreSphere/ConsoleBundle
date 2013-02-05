@@ -20,8 +20,10 @@
             </ol>
         </div>
         <div class="console_prompt">
-            <div contenteditable="true" class="console_input"></div>
-            <div class="console_input_background"></div>
+            <div class="console_input">
+                <div contenteditable="true" data-prompt></div>
+            </div>
+            <div class="console_input console_input_background" data-suggestion-preview></div>
         </div>
         <div class="console_suggestions"></div>
     </div>
@@ -36,11 +38,13 @@
         var coresphere_console = new CoreSphereConsole(
             jQuery("#coresphere_consolebundle_console"), {
             "commands" : {% include "CoreSphereConsoleBundle:Console:command_list.json.twig" %},
+            "command_details" : {% include "CoreSphereConsoleBundle:Console:command_details.json.twig" %},
             "post_path" : "{{ path('console_exec') }}",
             "environment" : "{{ environment }}",
             "lang" : {
                 "loading" : "{{ 'coresphere_console.loading'|trans }}",
                 "suggestion_head" : "{{ 'coresphere_console.suggestion_head'|trans }}",
+                "detail_suggestion_head" : "{{ 'coresphere_console.detail_suggestion_head'|trans }}",
                 "environment" : "{{ 'coresphere_console.environment'|trans }}",
                 "empty_response" : "{{ 'coresphere_console.empty_response'|trans }}",
                 "welcome_message" : "{{ 'coresphere_console.welcome_message'|trans({'%command%': '<code class=\"console_command\">list</code>'}) }}"

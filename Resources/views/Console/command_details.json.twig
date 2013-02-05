@@ -1,0 +1,27 @@
+{% autoescape 'js' %}
+{
+  {% for key, command in commands %}
+    "{{ key }}" : {
+      "arguments": [
+        {% for argument in command.definition.arguments %}
+          {
+            "name" : "{{ argument.name }}",
+            "required" : {{ argument.required|json_encode }}
+          }
+          {% if not loop.last %},{% endif %}
+        {% endfor %}
+      ],
+      "options" : [
+        {% for option in command.definition.options %}
+          {
+            "name" : "{{ option.name }}",
+            "accepts_value" : {{ option.acceptValue|json_encode }},
+            "requires_value" : {{ option.isValueRequired|json_encode }}
+          }
+          {% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+  }{% if not loop.last %},{% endif %}
+  {% endfor %}
+}
+{% endautoescape %}

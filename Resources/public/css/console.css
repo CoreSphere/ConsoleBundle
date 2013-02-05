@@ -9,11 +9,6 @@
 	margin: 0 0 10em 0;
 }
 
-.console::after {
-	clear: both;
-	content: '';
-}
-
 .console_info_bar {
 	margin: 0;
 	padding: 0.2em 15px 0.2em 0.2em;
@@ -39,6 +34,7 @@
 	background-color: rgba(255,255,255, 1);
 	color: rgba(30, 30, 30,1);
 	position: relative;
+	line-height: 1.5em;
 }
 
 .console_prompt::before {
@@ -48,22 +44,33 @@
 	top: 0;
 	bottom: 0;
 	content: '$ ';
+	font-weight: bold;
 	line-height: 1.5em;
 	padding: 0.5em;
 }
 
 .console_input {
+	position: relative;
+	min-height: 1.5em;
+	padding: 0.5em;
+	left: 1em;
+	z-index: 10;
+	line-height: inherit;
+
 	background-color: transparent;
 	border: none;
 	font-family: inherit;
 	color: inherit;
 	outline: none;
+}
 
-	line-height: 1.5em;
-	min-height: 1.5em;
-	padding: 0.5em 0.5em 0.5em 1.5em;
-	position: relative;
-	z-index: 10;
+.console_input_background {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	opacity: 0.7;
+	z-index: 0;
 }
 
 [data-before]::before {
@@ -74,23 +81,10 @@
 	opacity: 0.1;
 }
 
-.console_input_background {
-	line-height: 1.5em;
-	min-height: 1.5em;
-	padding: 0.5em 0.5em 0.5em 1.5em;
-	background-color: transparent;
-	border: none;
-	font-family: inherit;
-	color: inherit;
+[data-prompt] {
 	outline: none;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	color: inherit;
-	opacity: 0.7;
-	z-index: 0;
+	line-height: inherit;
+	font: inherit;
 }
 
 .console_input * {
@@ -156,9 +150,11 @@
 .match {
 	font-weight: bold;
 	background-color: rgba(261, 223, 15, 0.8);
+	border: 1px solid rgba(241, 203, 15, 0.8);
 	border-radius: 0.3em;
-	padding: 0.2em;
+	padding: 0.1em;
 	box-shadow: 1px 1px 3px rgba(40,40,40,0.4);
+	color: rgba(80, 40, 10, 1);
 }
 
 .console_suggestions {
@@ -177,6 +173,7 @@
 
 	background-color: rgba(250,250,250, 1);
 	color: rgba(5,5,5,1);
+	display: block;
 }
 
 .console_suggestions li {
@@ -189,6 +186,11 @@
 .console_suggestions .active {
 	background-color: rgba(50,50,50,0.1);
 	font-weight: bold;
+}
+
+.console_suggestion_arguments {
+	opacity: 0.5;
+	padding-left: 2em;
 }
 
 .console_env_info {
