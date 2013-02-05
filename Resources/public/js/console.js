@@ -10,7 +10,7 @@
 window.CoreSphereConsole = (function (window) {
     "use strict";
 
-    if (typeof window.jQuery === "undefied") {
+    if (typeof window.jQuery === "undefined") {
         window.alert('jQuery has not been loaded');
         return;
     }
@@ -33,9 +33,9 @@ window.CoreSphereConsole = (function (window) {
 
             htmlEscape : function (input) {
                 return input
-                    .split("&").join("&amp;")
-                    .split("<").join("&lt;")
-                    .split(">").join("&gt;");
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
             },
 
             regexpEscape : (function () {
@@ -432,13 +432,17 @@ window.CoreSphereConsole = (function (window) {
         })
 
             .done(function (json) {
-                var answer = json.output.replace(/^\s+|\s+$/g, ""),
-                    htmlcode = '<li><div class="console_log_input">'
-                                + helpers.htmlEscape(command)
+                var answer, htmlCode, cmd;
 
-                                + (json.environment !== this_console.options.environment ?
+                for (var i = 0, len = json.length; i < len; i++) {
+                    cmd = json[i];
+                    answer = cmd.output.replace(/^\s+|\s+$/g, "");
+                    htmlCode = '<li><div class="console_log_input">'
+                                + helpers.htmlEscape(cmd.command)
+
+                                + (cmd.environment !== this_console.options.environment ?
                                     '<span class="console_env_info">' + this_console.options.lang.environment + ': <strong>'
-                                    + json.environment
+                                    + cmd.environment
                                     + '</strong></span>'
                                     :
                                     ''
@@ -448,8 +452,8 @@ window.CoreSphereConsole = (function (window) {
                                 + (answer.length ? answer : this_console.options.lang.empty_response)
                                 + '</div></li>';
 
-
-                this_console.log.append(htmlcode);
+                    this_console.log.append(htmlCode);
+                }
             })
 
             .fail(function (xhr, msg, error) {
