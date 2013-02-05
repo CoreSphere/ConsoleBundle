@@ -33,9 +33,9 @@ window.CoreSphereConsole = (function (window) {
 
             htmlEscape : function (input) {
                 return input
-                    .replace("&", "&amp;")
-                    .replace("<", "&lt;")
-                    .replace(">", "&gt;");
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
             },
 
             regexpEscape : (function () {
