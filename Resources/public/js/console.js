@@ -442,6 +442,7 @@ window.CoreSphereConsole = (function (window) {
                     answer = cmd.output.replace(/^\s+|\s+$/g, "");
                     htmlCode = tplCmd
                         .replace("%command%", helpers.htmlEscape(cmd.command))
+                        .replace("%status%", 0 == cmd.error_code ? 'ok' : 'error')
                         .replace("%environment%", cmd.environment !== this_console.options.environment
                             ? tplEnv.replace("%label%", this_console.options.lang.environment).replace("%environment%", cmd.environment)
                             : ''
