@@ -11,7 +11,7 @@ window.CoreSphereConsole = (function (window) {
     "use strict";
 
     if (typeof window.jQuery === "undefied") {
-        window.alert('CoreSphere/ConsoleBundle: jQuery ist required but has not been loaded.');
+        window.alert('CoreSphere/ConsoleBundle: jQuery is required but has not been loaded.');
         return;
     }
     var $ = window.jQuery,
