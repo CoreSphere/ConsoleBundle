@@ -429,35 +429,37 @@ window.CoreSphereConsole = (function (window) {
             type: "POST",
             data: ({"command" : command}),
             dataType: "json"
-        })
+            })
 
             .done(function (json) {
-                var answer, htmlCode, cmd;
+                var answer, htmlCode, cmd,
+                    tplCmd = $(".console_command_template:eq(0)").text(),
+                    tplEnv = $(".console_environment_template:eq(0)").text();
+
 
                 for (var i = 0, len = json.length; i < len; i++) {
                     cmd = json[i];
                     answer = cmd.output.replace(/^\s+|\s+$/g, "");
-                    htmlCode = '<li><div class="console_log_input">'
-                                + helpers.htmlEscape(cmd.command)
-
-                                + (cmd.environment !== this_console.options.environment ?
-                                    '<span class="console_env_info">' + this_console.options.lang.environment + ': <strong>'
-                                    + cmd.environment
-                                    + '</strong></span>'
-                                    :
-                                    ''
-                               )
-
-                                + '</div><div class="console_log_output">'
-                                + (answer.length ? answer : this_console.options.lang.empty_response)
-                                + '</div></li>';
+                    htmlCode = tplCmd
+                        .replace("%command%", helpers.htmlEscape(cmd.command))
+                        .replace("%environment%", cmd.environment !== this_console.options.environment
+                            ? tplEnv.replace("%label%", this_console.options.lang.environment).replace("%environment%", cmd.environment)
+                            : ''
+                        )
+                        .replace("%output%", answer.length ? answer : this_console.options.lang.empty_response)
+                    ;
 
                     this_console.log.append(htmlCode);
                 }
             })
 
             .fail(function (xhr, msg, error) {
-                this_console.log.append('<li class="console_error"><div class="console_log_input">' + helpers.htmlEscape(command) + '</div><div class="console_log_output">[' + msg + '] ' + error + '</div></li>');
+                this_console.log.append(
+                    $(".console_environment_error:eq(0)").text()
+                        .replace("%message%", msg)
+                        .replace("%error%", error)
+                        .replace("%command%", helpers.htmlEscape(command))
+                );
             })
 
             .then(function () {

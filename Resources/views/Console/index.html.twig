@@ -25,6 +25,24 @@
         </div>
         <div class="console_suggestions"></div>
     </div>
+
+    <script type="text/html" class="console_command_template">
+        <li>
+            <div class="console_log_input">%command%%environment%</div>
+            <div class="console_log_output">%output%</div>
+        </li>
+    </script>
+
+    <script type="text/html" class="console_environment_template">
+        <span class="console_env_info">%label% : <strong>%environment%</strong></span>
+    </script>
+
+    <script type="text/html" class="console_error_template">
+        <li class="console_error">
+            <div class="console_log_input">%command%</div>
+            <div class="console_log_output">[%message%] %error%</div>
+        </li>
+    </script>
 {% endblock %}
 
 {% block javascripts %}
