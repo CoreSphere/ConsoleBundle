@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\StringInput;
 
 use CoreSphere\ConsoleBundle\Output\StringOutput;
 use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
+use Symfony\Component\HttpFoundation\Request;
 
 class ConsoleController extends Controller
 {
@@ -38,20 +39,36 @@ class ConsoleController extends Controller
         ));
     }
 
-    public function execAction($_format = 'json')
+    public function execAction(Request $request)
     {
         chdir($this->container->getParameter('kernel.root_dir') . '/..');
 
-        $request = $this->get('request');
-        $command = $request->request->get('command');
+        $commands = explode('|', $request->request->get('command'));
 
-        # Cache can not be warmed up as classes can not be redefined during one request
+        $cmds = array();
+        foreach ($commands as $command) {
+            $cmd = $this->executeCommand($command);
+            $cmds[] = $cmd;
+            if (0 !== $cmd['error_code']) {
+                break;
+            }
+        }
+
+        return $this->render(
+            'CoreSphereConsoleBundle:Console:result.' . $request->getRequestFormat() . '.twig',
+            array('commands' => $cmds)
+        );
+    }
+
+    protected function executeCommand($command)
+    {
+        // Cache can not be warmed up as classes can not be redefined during one request
         if(preg_match('/^cache:clear/', $command)) {
             $command .= ' --no-warmup';
         }
 
         $input = new StringInput($command);
-        $input->setInteractive(FALSE);
+        $input->setInteractive(false);
 
         $output = new StringOutput();
         $formatter = $output->getFormatter();
@@ -59,17 +76,18 @@ class ConsoleController extends Controller
         $output->setFormatter(new HtmlOutputFormatterDecorator($formatter));
 
         $application = $this->getApplication($input);
-        $application->setAutoExit(FALSE);
-        $application->run($input, $output);
+        $application->setAutoExit(false);
+        $errorCode = $application->run($input, $output);
 
-        return $this->render('CoreSphereConsoleBundle:Console:result.' . $_format . '.twig', array(
-            'input' => $command,
-            'output' => $output->getBuffer(),
+        return array(
+            'input'       => $command,
+            'output'      => $output->getBuffer(),
             'environment' => $this->getKernel($input)->getEnvironment(),
-        ));
+            'error_code'  => $errorCode
+        );
     }
 
-    protected function getApplication($input = NULL)
+    protected function getApplication($input = null)
     {
         $kernel = $this->getKernel($input);
 
@@ -77,11 +95,11 @@ class ConsoleController extends Controller
         return new Application($kernel);
     }
 
-    protected function getKernel($input = NULL)
+    protected function getKernel($input = null)
     {
         $currentKernel = $this->get('kernel');
 
-        if($input === NULL) {
+        if($input === null) {
             return $currentKernel;
         }
 
@@ -92,6 +110,8 @@ class ConsoleController extends Controller
             return $currentKernel;
         }
 
-        return new \AppKernel($env, $debug);
+        $kernelClass = new \ReflectionClass($currentKernel);
+
+        return $kernelClass->newInstance($env, $debug);
     }
 }

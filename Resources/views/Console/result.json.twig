@@ -1,7 +1,12 @@
 {% autoescape false %}
+[
+{% for command in commands %}
 {
-    "command" : {{ input|escape|json_encode }},
-    "output" : {{ output|json_encode }},
-    "environment": {{ environment|escape|json_encode }}
-}
+    "command" : {{ command.input|escape|json_encode }},
+    "output" : {{ command.output|json_encode }},
+    "environment": {{ command.environment|escape|json_encode }},
+    "error_code": {{ command.error_code|escape|json_encode }}
+}{{ loop.last ? '' : ',' }}
+{% endfor %}
+]
 {% endautoescape %}
