@@ -1,0 +1,37 @@
+{% extends 'CoreSphereConsoleBundle::base.html.twig'  %}
+
+{% block title %}{{ 'coresphere_console.headline.index'|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/coresphereconsole/css/console.css') }}" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    {%  include 'CoreSphereConsoleBundle:Console:terminal.html.twig' %}
+    {%  include 'CoreSphereConsoleBundle:Console:htmlTemplates.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/coresphereconsole/js/console.js') }}"></script>
+    <script>
+        jQuery(function () {
+            {% autoescape 'js' %}
+            var coresphere_console = new CoreSphereConsole(
+                jQuery("#coresphere_consolebundle_console"), {
+                "commands" : {{ commands|keys|json_encode|raw }}.sort(),
+                "post_path" : "{{ path('console_exec') }}",
+                "environment" : "{{ environment }}",
+                "lang" : {
+                    "loading" : "{{ 'coresphere_console.loading'|trans }}",
+                    "suggestion_head" : "{{ 'coresphere_console.suggestion_head'|trans }}",
+                    "environment" : "{{ 'coresphere_console.environment'|trans }}",
+                    "empty_response" : "{{ 'coresphere_console.empty_response'|trans }}",
+                    "welcome_message" : "{{ 'coresphere_console.welcome_message'|trans({'%command%': '<code class=\"console_command\">list</code>'}) }}"
+                }
+            });
+            {% endautoescape %}
+        });
+    </script>
+{% endblock %}

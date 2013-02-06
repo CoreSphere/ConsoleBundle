@@ -1,6 +1,6 @@
 console:
     pattern:  /console/
-    defaults: { _controller: CoreSphereConsoleBundle:Console:index }
+    defaults: { _controller: CoreSphereConsoleBundle:Console:console }
     requirements:
         _method: GET
 
