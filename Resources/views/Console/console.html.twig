@@ -29,6 +29,16 @@
                     "environment" : "{{ 'coresphere_console.environment'|trans }}",
                     "empty_response" : "{{ 'coresphere_console.empty_response'|trans }}",
                     "welcome_message" : "{{ 'coresphere_console.welcome_message'|trans({'%command%': '<code class=\"console_command\">list</code>'}) }}"
+                },
+                "templates" : {
+                    "error" : $("#template_console_error").text(),
+                    "command" : $("#template_console_command").text(),
+                    "environment" : $("#template_console_environment").text(),
+                    "suggestion_list" : $('#template_suggestion_list').text(),
+                    "loading" : $('#template_console_loading').text(),
+                    "suggestion_item_active" : $('#suggestion_item_active').text(),
+                    "suggestion_item" : $('#suggestion_item').text(),
+                    "highlight" : $('#template_console_highlight').text().trim()
                 }
             });
             {% endautoescape %}

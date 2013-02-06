@@ -1,5 +1,5 @@
 {% autoescape false %}
-[
+{"results" : [
 {% for command in commands %}
 {
     "command" : {{ command.input|escape|json_encode }},
@@ -8,5 +8,5 @@
     "error_code": {{ command.error_code|escape|json_encode }}
 }{{ loop.last ? '' : ',' }}
 {% endfor %}
-]
+] }
 {% endautoescape %}

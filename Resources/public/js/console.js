@@ -26,7 +26,9 @@ window.CoreSphereConsole = (function (window) {
                 }
             },
 
-            'active_suggestion_class' : 'active'
+            'active_suggestion_class' : 'active',
+
+            'command_splitter' : '|'
         },
 
         helpers = {
@@ -181,7 +183,7 @@ window.CoreSphereConsole = (function (window) {
                     e.preventDefault();
 
                     if (this_console.active_suggestion) {
-                        this_console.setValue(this_console.active_suggestion);
+                        this_console.setFocusedValue(this_console.active_suggestion);
                     }
 
                     this_console.focus();
@@ -190,7 +192,7 @@ window.CoreSphereConsole = (function (window) {
 
                     if (this_console.active_suggestion) {
                         if (val !== this_console.active_suggestion) {
-                            this_console.setValue(val = this_console.active_suggestion);
+                            this_console.setFocusedValue(val = this_console.active_suggestion);
                             this_console.clearSuggestions();
                             this_console.focus();
 
@@ -218,7 +220,7 @@ window.CoreSphereConsole = (function (window) {
 
                         this_console.log.find('li:not(.console_loading) .console_log_output').last().hide();
 
-                        this_console.log.append($('#template_console_loading').text()
+                        this_console.log.append(this_console.options.templates.loading
                             .replace('%command%', helpers.htmlEscape(val))
                             .replace('%message%', this_console.options.lang.loading)
                         );
@@ -278,7 +280,7 @@ window.CoreSphereConsole = (function (window) {
                     if (this_console.suggestion_box.find('li').size()) {
                         this_console.suggestion_box.text('');
                     } else {
-                        this_console.setValue('');
+                        this_console.popValue();
                     }
                     enable_suggestions = false;
                     this_console.focus();
@@ -299,19 +301,23 @@ window.CoreSphereConsole = (function (window) {
                         any = 0,
                         htmlCode,
                         index,
-                        j;
+                        j,
+                        tpl,
+                        suggestion,
+                        commands = val.split(this_console.options.command_splitter),
+                        currentCommand = commands[commands.length-1];
 
 
-                    if (val.length) {
+                    if (currentCommand.length) {
                         for (index = 0, j = this_console.options.commands.length; index < j; index++) {
-                            if (new RegExp('^' + helpers.regexpEscape(val)).test(this_console.options.commands[index])) {
+                            if (new RegExp('^' + helpers.regexpEscape(currentCommand)).test(this_console.options.commands[index])) {
                                 best_suggestions.push(this_console.options.commands[index]);
                                 any += 1;
-                            } else if (new RegExp(helpers.regexpEscape(val)).test(this_console.options.commands[index])) {
+                            } else if (new RegExp(helpers.regexpEscape(currentCommand)).test(this_console.options.commands[index])) {
                                 other_suggestions.push(this_console.options.commands[index]);
                                 any += 1;
                             }
-                            if (this_console.options.commands[index] === val) {
+                            if (this_console.options.commands[index] === currentCommand) {
                                 any -= 1;
                             }
                         }
@@ -330,11 +336,18 @@ window.CoreSphereConsole = (function (window) {
                         htmlCode = '';
 
                         for (index = 0, j = suggestions.length; index < j; index++) {
-                            htmlCode += suggestions[index] === this_console.active_suggestion ? '<li class="active">' : '<li>';
-                            htmlCode += suggestions[index].replace(val, '<strong class="match">' + val + '</strong>') + '</li>';
+                            if(suggestions[index] === this_console.active_suggestion) {
+                                tpl = this_console.options.templates.suggestion_item_active;
+                                suggestion = suggestions[index].replace(currentCommand, this_console.options.templates.highlight.replace('%word%', currentCommand));
+                                tpl = tpl.replace('%state%', this_console.options.active_suggestion_class);
+                            } else {
+                                tpl = this_console.options.templates.suggestion_item;
+                                suggestion = suggestions[index];
+                            }
+                            htmlCode += tpl.replace("%suggestion%", suggestion);
                         }
 
-                        htmlCode = $('#template_suggestion_list').text()
+                        htmlCode = this_console.options.templates.suggestion_list
                             .replace('%head%', this_console.options.lang.suggestion_head)
                             .replace('%suggestions%', htmlCode)
                         ;
@@ -400,18 +413,51 @@ window.CoreSphereConsole = (function (window) {
         return this.input.text(val);
     };
 
+    Console.prototype.popValue = function () {
+        var commands = this.getCommands();
+        commands.pop();
+
+        return this.setValue( commands.join(this.options.command_splitter) );
+    };
+
+    Console.prototype.setFocusedValue = function (val) {
+        var commands = this.getCommands(),
+            i = this.getCurrentCommand();
+
+        commands[i] = val;
+        this.setActiveSuggestion(null);
+        return this.input.text(commands.join(this.options.command_splitter));
+    };
+
+    Console.prototype.getCommands = function() {
+        var oldValue = this.getValue(),
+            commands = oldValue.split(this.options.command_splitter);
+
+        return commands;
+    };
+
+    Console.prototype.getCurrentCommand = function() {
+        return this.getCommands().length - 1;
+    };
+
     Console.prototype.getActiveSuggestion = function () {
         return this.active_suggestion;
     };
 
     Console.prototype.setActiveSuggestion = function(suggestion) {
         this.active_suggestion = suggestion;
-        this.input_background.text(this.active_suggestion || '');
 
-        if(suggestion) {
-            this.input.attr('data-before', suggestion.substr(0, suggestion.indexOf(this.input.text())));
+        if(this.getCommands().length < 2) {
+            this.input_background.text(this.active_suggestion || '');
+
+            if(suggestion) {
+                this.input.attr('data-before', suggestion.substr(0, suggestion.indexOf(this.input.text())));
+            } else {
+                this.input.attr('data-before', '');
+            }
         } else {
             this.input.attr('data-before', '');
+            this.input_background.text('');
         }
     };
 
@@ -422,6 +468,45 @@ window.CoreSphereConsole = (function (window) {
 
     Console.prototype.welcome = function () {
         this.log.append('<li>' + this.options.lang.welcome_message + '</li>');
+    };
+
+    Console.prototype.commandComplete = function (response) {
+        var answer, htmlCode, cmd,
+            results = response.results,
+            tplCmd = this.options.templates.command,
+            tplEnv = this.options.templates.environment;
+
+        for (var i = 0, len = results.length; i < len; i++) {
+            cmd = results[i];
+            answer = cmd.output.replace(/^\s+|\s+$/g, "");
+            htmlCode = tplCmd
+                .replace("%command%", helpers.htmlEscape(cmd.command))
+                .replace("%status%", 0 == cmd.error_code ? 'ok' : 'error')
+                .replace("%environment%", cmd.environment !== this.options.environment
+                    ? tplEnv.replace("%label%", this.options.lang.environment).replace("%environment%", cmd.environment)
+                    : ''
+                )
+                .replace("%output%", answer.length ? answer : this.options.lang.empty_response)
+            ;
+
+            this.log.append(htmlCode);
+        }
+    };
+
+    Console.prototype.commandError = function (xhr, msg, error) {
+        this.log.append(
+            this.options.templates.error
+                .replace("%message%", msg)
+                .replace("%error%", error)
+                .replace("%command%", helpers.htmlEscape(command))
+        );
+    };
+
+    Console.prototype.commandAfter = function () {
+        this.log.find('.console_loading').remove();
+        this.unlock();
+        this.log_container.scrollTop(this.log.outerHeight());
+        this.focus();
     };
 
     Console.prototype.sendCommand = function (command) {
@@ -435,44 +520,11 @@ window.CoreSphereConsole = (function (window) {
             dataType: "json"
             })
 
-            .done(function (json) {
-                var answer, htmlCode, cmd,
-                    tplCmd = $("#template_console_command").text(),
-                    tplEnv = $("#template_console_environment").text();
+            .done(this.commandComplete.bind(this))
 
+            .fail(this.commandError.bind(this))
 
-                for (var i = 0, len = json.length; i < len; i++) {
-                    cmd = json[i];
-                    answer = cmd.output.replace(/^\s+|\s+$/g, "");
-                    htmlCode = tplCmd
-                        .replace("%command%", helpers.htmlEscape(cmd.command))
-                        .replace("%status%", 0 == cmd.error_code ? 'ok' : 'error')
-                        .replace("%environment%", cmd.environment !== this_console.options.environment
-                            ? tplEnv.replace("%label%", this_console.options.lang.environment).replace("%environment%", cmd.environment)
-                            : ''
-                        )
-                        .replace("%output%", answer.length ? answer : this_console.options.lang.empty_response)
-                    ;
-
-                    this_console.log.append(htmlCode);
-                }
-            })
-
-            .fail(function (xhr, msg, error) {
-                this_console.log.append(
-                    $("#template_console_error").text()
-                        .replace("%message%", msg)
-                        .replace("%error%", error)
-                        .replace("%command%", helpers.htmlEscape(command))
-                );
-            })
-
-            .then(function () {
-                this_console.log.find('.console_loading').remove();
-                this_console.unlock();
-                this_console.log_container.scrollTop(this_console.log.outerHeight());
-                this_console.focus();
-            });
+            .then(this.commandAfter.bind(this));
     };
 
     return Console;
