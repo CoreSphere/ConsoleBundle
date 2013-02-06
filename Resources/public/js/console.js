@@ -225,7 +225,7 @@ window.CoreSphereConsole = (function (window) {
                             .replace('%message%', this_console.options.lang.loading)
                         );
 
-                        this_console.sendCommand(command);
+                        this_console.sendCommands(command.split(this_console.options.command_splitter));
                     } else {
                         this_console.focus();
                     }
@@ -509,14 +509,14 @@ window.CoreSphereConsole = (function (window) {
         this.focus();
     };
 
-    Console.prototype.sendCommand = function (command) {
+    Console.prototype.sendCommands = function (commands) {
 
         var this_console = this;
 
         return $.ajax({
             url: this.options.post_path,
             type: "POST",
-            data: ({"command" : command}),
+            data: ({"commands" : commands}),
             dataType: "json"
             })
 

@@ -43,7 +43,7 @@ class ConsoleController extends Controller
     {
         chdir($this->container->getParameter('kernel.root_dir') . '/..');
 
-        $commands = explode('|', $request->request->get('command'));
+        $commands = $request->request->get('commands');
 
         $cmds = array();
         foreach ($commands as $command) {
@@ -90,7 +90,6 @@ class ConsoleController extends Controller
     protected function getApplication($input = null)
     {
         $kernel = $this->getKernel($input);
-
 
         return new Application($kernel);
     }
