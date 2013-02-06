@@ -20,7 +20,7 @@
             {% autoescape 'js' %}
             var coresphere_console = new CoreSphereConsole(
                 jQuery("#coresphere_consolebundle_console"), {
-                "commands" : {% include "CoreSphereConsoleBundle:Console:commandList.json.twig" %},
+                "commands" : {{ commands|keys|json_encode|raw }}.sort(),
                 "post_path" : "{{ path('console_exec') }}",
                 "environment" : "{{ environment }}",
                 "lang" : {
