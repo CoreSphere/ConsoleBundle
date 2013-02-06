@@ -1,0 +1,5 @@
+services:
+    coresphere_console.toolbar:
+        class: CoreSphere\ConsoleBundle\DataCollector\DataCollector
+        tags:
+            - { name: data_collector, template: "CoreSphereConsoleBundle:Toolbar:toolbar", id: "coresphere_console" }
