@@ -155,7 +155,7 @@ window.CoreSphereConsole = (function (window) {
             .on('click.coresphere_console', '.console_suggestions li', function (e) {
                 e.stopPropagation();
                 var $this = $(this);
-                this_console.setValue($this.text());
+                this_console.setCurrentCommand($this.text());
                 this_console.clearSuggestions();
                 this_console.focus();
             })
@@ -183,7 +183,7 @@ window.CoreSphereConsole = (function (window) {
                     e.preventDefault();
 
                     if (this_console.active_suggestion) {
-                        this_console.setFocusedValue(this_console.active_suggestion);
+                        this_console.setCurrentCommand(this_console.active_suggestion);
                     }
 
                     this_console.focus();
@@ -192,7 +192,7 @@ window.CoreSphereConsole = (function (window) {
 
                     if (this_console.active_suggestion) {
                         if (val !== this_console.active_suggestion) {
-                            this_console.setFocusedValue(val = this_console.active_suggestion);
+                            this_console.setCurrentCommand(val = this_console.active_suggestion);
                             this_console.clearSuggestions();
                             this_console.focus();
 
@@ -372,10 +372,8 @@ window.CoreSphereConsole = (function (window) {
                 var $target = $(e.target);
                 this_console.focus();
                 if ($target.is('.console_input')
-                        || $target.is('.console_suggestions')
-                        || $target.is('.console_suggestions li')
+                        || $target.closest('.console_suggestions').size()
                         ) {
-
                     return;
                 }
                 this_console.suggestion_box.hide();
@@ -420,7 +418,7 @@ window.CoreSphereConsole = (function (window) {
         return this.setValue( commands.join(this.options.command_splitter) );
     };
 
-    Console.prototype.setFocusedValue = function (val) {
+    Console.prototype.setCurrentCommand = function (val) {
         var commands = this.getCommands(),
             i = this.getCurrentCommand();
 
