@@ -1,7 +1,7 @@
 ConsoleBundle
 =============
 
-This bundle allows you accessing the symfony2 console via your browser.
+This bundle allows you accessing the Symfony2 console via your browser.
 
 Features
 --------
@@ -11,11 +11,17 @@ Features
  * Local command history (localStorage)
  * ```cache:clear``` works
 
-
 Installation
 ------------
 
  1. Add ```coresphere/console-bundle``` to your composer.json file and run ```composer.phar install```
+
+        // composer.json
+        "require": {
+            ...
+            "coresphere/console-bundle": "dev-master",
+            ...
+        }
 
  2. Add the following route to your routing configuration
 
@@ -33,6 +39,7 @@ Installation
             );
 
             if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+                // ...
                 $bundles[] = new CoreSphere\ConsoleBundle\CoreSphereConsoleBundle();
             }
 
@@ -53,13 +60,11 @@ Preview
 
 <img src="http://static.laszlokorte.de/github/coresphere_console.png" width="900" alt="Screenshot" />
 
-
 Dependencies
 ------------
 
  * jQuery
  * Twig
- * AsseticBundle
 
 Compatibility
 -------------
