@@ -102,8 +102,6 @@ window.CoreSphereConsole = (function (window) {
             this.welcome();
         };
 
-
-
     Console.prototype.focus = function () {
         helpers.focusInput(this.input[0]);
     };
@@ -433,8 +431,8 @@ window.CoreSphereConsole = (function (window) {
 
             .done(function (json) {
                 var answer, htmlCode, cmd,
-                    tplCmd = $(".console_command_template:eq(0)").text(),
-                    tplEnv = $(".console_environment_template:eq(0)").text();
+                    tplCmd = $("#template_console_command").text(),
+                    tplEnv = $("#template_console_environment").text();
 
 
                 for (var i = 0, len = json.length; i < len; i++) {
@@ -456,7 +454,7 @@ window.CoreSphereConsole = (function (window) {
 
             .fail(function (xhr, msg, error) {
                 this_console.log.append(
-                    $(".console_environment_error:eq(0)").text()
+                    $("#template_console_error").text()
                         .replace("%message%", msg)
                         .replace("%error%", error)
                         .replace("%command%", helpers.htmlEscape(command))

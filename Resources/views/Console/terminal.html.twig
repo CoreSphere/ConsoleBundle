@@ -1,0 +1,17 @@
+<h1>{{ 'coresphere_console.headline.index'|trans }}</h1>
+<div id="coresphere_consolebundle_console" class="console">
+    <div class="console_info_bar">
+        {{ 'coresphere_console.working_directory'|trans }}: <strong>{{ working_dir }}</strong>
+        <span class="console_env_info">{{ 'coresphere_console.environment'|trans }}: <strong>{{ environment }}</strong></span>
+    </div>
+    <div class="console_log_container">
+        <ol class="console_log">
+
+        </ol>
+    </div>
+    <div class="console_prompt">
+        <div contenteditable="true" class="console_input"></div>
+        <div class="console_input_background"></div>
+    </div>
+    <div class="console_suggestions"></div>
+</div>
