@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ConsoleController extends Controller
 {
-    public function indexAction()
+    public function consoleAction()
     {
         chdir($this->container->getParameter('kernel.root_dir') . '/..');
 
@@ -32,7 +32,7 @@ class ConsoleController extends Controller
             $bundle->registerCommands($application);
         }
 
-        return $this->render('CoreSphereConsoleBundle:Console:index.html.twig', array(
+        return $this->render('CoreSphereConsoleBundle:Console:console.html.twig', array(
             'working_dir' => getcwd(),
             'environment' => $kernel->getEnvironment(),
             'commands' => $application->all(),

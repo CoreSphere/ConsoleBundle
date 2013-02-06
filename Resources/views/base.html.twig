@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title 'CoreSphere Console' %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('bundles/coresphereconsole/css/base.css') }}" type="text/css" />
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block body '' %}
+        {% block javascripts %}
+            {# Load jQuery from Google CDN with a local fallback when not laded yet #}
+            <script>
+            window.jQuery || document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"><\/script>')
+            </script>
+            <script>
+            window.jQuery || document.write("<script src=\"{{ asset('bundles/coresphereconsole/js/jquery-1.8.3.min.js') }}\"><\/script>");
+            </script>
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,29 @@
+<script type="text/html" id="template_console_command">
+    <li>
+        <div class="console_log_input console_%status%">%command%%environment%</div>
+        <div class="console_log_output">%output%</div>
+    </li>
+</script>
+
+<script type="text/html" id="template_console_environment">
+    <span class="console_env_info">%label%: <strong>%environment%</strong></span>
+</script>
+
+<script type="text/html" id="template_console_error">
+    <li class="console_error">
+        <div class="console_log_input">%command%</div>
+        <div class="console_log_output">[%message%] %error%</div>
+    </li>
+</script>
+
+<script type="text/html" id="template_console_loading">
+    <li class="console_loading">
+        <div class="console_log_input">%command%</div>
+        <div class="console_log_output">%message%</div>
+    </li>
+</script>
+
+<script type="text/html" id="template_suggestion_list">
+    <h2 class="console_suggestion_head">%head%</h2>
+    <ul>%suggestions%</ul>
+</script>

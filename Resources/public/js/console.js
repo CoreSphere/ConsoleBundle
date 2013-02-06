@@ -102,8 +102,6 @@ window.CoreSphereConsole = (function (window) {
             this.welcome();
         };
 
-
-
     Console.prototype.focus = function () {
         helpers.focusInput(this.input[0]);
     };
@@ -220,7 +218,10 @@ window.CoreSphereConsole = (function (window) {
 
                         this_console.log.find('li:not(.console_loading) .console_log_output').last().hide();
 
-                        this_console.log.append('<li class="console_loading"><div class="console_log_input">' + helpers.htmlEscape(val) + '</div><div class="console_log_output">' + this_console.options.lang.loading + '</div></li>');
+                        this_console.log.append($('#template_console_loading').text()
+                            .replace('%command%', helpers.htmlEscape(val))
+                            .replace('%message%', this_console.options.lang.loading)
+                        );
 
                         this_console.sendCommand(command);
                     } else {
@@ -296,13 +297,13 @@ window.CoreSphereConsole = (function (window) {
                         other_suggestions = [],
                         suggestions,
                         any = 0,
-                        htmlcode,
+                        htmlCode,
                         index,
                         j;
 
 
                     if (val.length) {
-                        for (index = 0, j = this_console.options.commands.length; index < j; index += 1) {
+                        for (index = 0, j = this_console.options.commands.length; index < j; index++) {
                             if (new RegExp('^' + helpers.regexpEscape(val)).test(this_console.options.commands[index])) {
                                 best_suggestions.push(this_console.options.commands[index]);
                                 any += 1;
@@ -325,17 +326,20 @@ window.CoreSphereConsole = (function (window) {
                             this_console.setActiveSuggestion(this_console.active_suggestion);
                         }
 
-
                         enable_suggestions = false;
+                        htmlCode = '';
 
-                        htmlcode  = '<h2 class="console_suggestion_head">' + this_console.options.lang.suggestion_head + '</h2>';
-                        htmlcode += '<ul>';
-                        for (index = 0, j = suggestions.length; index < j; index += 1) {
-                            htmlcode += suggestions[index] === this_console.active_suggestion ? '<li class="active">' : '<li>';
-                            htmlcode += suggestions[index].replace(val, '<strong class="match">' + val + '</strong>') + '</li>';
+                        for (index = 0, j = suggestions.length; index < j; index++) {
+                            htmlCode += suggestions[index] === this_console.active_suggestion ? '<li class="active">' : '<li>';
+                            htmlCode += suggestions[index].replace(val, '<strong class="match">' + val + '</strong>') + '</li>';
                         }
-                        htmlcode += '</ul>';
-                        this_console.suggestion_box.html(htmlcode);
+
+                        htmlCode = $('#template_suggestion_list').text()
+                            .replace('%head%', this_console.options.lang.suggestion_head)
+                            .replace('%suggestions%', htmlCode)
+                        ;
+
+                        this_console.suggestion_box.html(htmlCode);
                     } else {
                         this_console.setActiveSuggestion(null);
 
@@ -429,35 +433,38 @@ window.CoreSphereConsole = (function (window) {
             type: "POST",
             data: ({"command" : command}),
             dataType: "json"
-        })
+            })
 
             .done(function (json) {
-                var answer, htmlCode, cmd;
+                var answer, htmlCode, cmd,
+                    tplCmd = $("#template_console_command").text(),
+                    tplEnv = $("#template_console_environment").text();
+
 
                 for (var i = 0, len = json.length; i < len; i++) {
                     cmd = json[i];
                     answer = cmd.output.replace(/^\s+|\s+$/g, "");
-                    htmlCode = '<li><div class="console_log_input">'
-                                + helpers.htmlEscape(cmd.command)
-
-                                + (cmd.environment !== this_console.options.environment ?
-                                    '<span class="console_env_info">' + this_console.options.lang.environment + ': <strong>'
-                                    + cmd.environment
-                                    + '</strong></span>'
-                                    :
-                                    ''
-                               )
-
-                                + '</div><div class="console_log_output">'
-                                + (answer.length ? answer : this_console.options.lang.empty_response)
-                                + '</div></li>';
+                    htmlCode = tplCmd
+                        .replace("%command%", helpers.htmlEscape(cmd.command))
+                        .replace("%status%", 0 == cmd.error_code ? 'ok' : 'error')
+                        .replace("%environment%", cmd.environment !== this_console.options.environment
+                            ? tplEnv.replace("%label%", this_console.options.lang.environment).replace("%environment%", cmd.environment)
+                            : ''
+                        )
+                        .replace("%output%", answer.length ? answer : this_console.options.lang.empty_response)
+                    ;
 
                     this_console.log.append(htmlCode);
                 }
             })
 
             .fail(function (xhr, msg, error) {
-                this_console.log.append('<li class="console_error"><div class="console_log_input">' + helpers.htmlEscape(command) + '</div><div class="console_log_output">[' + msg + '] ' + error + '</div></li>');
+                this_console.log.append(
+                    $("#template_console_error").text()
+                        .replace("%message%", msg)
+                        .replace("%error%", error)
+                        .replace("%command%", helpers.htmlEscape(command))
+                );
             })
 
             .then(function () {
