@@ -1,4 +1,4 @@
-{% extends 'CoreSphereConsoleBundle:Console:layout.html.twig'  %}
+{% extends 'CoreSphereConsoleBundle::base.html.twig'  %}
 
 {% block title %}{{ 'coresphere_console.headline.index'|trans }}{% endblock %}
 
@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('bundles/coresphereconsole/css/console.css') }}" type="text/css" />
 {% endblock %}
 
-{% block content %}
+{% block body %}
     <h1>{{ 'coresphere_console.headline.index'|trans }}</h1>
     <div id="coresphere_consolebundle_console" class="console">
         <div class="console_info_bar">
@@ -46,25 +46,25 @@
 {% endblock %}
 
 {% block javascripts %}
-{{ parent() }}
-<script src="{{ asset('bundles/coresphereconsole/js/console.js') }}"></script>
-<script>
-    jQuery(function () {
-        {% autoescape 'js' %}
-        var coresphere_console = new CoreSphereConsole(
-            jQuery("#coresphere_consolebundle_console"), {
-            "commands" : {% include "CoreSphereConsoleBundle:Console:command_list.json.twig" %},
-            "post_path" : "{{ path('console_exec') }}",
-            "environment" : "{{ environment }}",
-            "lang" : {
-                "loading" : "{{ 'coresphere_console.loading'|trans }}",
-                "suggestion_head" : "{{ 'coresphere_console.suggestion_head'|trans }}",
-                "environment" : "{{ 'coresphere_console.environment'|trans }}",
-                "empty_response" : "{{ 'coresphere_console.empty_response'|trans }}",
-                "welcome_message" : "{{ 'coresphere_console.welcome_message'|trans({'%command%': '<code class=\"console_command\">list</code>'}) }}"
-            }
+    {{ parent() }}
+    <script src="{{ asset('bundles/coresphereconsole/js/console.js') }}"></script>
+    <script>
+        jQuery(function () {
+            {% autoescape 'js' %}
+            var coresphere_console = new CoreSphereConsole(
+                jQuery("#coresphere_consolebundle_console"), {
+                "commands" : {% include "CoreSphereConsoleBundle:Console:commandList.json.twig" %},
+                "post_path" : "{{ path('console_exec') }}",
+                "environment" : "{{ environment }}",
+                "lang" : {
+                    "loading" : "{{ 'coresphere_console.loading'|trans }}",
+                    "suggestion_head" : "{{ 'coresphere_console.suggestion_head'|trans }}",
+                    "environment" : "{{ 'coresphere_console.environment'|trans }}",
+                    "empty_response" : "{{ 'coresphere_console.empty_response'|trans }}",
+                    "welcome_message" : "{{ 'coresphere_console.welcome_message'|trans({'%command%': '<code class=\"console_command\">list</code>'}) }}"
+                }
+            });
+            {% endautoescape %}
         });
-        {% endautoescape %}
-    });
-</script>
+    </script>
 {% endblock %}
