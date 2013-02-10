@@ -313,8 +313,11 @@ window.CoreSphereConsole = (function (window) {
                     if (e.which === keys.up) {
                         if (current_suggestions.size()) {
                             next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).prev() : current_suggestions.last();
-                            next = next.size() ? next : current_suggestions.last();
-                            this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                            if(next.size()) {
+                                this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                            } else {
+                                this_console.setActiveSuggestion(null);
+                            }
                         } else {
                             this_console.history_position -= 1;
                             if (this_console.history_position < 0) {
@@ -328,9 +331,11 @@ window.CoreSphereConsole = (function (window) {
 
                         if (current_suggestions.size()) {
                             next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).next() : current_suggestions.first();
-                            next = next.size() ? next : current_suggestions.first();
-
-                            this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                            if(next.size()) {
+                                this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                            } else {
+                                this_console.setActiveSuggestion(null);
+                            }
                         } else {
                             this_console.history_position += 1;
                             if (this_console.history_position >= this_console.history.length) {
@@ -376,21 +381,38 @@ window.CoreSphereConsole = (function (window) {
                         index,
                         j,
                         tpl,
+                        com,
                         suggestion,
                         commands = val.split(this_console.options.command_splitter),
-                        currentCommand = commands[commands.length-1];
+                        currentCommand = commands[commands.length-1],
+                        ambiguousNamespace = false,
+                        prevNamespace = null,
+                        ns,
+                        incomplete = false;
 
 
                     if (currentCommand.length) {
                         for (index = 0, j = this_console.options.commands.length; index < j; index++) {
-                            if (new RegExp('^' + helpers.regexpEscape(currentCommand)).test(this_console.options.commands[index])) {
-                                best_suggestions.push(this_console.options.commands[index]);
+                            com = this_console.options.commands[index];
+                            if (new RegExp('^' + helpers.regexpEscape(currentCommand)).test(com)) {
+                                best_suggestions.push(com);
                                 any += 1;
-                            } else if (new RegExp(helpers.regexpEscape(currentCommand)).test(this_console.options.commands[index])) {
-                                other_suggestions.push(this_console.options.commands[index]);
+                                ns = this_console.options.commands[index].split(':');
+                                while(ns.length > currentCommand.split(':').length) {
+                                    ns.pop();
+                                    incomplete = true;
+                                }
+                                ns = ns.join(':');
+                                ambiguousNamespace = ambiguousNamespace ||
+                                                     currentCommand.length > ns.length ||
+                                                     prevNamespace!==null &&
+                                                     prevNamespace != ns;
+                                prevNamespace = ns;
+                            } else if (new RegExp(helpers.regexpEscape(currentCommand)).test(com)) {
+                                other_suggestions.push(com);
                                 any += 1;
                             }
-                            if (this_console.options.commands[index] === currentCommand) {
+                            if (com === currentCommand) {
                                 any -= 1;
                             }
                         }
@@ -399,7 +421,9 @@ window.CoreSphereConsole = (function (window) {
                     }
 
                     if (any) {
-                        if (!this_console.active_suggestion || suggestions.indexOf(this_console.active_suggestion) < 0) {
+                        if(!ambiguousNamespace && prevNamespace && incomplete) {
+                            this_console.setActiveSuggestion(prevNamespace + ':');
+                        } else if (!this_console.active_suggestion || suggestions.indexOf(this_console.active_suggestion) < 0) {
                             this_console.setActiveSuggestion(suggestions[0]);
                         } else {
                             this_console.setActiveSuggestion(this_console.active_suggestion);
