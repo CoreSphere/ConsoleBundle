@@ -40,6 +40,10 @@ window.CoreSphereConsole = (function (window) {
                     .replace(/>/g, '&gt;');
             },
 
+            isInteger : function(n) {
+              return n===+n && n===(n|0);
+            },
+
             regexpEscape : (function () {
                 var regexp = new RegExp(
                     '(\\' + [
@@ -86,6 +90,10 @@ window.CoreSphereConsole = (function (window) {
             'down': 40
         },
 
+        ConsoleBackend = function() {
+
+        },
+
         Console = function (base_element, options) {
             this.options = $.extend(default_options, options);
 
@@ -103,6 +111,71 @@ window.CoreSphereConsole = (function (window) {
             this.focus();
             this.welcome();
         };
+
+    ConsoleBackend.prototype.knownCommands = [];
+    ConsoleBackend.prototype.history = [];
+    ConsoleBackend.prototype.historyPosition = 0;
+    ConsoleBackend.prototype.currentInput = [];
+    ConsoleBackend.prototype.currentSuggestions = [];
+    ConsoleBackend.prototype.focusedSuggestion = 0;
+
+    ConsoleBackend.prototype.init = function() {
+        var that = this;
+
+        that.knownCommands = [];
+        that.history = [];
+        that.historyPosition = 0;
+        that.currentInput = [];
+        that.currentSuggestions = [];
+        that.focusedSuggestion = 0;
+    };
+
+    ConsoleBackend.prototype.focusSuggestionAt = function(idx) {
+        var that = this;
+
+        if(!isInteger(idx)) {
+            throw "Index to be focused must be an integer.";
+        }
+        if(idx<0 || idx+1 > that.currentSuggestions.length) {
+            throw "Suggestion focus is out of range.";
+        }
+
+        that.focusedSuggestion = idx;
+    };
+
+    ConsoleBackend.prototype.focusNextSuggestion = function() {
+        var that = this
+          , mod = that.currentSuggestions.length;
+
+        that.focusedSuggestion = (that.focusedSuggestion+1)%mod;
+    };
+
+    ConsoleBackend.prototype.focusPrevSuggestion = function() {
+        var that = this
+          , mod = that.currentSuggestions.length;
+
+        that.focusedSuggestion = (that.focusedSuggestion+mod-1)%mod;
+    };
+
+    ConsoleBackend.prototype.pushHistory = function(value) {
+        var that = this;
+
+        that.history.push(value);
+    };
+
+    ConsoleBackend.prototype.clearHistory = function() {
+        var that = this;
+
+        that.history.length = 0;
+    };
+
+    ConsoleBackend.prototype.setRawInput = function() {
+        var that = this;
+    };
+
+    ConsoleBackend.prototype.setInputList = function() {
+        var that = this;
+    };
 
     Console.prototype.focus = function () {
         helpers.focusInput(this.input[0]);
@@ -336,13 +409,12 @@ window.CoreSphereConsole = (function (window) {
                         htmlCode = '';
 
                         for (index = 0, j = suggestions.length; index < j; index++) {
+                            suggestion = suggestions[index].replace(currentCommand, this_console.options.templates.highlight.replace('%word%', currentCommand));
                             if(suggestions[index] === this_console.active_suggestion) {
                                 tpl = this_console.options.templates.suggestion_item_active;
-                                suggestion = suggestions[index].replace(currentCommand, this_console.options.templates.highlight.replace('%word%', currentCommand));
                                 tpl = tpl.replace('%state%', this_console.options.active_suggestion_class);
                             } else {
                                 tpl = this_console.options.templates.suggestion_item;
-                                suggestion = suggestions[index];
                             }
                             htmlCode += tpl.replace("%suggestion%", suggestion);
                         }
