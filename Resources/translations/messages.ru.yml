@@ -1,0 +1,9 @@
+coresphere_console:
+    headline:
+        index: "Консоль"
+    working_directory: 'Рабочая директория'
+    environment: 'Окружение'
+    welcome_message: 'Наберите %command% для списка всех доступных комманд.'
+    loading: 'Загрузка...'
+    suggestion_head: 'Может вы имели ввиду:'
+    empty_response: 'Завершено!'
