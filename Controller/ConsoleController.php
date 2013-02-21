@@ -77,11 +77,19 @@ class ConsoleController extends Controller
 
         $application = $this->getApplication($input);
         $application->setAutoExit(false);
+
+        // Some commands (i.e. doctrine:query:dql) dump things out instead of returning a value
+        ob_start();
         $errorCode = $application->run($input, $output);
+        // So, if the returned output is empty
+        if (!$result = $output->getBuffer()) {
+          $result = ob_get_contents(); // We replace it by the catched output
+        }
+        ob_end_clean();
 
         return array(
             'input'       => $command,
-            'output'      => $output->getBuffer(),
+            'output'      => $result,
             'environment' => $this->getKernel($input)->getEnvironment(),
             'error_code'  => $errorCode
         );
