@@ -14,12 +14,12 @@ Features
 Installation
 ------------
 
- 1. Add ```coresphere/console-bundle``` to your composer.json file and run ```composer.phar install```
+ 1. Add ```coresphere/console-bundle``` to your composer.json file and run ```composer.phar update```
 
         // composer.json
         "require": {
             ...
-            "coresphere/console-bundle": "dev-master",
+            "winzou/console-bundle": "dev-master",
             ...
         }
 
