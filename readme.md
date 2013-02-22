@@ -19,7 +19,7 @@ Installation
         // composer.json
         "require": {
             ...
-            "winzou/console-bundle": "dev-master",
+            "winzou/console-bundle": "1.*",
             ...
         }
 
