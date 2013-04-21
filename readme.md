@@ -26,8 +26,9 @@ Installation
  2. Add the following route to your routing configuration
 
         #app/config/routing_dev.yml
-        console:
+        _console:
             resource: "@CoreSphereConsoleBundle/Resources/config/routing.yml"
+            prefix: /_console
 
  3. Register the bundle in you AppKernel in the development section
 
