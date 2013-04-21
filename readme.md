@@ -19,7 +19,7 @@ Installation
         // composer.json
         "require": {
             ...
-            "coresphere/console-bundle": "dev-master",
+            "coresphere/console-bundle": "0.1.0",
             ...
         }
 
