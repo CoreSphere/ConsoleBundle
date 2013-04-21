@@ -592,7 +592,7 @@ window.CoreSphereConsole = (function (window) {
             this.options.templates.error
                 .replace("%message%", msg)
                 .replace("%error%", error)
-                .replace("%command%", helpers.htmlEscape(command))
+                .replace("%command%", '')
         );
     };
 
@@ -618,7 +618,7 @@ window.CoreSphereConsole = (function (window) {
 
             .fail(this.commandError.bind(this))
 
-            .then(this.commandAfter.bind(this));
+            .always(this.commandAfter.bind(this));
     };
 
     return Console;
