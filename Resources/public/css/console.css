@@ -21,7 +21,7 @@
 }
 
 .console_log_container {
-	height: 15em;
+	height: 25em;
 	overflow: auto;
 	overflow-y: scroll;
 }
