@@ -243,7 +243,8 @@ window.CoreSphereConsole = (function (window) {
                     filter,
                     current_suggestions,
                     active_suggestion,
-                    next;
+                    next,
+                    scrollToEl;
 
                 if (this_console.isLocked()) {
                     return;
@@ -306,6 +307,7 @@ window.CoreSphereConsole = (function (window) {
                     e.preventDefault();
 
                 } else if (e.which === keys.up || e.which === keys.down) {
+                    e.preventDefault();
 
                     current_suggestions = this_console.suggestion_box.find('li');
                     active_suggestion = current_suggestions.filter('.' + this_console.options.active_suggestion_class);
@@ -313,8 +315,10 @@ window.CoreSphereConsole = (function (window) {
                     if (e.which === keys.up) {
                         if (current_suggestions.size()) {
                             next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).prev() : current_suggestions.last();
+
                             if(next.size()) {
                                 this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                                scrollToEl = next[0];
                             } else {
                                 this_console.setActiveSuggestion(null);
                             }
@@ -331,8 +335,10 @@ window.CoreSphereConsole = (function (window) {
 
                         if (current_suggestions.size()) {
                             next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).next() : current_suggestions.first();
+
                             if(next.size()) {
                                 this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                                scrollToEl = next[0];
                             } else {
                                 this_console.setActiveSuggestion(null);
                             }
@@ -348,10 +354,16 @@ window.CoreSphereConsole = (function (window) {
 
                     }
 
+                    if(scrollToEl) {
+                        var rects = scrollToEl.getClientRects()[0];
+                        if(document.elementFromPoint(Math.ceil(rects.left),Math.ceil(rects.top)) !== scrollToEl
+                        || document.elementFromPoint(Math.floor(rects.right),Math.floor(rects.bottom)) !== scrollToEl) {
+                            scrollToEl.scrollIntoView(false);
+                        }
+                    }
                     this_console.focus();
                     enable_suggestions = false;
 
-                    e.preventDefault();
 
                 } else if (e.which === keys.escape) {
 

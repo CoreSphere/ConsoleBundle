@@ -1,12 +1,12 @@
 .console {
 	position: relative;
-	padding: 0.2em;
+	padding: 3px;
 	background-color: rgba(50,50,50,1);
 	color: rgba(240,240,240,1);
 	font-family: Consolas, "Liberation Mono", Courier, monospace;
 	font-size: 0.9em;
 	border: 5px solid rgba(210,210,210,1);
-	margin: 0 0 10em 0;
+	margin: 0 0 0 0;
 }
 
 .console::after {
@@ -145,12 +145,13 @@
 
 .console_suggestion_head {
 	font-weight: bold;
-	margin: 0.2em 0 0 0;
+	margin: 0;
 	padding: 0.5em;
 	color: rgba(40,40,40,1);
 	background-color: rgba(255,255,255,1);
 	font-size: 1em;
 	font-family: sans-serif;
+	border-bottom: 2px solid #777;
 }
 
 .match {
@@ -163,13 +164,12 @@
 
 .console_suggestions {
 	position: absolute;
-	top: 100%;
-	margin-top: 5px;
+	bottom: 2.7em;
 	left: 0;
 	right: 0;
 	z-index: 100;
-	box-shadow: 0 -1px 6px rgba(40,40,40,0.5);
 	overflow: hidden;
+	border: 3px solid rgba(50,50,50,1);
 }
 
 .console_suggestions ul {
@@ -177,6 +177,8 @@
 
 	background-color: rgba(250,250,250, 1);
 	color: rgba(5,5,5,1);
+	max-height: 10em;
+	overflow-y: auto;
 }
 
 .console_suggestions li {
