@@ -243,7 +243,8 @@ window.CoreSphereConsole = (function (window) {
                     filter,
                     current_suggestions,
                     active_suggestion,
-                    next;
+                    next,
+                    scrollToEl;
 
                 if (this_console.isLocked()) {
                     return;
@@ -306,6 +307,7 @@ window.CoreSphereConsole = (function (window) {
                     e.preventDefault();
 
                 } else if (e.which === keys.up || e.which === keys.down) {
+                    e.preventDefault();
 
                     current_suggestions = this_console.suggestion_box.find('li');
                     active_suggestion = current_suggestions.filter('.' + this_console.options.active_suggestion_class);
@@ -315,6 +317,7 @@ window.CoreSphereConsole = (function (window) {
                             next = active_suggestion.size() ? active_suggestion.removeClass(this_console.options.active_suggestion_class).prev() : current_suggestions.last();
                             next = next.size() ? next : current_suggestions.last();
                             this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                            scrollToEl = next[0];
                         } else {
                             this_console.history_position -= 1;
                             if (this_console.history_position < 0) {
@@ -331,6 +334,7 @@ window.CoreSphereConsole = (function (window) {
                             next = next.size() ? next : current_suggestions.first();
 
                             this_console.setActiveSuggestion(next.addClass(this_console.options.active_suggestion_class).text());
+                            scrollToEl = next[0];
                         } else {
                             this_console.history_position += 1;
                             if (this_console.history_position >= this_console.history.length) {
@@ -343,10 +347,16 @@ window.CoreSphereConsole = (function (window) {
 
                     }
 
+                    if(scrollToEl) {
+                        var rects = scrollToEl.getClientRects()[0];
+                        if(document.elementFromPoint(Math.ceil(rects.left),Math.ceil(rects.top)) !== scrollToEl
+                        || document.elementFromPoint(Math.floor(rects.right),Math.floor(rects.bottom)) !== scrollToEl) {
+                            scrollToEl.scrollIntoView(false);
+                        }
+                    }
                     this_console.focus();
                     enable_suggestions = false;
 
-                    e.preventDefault();
 
                 } else if (e.which === keys.escape) {
 
