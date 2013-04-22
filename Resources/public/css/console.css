@@ -188,6 +188,10 @@
 	cursor: pointer;
 }
 
+.console_suggestions li:hover {
+	background-color: rgba(80,80,80,0.1);
+}
+
 .console_suggestions .active {
 	background-color: rgba(50,50,50,0.1);
 	font-weight: bold;
