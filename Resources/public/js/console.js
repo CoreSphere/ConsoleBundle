@@ -215,16 +215,6 @@ window.CoreSphereConsole = (function (window) {
                 this_console.focus();
             })
 
-            .on('mouseover.coresphere_console', '.console_suggestions li', function (e) {
-                var $this = $(this);
-
-                this_console.suggestion_box.find('.' + this_console.options.active_suggestion_class).removeClass(this_console.options.active_suggestion_class);
-                $this.addClass(this_console.options.active_suggestion_class);
-                this_console.setActiveSuggestion($this.text());
-
-                this_console.focus();
-            })
-
             .on('click.coresphere_console', '.console_suggestions li', function (e) {
                 e.stopPropagation();
                 var $this = $(this);
