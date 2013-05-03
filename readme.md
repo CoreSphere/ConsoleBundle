@@ -32,7 +32,7 @@ Installation
 
  3. Register the bundle in you AppKernel in the development section
 
-        // app/ApplicationKernel.php
+        // app/AppKernel.php
         public function registerBundles()
         {
             $bundles = array(
