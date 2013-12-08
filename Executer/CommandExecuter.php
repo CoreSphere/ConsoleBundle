@@ -38,10 +38,6 @@ class CommandExecuter
         $input = new StringInput($commandString);
         $output = new StringOutput();
 
-        if('cache:clear' == $input->getFirstArgument()) {
-            $input = new StringInput($commandString . ' --no-warmup');
-        }
-
         $application = $this->getApplication($input);
         $formatter = $output->getFormatter();
         $kernel = $application->getKernel();
