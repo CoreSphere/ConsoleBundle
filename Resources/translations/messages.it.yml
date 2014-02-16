@@ -1,0 +1,9 @@
+coresphere_console:
+    headline:
+        index: "Console"
+    working_directory: 'Cartella corrente'
+    environment: 'Ambiente'
+    welcome_message: 'Digitare %command% per ottenere una lista di tutti i comandi'
+    loading: 'Caricamento...'
+    suggestion_head: 'Intendevi:'
+    empty_response: 'Completato!'
