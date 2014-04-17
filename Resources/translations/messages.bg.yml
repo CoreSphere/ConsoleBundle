@@ -1,0 +1,9 @@
+coresphere_console:
+    headline:
+        index: "Конзола"
+    working_directory: 'Работна папка'
+    environment: 'Среда (dev,test,prod)'
+    welcome_message: 'Напиши %command% за да видиш всички команди.'
+    loading: 'Зареждам...'
+    suggestion_head: 'Може би имахте предвид:'
+    empty_response: 'Свърших! :)'
