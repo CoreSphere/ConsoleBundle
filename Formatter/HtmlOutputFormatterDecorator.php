@@ -18,7 +18,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 
 class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 {
-    const PATTERN = "/\033\[(([\d+];?)*)m(.*?)\033\[0m/i";
+    const PATTERN = "/\033\[(([\d+];?)*)m(.*?)\033\[(([\d+];?)*)m/i";
 
     static private $styles = array(
         '30'    => 'color:rgba(0,0,0,1)',
