@@ -11,40 +11,48 @@
 
 namespace CoreSphere\ConsoleBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-
-use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+/**
+ * Class ConsoleController
+ *
+ * @package CoreSphere\ConsoleBundle\Controller
+ */
 class ConsoleController extends Controller
 {
+    /**
+     * Console Action
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function consoleAction()
     {
-        $kernel = $this->get('kernel');
-        $application = new Application($kernel);
-
-        chdir($kernel->getRootDir().'/..');
-
-        foreach ($kernel->getBundles() as $bundle) {
-            $bundle->registerCommands($application);
-        }
+        $application = $this->get('coresphere_console.application');
 
         return $this->render('CoreSphereConsoleBundle:Console:console.html.twig', array(
-            'working_dir' => getcwd(),
-            'environment' => $kernel->getEnvironment(),
-            'commands' => $application->all(),
+            'working_dir'   => getcwd(),
+            'environment'   => $application->getKernel()->getEnvironment(),
+            'commands'      => $application->all(),
         ));
     }
 
+    /**
+     * Executer Action
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function execAction(Request $request)
     {
-        $executer = new CommandExecuter($this->get('kernel'));
         $commands = $request->request->get('commands');
-        $executedCommands = array();
+        $commandExecuter = $this->get('coresphere_console.services.command_executer');
 
+        $executedCommands = array();
         foreach ($commands as $command) {
-            $result = $executer->execute($command);
+
+            $result             = $commandExecuter->execute($command);
             $executedCommands[] = $result;
 
             if (0 !== $result['error_code']) {

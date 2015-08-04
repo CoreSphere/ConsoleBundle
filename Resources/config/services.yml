@@ -1,0 +1,14 @@
+services:
+
+    coresphere_console.toolbar:
+        class: CoreSphere\ConsoleBundle\DataCollector\DataCollector
+        tags:
+            - { name: data_collector, template: "CoreSphereConsoleBundle:Toolbar:toolbar", id: "coresphere_console" }
+
+    coresphere_console.application:
+        class: CoreSphere\ConsoleBundle\Application\Application
+        arguments: ['@kernel', '%coresphere_console.config%']
+
+    coresphere_console.services.command_executer:
+        class: CoreSphere\ConsoleBundle\Services\Executer\CommandExecuter
+        arguments: ['@kernel', '%coresphere_console.config%']

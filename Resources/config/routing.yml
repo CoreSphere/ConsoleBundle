@@ -3,7 +3,6 @@ console:
     defaults: { _controller: CoreSphereConsoleBundle:Console:console }
     methods: [GET]
 
-
 console_exec:
     path:  /commands.{_format}
     defaults: { _controller: CoreSphereConsoleBundle:Console:exec, _format: json }
