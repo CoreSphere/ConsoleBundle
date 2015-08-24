@@ -12,9 +12,19 @@
          bootstrap="vendor/autoload.php"
 >
 
+    <filter>
+        <whitelist>
+            <directory>.</directory>
+            <exclude>
+                <directory>Tests</directory>
+                <directory>vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
     <testsuites>
-        <testsuite name="ConsoleBundle Test Suite">
-            <directory>./Tests</directory>
+        <testsuite>
+            <directory>Tests</directory>
         </testsuite>
     </testsuites>
 
