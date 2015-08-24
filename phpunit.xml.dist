@@ -8,13 +8,13 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="Tests/bootstrap.php"
+         bootstrap="vendor/autoload.php"
 >
-         
+
     <testsuites>
         <testsuite name="ConsoleBundle Test Suite">
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>
-    
+
 </phpunit>
