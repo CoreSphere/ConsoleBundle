@@ -14,8 +14,6 @@ namespace CoreSphere\ConsoleBundle\Output;
 use Symfony\Component\Console\Output\Output;
 
 /**
- * StringOutput
- *
  * Collects console output into a string.
  */
 class StringOutput extends Output
@@ -30,7 +28,7 @@ class StringOutput extends Output
      */
     public function doWrite($message, $newline)
     {
-        $this->buffer .= $message . ($newline===TRUE ? PHP_EOL : '');
+        $this->buffer .= $message . (true === $newline ? PHP_EOL : '');
     }
 
     /**
