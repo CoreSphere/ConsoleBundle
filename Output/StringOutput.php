@@ -13,7 +13,6 @@ namespace CoreSphere\ConsoleBundle\Output;
 
 use Symfony\Component\Console\Output\Output;
 
-
 /**
  * StringOutput
  *
@@ -21,14 +20,24 @@ use Symfony\Component\Console\Output\Output;
  */
 class StringOutput extends Output
 {
+    /**
+     * @var string
+     */
     protected $buffer = '';
 
+    /**
+     * {@inheritdoc}
+     */
     public function doWrite($message, $newline)
     {
         $this->buffer .= $message . ($newline===TRUE ? PHP_EOL : '');
     }
 
-    public function getBuffer() {
+    /**
+     * @return string
+     */
+    public function getBuffer()
+    {
         return $this->buffer;
     }
 }

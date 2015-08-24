@@ -17,12 +17,16 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector AS DataCollectorBas
 
 class DataCollector extends DataCollectorBase
 {
-
+    /**
+     * {@inheritdoc}
+     */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'coresphere_console';

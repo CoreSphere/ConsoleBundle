@@ -12,7 +12,6 @@
 namespace CoreSphere\ConsoleBundle\Tests\Formatter;
 
 use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
-
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 

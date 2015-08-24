@@ -11,13 +11,12 @@
 
 namespace CoreSphere\ConsoleBundle\Executer;
 
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\HttpKernel\Kernel;
-
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-
 use CoreSphere\ConsoleBundle\Output\StringOutput;
 use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * CommandExecuter
@@ -26,6 +25,9 @@ use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
  */
 class CommandExecuter
 {
+    /**
+     * @var Kernel
+     */
     protected $baseKernel;
 
     public function __construct(Kernel $baseKernel)
@@ -33,6 +35,10 @@ class CommandExecuter
         $this->baseKernel = $baseKernel;
     }
 
+    /**
+     * @param string $commandString
+     * @return array
+     */
     public function execute($commandString)
     {
         $input = new StringInput($commandString);
@@ -62,14 +68,20 @@ class CommandExecuter
         );
     }
 
-    protected function getApplication($input = null)
+    /**
+     * @return Application
+     */
+    protected function getApplication(InputInterface $input = null)
     {
         $kernel = $this->getKernel($input);
 
         return new Application($kernel);
     }
 
-    protected function getKernel($input = null)
+    /**
+     * @return object|Kernel
+     */
+    protected function getKernel(InputInterface $input = null)
     {
         if($input === null) {
             return $this->baseKernel;
