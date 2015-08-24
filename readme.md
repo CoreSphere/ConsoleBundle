@@ -1,6 +1,9 @@
 ConsoleBundle
 =============
 
+[![Build Status](https://img.shields.io/travis/CoreSphere/ConsoleBundle.svg?style=flat-square)](https://travis-ci.org/CoreSphere/ConsoleBundle)
+
+
 This bundle allows you accessing the Symfony2 console via your browser.
 
 Features
