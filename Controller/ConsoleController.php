@@ -11,22 +11,25 @@
 
 namespace CoreSphere\ConsoleBundle\Controller;
 
+use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-
-use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\HttpKernel\Kernel;
 
 class ConsoleController extends Controller
 {
     public function consoleAction()
     {
+        /** @var Kernel $kernel */
         $kernel = $this->get('kernel');
         $application = new Application($kernel);
 
         chdir($kernel->getRootDir().'/..');
 
         foreach ($kernel->getBundles() as $bundle) {
+            /** @var Bundle $bundle */
             $bundle->registerCommands($application);
         }
 

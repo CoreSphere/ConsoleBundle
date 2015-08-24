@@ -11,8 +11,6 @@
 
 namespace CoreSphere\ConsoleBundle\Formatter;
 
-
-use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 
@@ -20,6 +18,9 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 {
     const PATTERN = "/\033\[(([\d+];?)*)m(.*?)\033\[(([\d+];?)*)m/i";
 
+    /**
+     * @var string[]
+     */
     static private $styles = array(
         '30'    => 'color:rgba(0,0,0,1)',
         '31'    => 'color:rgba(230,50,50,1)',
@@ -42,45 +43,61 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
         '8'     => 'visibility:hidden',
     );
 
+    /**
+     * @var OutputFormatterInterface
+     */
     private $formatter;
 
 
-    public function __construct($formatter)
+    public function __construct(OutputFormatterInterface $formatter)
     {
         $this->formatter = $formatter;
     }
 
-
-    function setDecorated($decorated)
+    /**
+     * {@inheritdoc}
+     */
+    public function setDecorated($decorated)
     {
         return $this->formatter->setDecorated($decorated);
     }
 
-
-    function isDecorated(){
+    /**
+     * {@inheritdoc}
+     */
+    public function isDecorated()
+    {
         return $this->formatter->isDecorated();
     }
 
-
-    function setStyle($name, OutputFormatterStyleInterface $style)
+    /**
+     * {@inheritdoc}
+     */
+    public function setStyle($name, OutputFormatterStyleInterface $style)
     {
         return $this->formatter->setStyle($name, $style);
     }
 
-
-    function hasStyle($name)
+    /**
+     * {@inheritdoc}
+     */
+    public function hasStyle($name)
     {
         return $this->formatter->hasStyle($name);
     }
 
-
-    function getStyle($name)
+    /**
+     * {@inheritdoc}
+     */
+    public function getStyle($name)
     {
         return $this->formatter->getStyle($name);
     }
 
-
-    function format($message)
+    /**
+     * {@inheritdoc}
+     */
+    public function format($message)
     {
         $formatted = $this->formatter->format($message);
         $escaped = htmlspecialchars($formatted, ENT_QUOTES, 'UTF-8');
@@ -89,6 +106,10 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
         return $converted;
     }
 
+    /**
+     * @param array $matches
+     * @return string
+     */
     protected function replaceFormat($matches)
     {
         $text = $matches[3];
