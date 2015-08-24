@@ -15,7 +15,6 @@ use CoreSphere\ConsoleBundle\Output\StringOutput;
 
 class StringOutputTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testWriteRead()
     {
         $output = new StringOutput();
@@ -28,5 +27,4 @@ class StringOutputTest extends \PHPUnit_Framework_TestCase
         $output->write($text, true);
         $this->assertSame($text . $text . PHP_EOL, $output->getBuffer());
     }
-
 }

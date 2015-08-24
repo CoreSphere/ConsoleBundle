@@ -33,18 +33,18 @@ class ConsoleController extends Controller
             $bundle->registerCommands($application);
         }
 
-        return $this->render('CoreSphereConsoleBundle:Console:console.html.twig', array(
+        return $this->render('CoreSphereConsoleBundle:Console:console.html.twig', [
             'working_dir' => getcwd(),
             'environment' => $kernel->getEnvironment(),
             'commands' => $application->all(),
-        ));
+        ]);
     }
 
     public function execAction(Request $request)
     {
         $executer = new CommandExecuter($this->get('kernel'));
         $commands = $request->request->get('commands');
-        $executedCommands = array();
+        $executedCommands = [];
 
         foreach ($commands as $command) {
             $result = $executer->execute($command);
@@ -57,7 +57,7 @@ class ConsoleController extends Controller
 
         return $this->render(
             'CoreSphereConsoleBundle:Console:result.' . $request->getRequestFormat() . '.twig',
-            array('commands' => $executedCommands)
+            ['commands' => $executedCommands]
         );
     }
 }

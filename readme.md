@@ -29,11 +29,11 @@ Installation
 	// app/AppKernel.php
 	public function registerBundles()
 	{
-		$bundles = array(
+		$bundles = [
 	  		// other bundles here...
-		);
+		];
 
-		if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+		if (in_array($this->getEnvironment(), ['dev', 'test'])) {
 			// ...
 			$bundles[] = new CoreSphere\ConsoleBundle\CoreSphereConsoleBundle();
 	 	}
