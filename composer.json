@@ -23,7 +23,5 @@
     },
     "autoload": {
         "psr-0": { "CoreSphere\\ConsoleBundle": "" }
-    },
-    "target-dir": "CoreSphere/ConsoleBundle",
-    "minimum-stability": "dev"
+    }
 }
