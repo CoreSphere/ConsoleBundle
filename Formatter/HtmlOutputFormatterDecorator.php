@@ -12,7 +12,6 @@
 namespace CoreSphere\ConsoleBundle\Formatter;
 
 
-use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 
