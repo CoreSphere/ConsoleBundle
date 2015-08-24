@@ -17,7 +17,6 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class HtmlOutputFormatterDecoratorTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testEscapingOutput()
     {
         $raw_formatter = new OutputFormatter(true);
@@ -60,5 +59,4 @@ class HtmlOutputFormatterDecoratorTest extends \PHPUnit_Framework_TestCase
             )
         );
     }
-
 }
