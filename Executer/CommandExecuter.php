@@ -11,33 +11,29 @@
 
 namespace CoreSphere\ConsoleBundle\Executer;
 
+use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use CoreSphere\ConsoleBundle\Output\StringOutput;
 use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
+use ReflectionClass;
+use Symfony\Bundle\FrameworkBundle\Console\Application as FrameworkConsoleApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
-/**
- * CommandExecuter
- *
- * Takes a string to execute as console command.
- */
-class CommandExecuter
+final class CommandExecuter implements CommandExecuterInterface
 {
     /**
-     * @var Kernel
+     * @var KernelInterface
      */
-    protected $baseKernel;
+    private $baseKernel;
 
-    public function __construct(Kernel $baseKernel)
+    public function __construct(KernelInterface $baseKernel)
     {
         $this->baseKernel = $baseKernel;
     }
 
     /**
-     * @param string $commandString
-     * @return array
+     * {@inheritdoc}
      */
     public function execute($commandString)
     {
@@ -60,43 +56,36 @@ class CommandExecuter
         $result = $output->getBuffer() || ob_get_contents();
         ob_end_clean();
 
-        return array(
+        return [
             'input'       => $commandString,
             'output'      => $output->getBuffer(),
             'environment' => $kernel->getEnvironment(),
             'error_code'  => $errorCode
-        );
+        ];
     }
 
     /**
-     * @return Application
+     * @return FrameworkConsoleApplication
      */
-    protected function getApplication(InputInterface $input = null)
+    private function getApplication(InputInterface $input)
     {
         $kernel = $this->getKernel($input);
-
-        return new Application($kernel);
+        return new FrameworkConsoleApplication($kernel);
     }
 
     /**
-     * @return object|Kernel
+     * @return KernelInterface
      */
-    protected function getKernel(InputInterface $input = null)
+    private function getKernel(InputInterface $input)
     {
-        if($input === null) {
-            return $this->baseKernel;
-        }
-
-        $env = $input->getParameterOption(array('--env', '-e'), $this->baseKernel->getEnvironment());
-        $debug = !$input->hasParameterOption(array('--no-debug', ''));
+        $env = $input->getParameterOption(['--env', '-e'], $this->baseKernel->getEnvironment());
+        $debug = !$input->hasParameterOption(['--no-debug', '']);
 
         if($this->baseKernel->getEnvironment() === $env && $this->baseKernel->isDebug() === $debug) {
             return $this->baseKernel;
         }
 
-        $kernelClass = new \ReflectionClass($this->baseKernel);
-
-        return $kernelClass->newInstance($env, $debug);
+        $kernelClass = new ReflectionClass($this->baseKernel);
+        return $kernelClass->newInstance([$env, $debug]);
     }
-
 }
