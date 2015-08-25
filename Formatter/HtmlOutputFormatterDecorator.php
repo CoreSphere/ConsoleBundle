@@ -14,14 +14,14 @@ namespace CoreSphere\ConsoleBundle\Formatter;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 
-class HtmlOutputFormatterDecorator implements OutputFormatterInterface
+final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 {
-    const PATTERN = "/\033\[(([\d+];?)*)m(.*?)\033\[(([\d+];?)*)m/i";
+    const CLI_COLORS_PATTERN = '/\033\[(([\d+];?)*)m(.*?)\033\[(([\d+];?)*)m/i';
 
     /**
      * @var string[]
      */
-    static private $styles = [
+    private $styles = [
         '30'    => 'color:rgba(0,0,0,1)',
         '31'    => 'color:rgba(230,50,50,1)',
         '32'    => 'color:rgba(50,230,50,1)',
@@ -101,26 +101,31 @@ class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     {
         $formatted = $this->formatter->format($message);
         $escaped = htmlspecialchars($formatted, ENT_QUOTES, 'UTF-8');
-        $converted = preg_replace_callback(self::PATTERN, [$this, 'replaceFormat'], $escaped);
-
+        $converted = preg_replace_callback(self::CLI_COLORS_PATTERN, function ($matches) {
+            return $this->replaceFormat($matches);
+        }, $escaped);
         return $converted;
     }
 
     /**
      * @return string
      */
-    protected function replaceFormat(array $matches)
+    private function replaceFormat(array $matches)
     {
         $text = $matches[3];
         $styles = explode(';', $matches[1]);
         $css = [];
 
-        foreach($styles AS $style) {
-            if(isset(self::$styles[$style])) {
-                $css[] = self::$styles[$style];
+        foreach ($styles as $style) {
+            if (isset($this->styles[$style])) {
+                $css[] = $this->styles[$style];
             }
         }
 
-        return sprintf('<span style="%s">%s</span>', implode(';', $css), $text);
+        return sprintf(
+            '<span style="%s">%s</span>',
+            implode(';', $css),
+            $text
+        );
     }
 }

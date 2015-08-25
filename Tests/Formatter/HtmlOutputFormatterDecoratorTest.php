@@ -12,29 +12,38 @@
 namespace CoreSphere\ConsoleBundle\Tests\Formatter;
 
 use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
-class HtmlOutputFormatterDecoratorTest extends \PHPUnit_Framework_TestCase
+final class HtmlOutputFormatterDecoratorTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @var HtmlOutputFormatterDecorator
+     */
+    private $decoratedFormatter;
+
+    protected function setUp()
+    {
+        $this->decoratedFormatter = new HtmlOutputFormatterDecorator(new OutputFormatter(true));
+    }
+
+
     public function testEscapingOutput()
     {
-        $raw_formatter = new OutputFormatter(true);
-        $decorated_formatter = new HtmlOutputFormatterDecorator($raw_formatter);
-
-        $decorated_formatter->setStyle('error',    new OutputFormatterStyle('white', 'red'));
-        $decorated_formatter->setStyle('info',     new OutputFormatterStyle('green'));
-        $decorated_formatter->setStyle('comment',  new OutputFormatterStyle('yellow'));
-        $decorated_formatter->setStyle('question', new OutputFormatterStyle('black', 'cyan'));
+        $this->decoratedFormatter->setStyle('error',    new OutputFormatterStyle('white', 'red'));
+        $this->decoratedFormatter->setStyle('info',     new OutputFormatterStyle('green'));
+        $this->decoratedFormatter->setStyle('comment',  new OutputFormatterStyle('yellow'));
+        $this->decoratedFormatter->setStyle('question', new OutputFormatterStyle('black', 'cyan'));
 
         $this->assertSame(
-            'a&lt;script&gt;evil();&lt;/script&gt;a', $decorated_formatter->format(
+            'a&lt;script&gt;evil();&lt;/script&gt;a', $this->decoratedFormatter->format(
                 'a<script>evil();</script>a'
             )
         );
 
         $this->assertSame(
-            '&lt;script&gt;<span style="color:rgba(50,230,50,1)">evil();</span>&lt;/script&gt;', $decorated_formatter->format(
+            '&lt;script&gt;<span style="color:rgba(50,230,50,1)">evil();</span>&lt;/script&gt;', $this->decoratedFormatter->format(
                 '<script><info>evil();</info></script>'
             )
         );
@@ -44,7 +53,7 @@ class HtmlOutputFormatterDecoratorTest extends \PHPUnit_Framework_TestCase
             '<span style="color:rgba(50,230,50,1)">&lt;script&gt;</span>'.
             '<span style="color:rgba(250,250,250,1);background-color:rgba(230,50,50,1)">evil();</span>'.
             '<span style="color:rgba(50,230,50,1)">&lt;/script&gt;</span>'
-            , $decorated_formatter->format(
+            , $this->decoratedFormatter->format(
                 '<info>a<script><error>evil();</error></script>'
             )
         );
@@ -54,9 +63,28 @@ class HtmlOutputFormatterDecoratorTest extends \PHPUnit_Framework_TestCase
             '<span style="color:rgba(50,230,50,1)">&lt;script&gt;</span>'.
             '<span style="color:rgba(50,230,50,1)">evil();</span>'.
             '<span style="color:rgba(50,230,50,1)">&lt;/script&gt;</span>'
-            , $decorated_formatter->format(
+            , $this->decoratedFormatter->format(
                 '<info>a&lt;<script><info>evil();</info></script>'
             )
         );
+    }
+
+    public function testDecorated()
+    {
+        $this->assertTrue($this->decoratedFormatter->isDecorated());
+
+        $this->decoratedFormatter->setDecorated(false);
+        $this->assertFalse($this->decoratedFormatter->isDecorated());
+    }
+
+    public function testStyle()
+    {
+        $this->assertFalse($this->decoratedFormatter->hasStyle('nonExisting'));
+
+        $outputFormatterStyle = new OutputFormatterStyle('blue');
+        $this->decoratedFormatter->setStyle('blue', $outputFormatterStyle);
+        $this->assertTrue($this->decoratedFormatter->hasStyle('blue'));
+
+        $this->assertSame($outputFormatterStyle, $this->decoratedFormatter->getStyle('blue'));
     }
 }
