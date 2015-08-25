@@ -12,8 +12,9 @@
 namespace CoreSphere\ConsoleBundle\Tests\Output;
 
 use CoreSphere\ConsoleBundle\Output\StringOutput;
+use PHPUnit_Framework_TestCase;
 
-class StringOutputTest extends \PHPUnit_Framework_TestCase
+final class StringOutputTest extends PHPUnit_Framework_TestCase
 {
     public function testWriteRead()
     {
