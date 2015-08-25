@@ -23,16 +23,7 @@ Installation
 	composer require coresphere/console-bundle
 	```
 
-2. Add the following route to your routing configuration
-
-	```yaml
- 	# app/config/routing_dev.yml
- 	_console:
-	 	resource: "@CoreSphereConsoleBundle/Resources/config/routing.yml"
- 		prefix: /_console
-	```
-
-3. Register the bundle in you AppKernel in the development section
+2. Register the bundle in you AppKernel in the development section
 
 	 ```php
 	// app/AppKernel.php
@@ -51,7 +42,7 @@ Installation
 	}
 	```
 
-4. run the assets:install command to install the css and js files
+3. run the assets:install command to install the css and js files
 
 	```sh
 	./app/console assets:install web

@@ -1,4 +1,11 @@
 services:
+    coresphere_console.routing:
+        class: CoreSphere\ConsoleBundle\Routing\Loader
+        arguments:
+            - @routing.loader.yml
+        tags:
+            - { name: routing.loader }
+
     coresphere_console.toolbar:
         class: CoreSphere\ConsoleBundle\DataCollector\DataCollector
         tags:
