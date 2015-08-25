@@ -11,8 +11,16 @@
 
 namespace CoreSphere\ConsoleBundle;
 
+use CoreSphere\ConsoleBundle\DependencyInjection\Extension\CoreSphereConsoleExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class CoreSphereConsoleBundle extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getContainerExtension()
+    {
+        return new CoreSphereConsoleExtension();
+    }
 }
