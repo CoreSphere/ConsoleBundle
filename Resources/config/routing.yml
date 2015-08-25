@@ -1,11 +1,11 @@
 console:
     path:  /_console
-    defaults: { _controller: CoreSphereConsoleBundle:Console:console }
+    defaults: { _controller: coresphere_console.controller:consoleAction }
     methods: [GET]
 
 console_exec:
     path:  /_console/commands.{_format}
-    defaults: { _controller: CoreSphereConsoleBundle:Console:exec, _format: json }
+    defaults: { _controller: coresphere_console.controller:execAction, _format: json }
     methods: [POST]
     requirements:
         _format: json
