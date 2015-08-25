@@ -15,7 +15,6 @@ use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -36,29 +35,30 @@ class ConsoleController
      */
     private $commandExecuter;
 
-    public function __construct(KernelInterface $kernel, EngineInterface $templating, CommandExecuterInterface $commandExecuter)
-    {
+    /**
+     * @var Application
+     */
+    private $application;
+
+    public function __construct(
+        KernelInterface $kernel,
+        EngineInterface $templating,
+        CommandExecuterInterface $commandExecuter,
+        Application $application
+    ) {
         $this->kernel = $kernel;
         $this->templating = $templating;
         $this->commandExecuter = $commandExecuter;
+        $this->application = $application;
     }
 
     public function consoleAction()
     {
-        $application = new Application($this->kernel);
-
-        chdir($this->kernel->getRootDir().'/..');
-
-        foreach ($this->kernel->getBundles() as $bundle) {
-            /** @var Bundle $bundle */
-            $bundle->registerCommands($application);
-        }
-
         return new Response(
             $this->templating->render('CoreSphereConsoleBundle:Console:console.html.twig', [
                 'working_dir' => getcwd(),
                 'environment' => $this->kernel->getEnvironment(),
-                'commands' => $application->all(),
+                'commands' => $this->application->all(),
             ])
         );
     }

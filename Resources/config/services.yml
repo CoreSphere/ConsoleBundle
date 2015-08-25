@@ -22,3 +22,13 @@ services:
         class: CoreSphere\ConsoleBundle\DataCollector\DataCollector
         tags:
             - { name: data_collector, template: "CoreSphereConsoleBundle:Toolbar:toolbar", id: "coresphere_console" }
+
+    # console application
+    coresphere_console.application.factory:
+        class: CoreSphere\ConsoleBundle\Console\ApplicationFactory
+
+    coresphere_console.application:
+        class: Symfony\Bundle\FrameworkBundle\Console\Application
+        factory: ["@coresphere_console.application.factory", create]
+        arguments:
+            - @kernel
