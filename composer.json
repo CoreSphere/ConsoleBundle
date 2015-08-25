@@ -22,6 +22,9 @@
         "symfony/framework-bundle": "~2.7|~3.0",
         "symfony/http-kernel": "~2.7|~3.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
     "autoload": {
         "psr-4": {
             "CoreSphere\\ConsoleBundle\\": "."
