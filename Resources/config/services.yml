@@ -2,12 +2,12 @@ services:
     coresphere_console.controller:
         class: CoreSphere\ConsoleBundle\Controller\ConsoleController
         arguments:
-            - @kernel
             - @templating
             - @coresphere_console.executer
+            - %kernel.environment%
 
     coresphere_console.executer:
-        class: CoreSphere\ConsoleBundle\Execture\CommandExecture
+        class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
         arguments:
             - @kernel
 
