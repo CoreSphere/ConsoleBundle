@@ -51,10 +51,7 @@ final class CommandExecuter implements CommandExecuterInterface
         $output->setFormatter(new HtmlOutputFormatterDecorator($formatter));
         $application->setAutoExit(false);
 
-        ob_start();
         $errorCode = $application->run($input, $output);
-        $result = $output->getBuffer() || ob_get_contents();
-        ob_end_clean();
 
         return [
             'input'       => $commandString,
