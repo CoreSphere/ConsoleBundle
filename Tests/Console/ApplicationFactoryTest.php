@@ -12,7 +12,7 @@
 namespace CoreSphere\ConsoleBundle\Tests\Console;
 
 use CoreSphere\ConsoleBundle\Console\ApplicationFactory;
-use CoreSphere\ConsoleBundle\Tests\Console\ApplicationFactorySource\KernelWithBundleWithCommands;
+use CoreSphere\ConsoleBundle\Tests\Source\KernelWithBundlesWithCommands;
 use PHPUnit_Framework_TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
@@ -20,30 +20,45 @@ final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testCreate()
     {
-        $kernel = new KernelWithBundleWithCommands('prod', true);
-        $application = (new ApplicationFactory())->create($kernel);
+        $kernel = new KernelWithBundlesWithCommands('prod', true);
 
-        $this->assertInstanceOf(Application::class, $application);
+        $this->assertInstanceOf(
+            Application::class,
+            (new ApplicationFactory())->create($kernel)
+        );
     }
 
-    public function testCommandsRegistration()
+    /**
+     * @dataProvider provideTestCommandRegistration()
+     * @param string $environment
+     * @param int $commandCount
+     */
+    public function testCommandsRegistration($environment, $commandCount)
     {
-        $kernel = new KernelWithBundleWithCommands('prod', false);
+        $kernel = new KernelWithBundlesWithCommands($environment, false);
         $application = (new ApplicationFactory())->create($kernel);
 
-        $commands = $application->all();
-        $this->assertCount(2, $commands);
+        $this->assertCount($commandCount, $application->all());
+    }
 
-        $kernel = new KernelWithBundleWithCommands('test', false);
+    public function testCommandsRegistrationWithAlreadyRegisteredCommands()
+    {
+        $kernel = new KernelWithBundlesWithCommands('prod', false);
+        $kernel->boot();
         $application = (new ApplicationFactory())->create($kernel);
 
-        $commands = $application->all();
-        $this->assertCount(2, $commands);
+        $this->assertCount(9, $application->all());
+    }
 
-        $kernel = new KernelWithBundleWithCommands('dev', false);
-        $application = (new ApplicationFactory())->create($kernel);
-
-        $commands = $application->all();
-        $this->assertCount(2, $commands);
+    /**
+     * @return string[]
+     */
+    public function provideTestCommandRegistration()
+    {
+        return [
+            ['prod', 9],
+            ['dev', 3],
+            ['test', 2],
+        ];
     }
 }
