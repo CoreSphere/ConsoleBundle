@@ -65,11 +65,11 @@ class ConsoleController
     public function execAction(Request $request)
     {
         $commands = $request->request->get('commands');
-        $executedCommands = [];
+        $executedCommandsOutput = [];
 
         foreach ($commands as $command) {
             $result = $this->commandExecuter->execute($command);
-            $executedCommands[] = $result;
+            $executedCommandsOutput[] = $result;
 
             if (0 !== $result['error_code']) {
                 break;
@@ -78,8 +78,9 @@ class ConsoleController
 
         return new Response(
             $this->templating->render(
-                'CoreSphereConsoleBundle:Console:result.' . $request->getRequestFormat() . '.twig',
-                ['commands' => $executedCommands]
+//                'CoreSphereConsoleBundle:Console:result.' . $request->getRequestFormat() . '.twig',
+                'CoreSphereConsoleBundle:Console:result.json.twig',
+                ['commands' => $executedCommandsOutput]
             )
         );
     }
