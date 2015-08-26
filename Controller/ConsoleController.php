@@ -78,7 +78,6 @@ class ConsoleController
 
         return new Response(
             $this->templating->render(
-//                'CoreSphereConsoleBundle:Console:result.' . $request->getRequestFormat() . '.twig',
                 'CoreSphereConsoleBundle:Console:result.json.twig',
                 ['commands' => $executedCommandsOutput]
             )
