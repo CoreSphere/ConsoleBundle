@@ -23,7 +23,9 @@
         "symfony/http-kernel": "~2.7|~3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^4.8",
+        "doctrine/doctrine-migrations-bundle": "^1.0",
+        "doctrine/doctrine-fixtures-bundle": "^2.2"
     },
     "autoload": {
         "psr-4": {
