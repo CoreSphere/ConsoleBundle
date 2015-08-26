@@ -81,7 +81,7 @@ final class CommandExecuter implements CommandExecuterInterface
         $env = $input->getParameterOption(['--env', '-e'], $this->baseKernel->getEnvironment());
         $debug = !$input->hasParameterOption(['--no-debug', '']);
 
-        if($this->baseKernel->getEnvironment() === $env && $this->baseKernel->isDebug() === $debug) {
+        if ($env === $this->baseKernel->getEnvironment() && $debug === $this->baseKernel->isDebug()) {
             return $this->baseKernel;
         }
 
