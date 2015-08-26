@@ -75,10 +75,3 @@ Tested with:
  * Firefox 4
  * Opera 11
  * Safari 5
-
-Todo
-----
-
- * Write Javascript tests
- * Add console as "pop up" to web developer toolbar
- * Figure out how to allow interactive mode (possible? extreme hacky?)
