@@ -33,14 +33,13 @@ final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
      * @param string $environment
      * @param int $commandCount
      */
-    public function testCommandsRegistration($environment, $commandCount, $commandNames)
+    public function testCommandsRegistration($environment, $commandCount)
     {
         $kernel = new KernelWithBundlesWithCommands($environment, false);
         $application = (new ApplicationFactory())->create($kernel);
 
         $commands = $application->all();
         $this->assertCount($commandCount, $commands);
-        $this->assertSame($commandNames, array_keys($commands));
     }
 
     /**
@@ -49,19 +48,9 @@ final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
     public function provideTestCommandRegistration()
     {
         return [
-            ['prod', 9, [
-                'help',
-                'list',
-                'doctrine:migrations:version',
-                'doctrine:migrations:status',
-                'doctrine:migrations:diff',
-                'doctrine:migrations:execute',
-                'doctrine:migrations:migrate',
-                'doctrine:migrations:latest',
-                'doctrine:migrations:generate'
-            ]],
-            ['dev', 3, ['help', 'list', 'doctrine:fixtures:load']],
-            ['test', 2, ['help', 'list']],
+            ['prod', 9],
+            ['dev', 3],
+            ['test', 2]
         ];
     }
 
