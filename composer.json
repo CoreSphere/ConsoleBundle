@@ -15,12 +15,18 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
-        "symfony/class-loader": "~2.1",
-        "symfony/console": "~2.1",
-        "symfony/dependency-injection": "~2.1",
-        "symfony/framework-bundle": "~2.1",
-        "symfony/http-kernel": "~2.1"
+        "php": ">=5.5",
+        "symfony/console": "~2.7|~3.0",
+        "symfony/dependency-injection": "~2.7|~3.0",
+        "symfony/event-dispatcher": "~2.7|~3.0",
+        "symfony/framework-bundle": "~2.7|~3.0",
+        "symfony/http-kernel": "~2.7|~3.0"
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^2.2",
+        "doctrine/doctrine-migrations-bundle": "^1.0",
+        "phpunit/phpunit": "^4.8",
+        "symfony/finder": "^2.7"
     },
     "autoload": {
         "psr-4": {

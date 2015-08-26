@@ -11,53 +11,76 @@
 
 namespace CoreSphere\ConsoleBundle\Controller;
 
-use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Templating\EngineInterface;
 
-class ConsoleController extends Controller
+class ConsoleController
 {
+    /**
+     * @var EngineInterface
+     */
+    private $templating;
+
+    /**
+     * @var CommandExecuterInterface
+     */
+    private $commandExecuter;
+
+    /**
+     * @var Application
+     */
+    private $application;
+
+    /**
+     * @var string
+     */
+    private $environment;
+
+    public function __construct(
+        EngineInterface $templating,
+        CommandExecuterInterface $commandExecuter,
+        Application $application,
+        $environment
+    ) {
+        $this->templating = $templating;
+        $this->commandExecuter = $commandExecuter;
+        $this->application = $application;
+        $this->environment = $environment;
+    }
+
     public function consoleAction()
     {
-        /** @var Kernel $kernel */
-        $kernel = $this->get('kernel');
-        $application = new Application($kernel);
-
-        chdir($kernel->getRootDir().'/..');
-
-        foreach ($kernel->getBundles() as $bundle) {
-            /** @var Bundle $bundle */
-            $bundle->registerCommands($application);
-        }
-
-        return $this->render('CoreSphereConsoleBundle:Console:console.html.twig', array(
-            'working_dir' => getcwd(),
-            'environment' => $kernel->getEnvironment(),
-            'commands' => $application->all(),
-        ));
+        return new Response(
+            $this->templating->render('CoreSphereConsoleBundle:Console:console.html.twig', [
+                'working_dir' => getcwd(),
+                'environment' => $this->environment,
+                'commands' => $this->application->all(),
+            ])
+        );
     }
 
     public function execAction(Request $request)
     {
-        $executer = new CommandExecuter($this->get('kernel'));
         $commands = $request->request->get('commands');
-        $executedCommands = array();
+        $executedCommandsOutput = [];
 
         foreach ($commands as $command) {
-            $result = $executer->execute($command);
-            $executedCommands[] = $result;
+            $result = $this->commandExecuter->execute($command);
+            $executedCommandsOutput[] = $result;
 
             if (0 !== $result['error_code']) {
                 break;
             }
         }
 
-        return $this->render(
-            'CoreSphereConsoleBundle:Console:result.' . $request->getRequestFormat() . '.twig',
-            array('commands' => $executedCommands)
+        return new Response(
+            $this->templating->render(
+                'CoreSphereConsoleBundle:Console:result.json.twig',
+                ['commands' => $executedCommandsOutput]
+            )
         );
     }
 }
