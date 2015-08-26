@@ -13,7 +13,6 @@ namespace CoreSphere\ConsoleBundle\Console;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ApplicationFactory
@@ -36,7 +35,6 @@ class ApplicationFactory
         chdir($kernel->getRootDir().'/..');
 
         foreach ($this->getBundlesFromKernel($kernel) as $bundle) {
-            /** @var Bundle $bundle */
             $bundle->registerCommands($application);
         }
 
@@ -44,7 +42,7 @@ class ApplicationFactory
     }
 
     /**
-     * @return BundleInterface[]
+     * @return Bundle[]
      */
     private function getBundlesFromKernel(KernelInterface $kernel)
     {
