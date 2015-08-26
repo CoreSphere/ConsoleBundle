@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector AS DataCollectorBase;
 
-class DataCollector extends DataCollectorBase
+final class DataCollector extends DataCollectorBase
 {
     /**
      * {@inheritdoc}
