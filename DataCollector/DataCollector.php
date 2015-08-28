@@ -13,7 +13,7 @@ namespace CoreSphere\ConsoleBundle\DataCollector;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\DataCollector\DataCollector AS DataCollectorBase;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector as DataCollectorBase;
 
 final class DataCollector extends DataCollectorBase
 {

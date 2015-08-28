@@ -52,8 +52,7 @@ final class HtmlOutputFormatterDecoratorTest extends PHPUnit_Framework_TestCase
             '<span style="color:rgba(50,230,50,1)">a</span>'.
             '<span style="color:rgba(50,230,50,1)">&lt;script&gt;</span>'.
             '<span style="color:rgba(250,250,250,1);background-color:rgba(230,50,50,1)">evil();</span>'.
-            '<span style="color:rgba(50,230,50,1)">&lt;/script&gt;</span>'
-            , $this->decoratedFormatter->format(
+            '<span style="color:rgba(50,230,50,1)">&lt;/script&gt;</span>', $this->decoratedFormatter->format(
                 '<info>a<script><error>evil();</error></script>'
             )
         );
@@ -62,8 +61,7 @@ final class HtmlOutputFormatterDecoratorTest extends PHPUnit_Framework_TestCase
             '<span style="color:rgba(50,230,50,1)">a&amp;lt;</span>'.
             '<span style="color:rgba(50,230,50,1)">&lt;script&gt;</span>'.
             '<span style="color:rgba(50,230,50,1)">evil();</span>'.
-            '<span style="color:rgba(50,230,50,1)">&lt;/script&gt;</span>'
-            , $this->decoratedFormatter->format(
+            '<span style="color:rgba(50,230,50,1)">&lt;/script&gt;</span>', $this->decoratedFormatter->format(
                 '<info>a&lt;<script><info>evil();</info></script>'
             )
         );
