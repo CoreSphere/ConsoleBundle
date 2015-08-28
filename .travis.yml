@@ -8,8 +8,14 @@ php:
 
 install:
   - composer install
-  - if [[ $TRAVIS_PHP_VERSION = '5.6' && $PREFER_LOWEST = "" ]]; then wget http://get.sensiolabs.org/php-cs-fixer.phar -O php-cs-fixer; fi
+
+before_script:
+  - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then PHPUNIT_FLAGS="--coverage-clover coverage.xml"; fi
+  - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then wget http://get.sensiolabs.org/php-cs-fixer.phar -O php-cs-fixer; fi
 
 script:
-  - phpunit
-  - if [[ $TRAVIS_PHP_VERSION = '5.6' && $PREFER_LOWEST = "" ]]; then php php-cs-fixer fix . --diff --dry-run -v --level=psr2; fi
+  - phpunit $PHPUNIT_FLAGS
+  - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then php php-cs-fixer fix . --diff --dry-run -v --level=psr2; fi
+
+after_script:
+  - if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.xml; fi
