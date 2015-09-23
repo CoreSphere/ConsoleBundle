@@ -44,7 +44,21 @@ Installation
 	}
 	```
 
-3. run the assets:install command to install the css and js files
+3. Add the bundle's route to your app/config/routing_dev.yml
+
+	```yaml
+	# app/config/routing_dev.yml
+	
+	# ...
+	_main:
+    		resource: routing.yml
+	
+	coresphere_console:
+    		resource: .
+    		type: extra
+    	```
+
+4. run the assets:install command to install the css and js files
 
 	```sh
 	./app/console assets:install web
