@@ -83,6 +83,6 @@ final class CommandExecuter implements CommandExecuterInterface
         }
 
         $kernelClass = new ReflectionClass($this->baseKernel);
-        return $kernelClass->newInstance([$env, $debug]);
+        return $kernelClass->newInstance($env, $debug);
     }
 }
