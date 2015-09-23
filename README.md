@@ -48,15 +48,16 @@ Installation
 
 	```yaml
 	# app/config/routing_dev.yml
-	
+
 	# ...
 	_main:
-    		resource: routing.yml
+		resource: routing.yml
 	
 	coresphere_console:
-    		resource: .
-    		type: extra
-    	```
+		resource: .
+		type: extra
+	```
+
 
 4. run the assets:install command to install the css and js files
 
