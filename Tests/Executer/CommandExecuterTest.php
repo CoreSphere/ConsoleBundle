@@ -33,9 +33,9 @@ class CommandExecuterTest extends PHPUnit_Framework_TestCase
         $executer = $this->createExecuterWithKernel('prod', true);
         $result = $executer->execute('list --env=dev');
 
-        $this->assertSame('list', $result['input']);
+        $this->assertSame('list --env=dev', $result['input']);
         $this->assertContains('Lists commands', $result['output']);
-        $this->assertSame('prod', $result['environment']);
+        $this->assertSame('dev', $result['environment']);
         $this->assertSame(0, $result['error_code']);
     }
 
