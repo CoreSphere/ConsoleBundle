@@ -2,20 +2,20 @@ services:
     coresphere_console.controller:
         class: CoreSphere\ConsoleBundle\Controller\ConsoleController
         arguments:
-            - @templating
-            - @coresphere_console.executer
-            - @coresphere_console.application
+            - "@templating"
+            - "@coresphere_console.executer"
+            - "@coresphere_console.application"
             - %kernel.environment%
 
     coresphere_console.executer:
         class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
         arguments:
-            - @kernel
+            - "@kernel"
 
     coresphere_console.routing:
         class: CoreSphere\ConsoleBundle\Routing\Loader
         arguments:
-            - @routing.loader.yml
+            - "@routing.loader.yml"
         tags:
             - { name: routing.loader }
 
@@ -32,4 +32,4 @@ services:
         class: Symfony\Bundle\FrameworkBundle\Console\Application
         factory: ["@coresphere_console.application.factory", create]
         arguments:
-            - @kernel
+            - "@kernel"
