@@ -1,6 +1,8 @@
 ConsoleBundle
 =============
 
+[![Join the chat at https://gitter.im/CoreSphere/ConsoleBundle](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/CoreSphere/ConsoleBundle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://img.shields.io/travis/CoreSphere/ConsoleBundle.svg?style=flat-square)](https://travis-ci.org/CoreSphere/ConsoleBundle)
 [![Quality Score](https://img.shields.io/scrutinizer/g/CoreSphere/ConsoleBundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/CoreSphere/ConsoleBundle)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/CoreSphere/ConsoleBundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/CoreSphere/ConsoleBundle)
