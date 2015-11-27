@@ -114,13 +114,8 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     {
         $text = $matches[3];
         $styles = explode(';', $matches[1]);
-        $css = [];
-
-        foreach ($styles as $style) {
-            if (isset($this->styles[$style])) {
-                $css[] = $this->styles[$style];
-            }
-        }
+        
+        $css = array_intersect_key($this->styles, array_flip($styles));
 
         return sprintf(
             '<span style="%s">%s</span>',
