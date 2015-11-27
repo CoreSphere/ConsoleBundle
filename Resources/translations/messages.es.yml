@@ -1,0 +1,9 @@
+coresphere_console:
+    headline:
+        index: "Consola"
+    working_directory: 'Directorio de trabajo'
+    environment: 'Entorno'
+    welcome_message: 'Escriba %command% para obtener una lista de los comandos.'
+    loading: 'Cargando...'
+    suggestion_head: 'Quieres decir:'
+    empty_response: 'Terminado!'
