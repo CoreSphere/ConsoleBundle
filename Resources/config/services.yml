@@ -5,7 +5,7 @@ services:
             - "@templating"
             - "@coresphere_console.executer"
             - "@coresphere_console.application"
-            - %kernel.environment%
+            - "%kernel.environment%"
 
     coresphere_console.executer:
         class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
