@@ -19,7 +19,9 @@ Features
 Installation
 ------------
 
-1. Install via composer:
+0. Make sure you have php 5.5 or newer installed. Make sure your composer file does not override the required php version of your project with in older one via the `config.plattform.php` setting.
+
+1. Install the latest version via composer:
 
 	```sh
 	composer require coresphere/console-bundle
