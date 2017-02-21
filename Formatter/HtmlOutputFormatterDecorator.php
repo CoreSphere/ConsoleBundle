@@ -99,6 +99,9 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
      */
     public function format($message)
     {
+        if(!$this->isDecorated()) {
+            return $message;
+        }
         $formatted = $this->formatter->format($message);
         $escaped = htmlspecialchars($formatted, ENT_QUOTES, 'UTF-8');
         $converted = preg_replace_callback(self::CLI_COLORS_PATTERN, function ($matches) {
