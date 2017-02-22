@@ -65,11 +65,12 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         $this->assertSame([
             [
                 'output' => 'help-output',
-                'error_code' => 0
-            ], [
+                'error_code' => 0,
+            ],
+            [
                 'output' => 'list-output',
-                'error_code' => 0
-            ]
+                'error_code' => 0,
+            ],
         ], $commandsOutput);
     }
 
@@ -80,12 +81,13 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         $controller->execAction($request);
 
         $this->assertSame([[
-            'error_code' => 1
+            'error_code' => 1,
         ]], $this->renderArguments[1]['commands']);
     }
 
     /**
      * @param string $environment
+     *
      * @return ConsoleController
      */
     private function createControllerWithEnvironment($environment)
@@ -102,7 +104,6 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-
     /**
      * @return ObjectProphecy
      */
@@ -115,6 +116,7 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
                 $that->renderArguments = $args;
             }
         );
+
         return $templatingMock;
     }
 
@@ -126,29 +128,32 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         $commandExecuterMock = $this->prophesize(CommandExecuterInterface::class);
         $commandExecuterMock->execute(Argument::exact('error-command'))
             ->willReturn([
-                'error_code' => 1
+                'error_code' => 1,
             ]);
         $commandExecuterMock->execute(Argument::exact('help'))
             ->willReturn([
                 'output' => 'help-output',
-                'error_code' => 0
+                'error_code' => 0,
             ]);
         $commandExecuterMock->execute(Argument::exact('list'))
             ->willReturn([
                 'output' => 'list-output',
-                'error_code' => 0
+                'error_code' => 0,
             ]);
+
         return $commandExecuterMock;
     }
 
     /**
      * @param string $environment
+     *
      * @return Application
      */
     private function createApplicationWithEnvironment($environment)
     {
         $kernel = new KernelWithBundlesWithCommands($environment, true);
         $application = (new ApplicationFactory())->create($kernel);
+
         return $application;
     }
 }

@@ -35,8 +35,9 @@ final class Loader implements LoaderInterface
     {
         $collection = new RouteCollection();
         $collection->addCollection(
-            $this->yamlFileLoader->import(__DIR__ . '/../Resources/config/routing.yml')
+            $this->yamlFileLoader->import(__DIR__.'/../Resources/config/routing.yml')
         );
+
         return $collection;
     }
 

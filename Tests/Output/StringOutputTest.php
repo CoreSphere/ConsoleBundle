@@ -26,6 +26,6 @@ final class StringOutputTest extends PHPUnit_Framework_TestCase
         $this->assertSame($text, $output->getBuffer());
 
         $output->write($text, true);
-        $this->assertSame($text . $text . PHP_EOL, $output->getBuffer());
+        $this->assertSame($text.$text.PHP_EOL, $output->getBuffer());
     }
 }

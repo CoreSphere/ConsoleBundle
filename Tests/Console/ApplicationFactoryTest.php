@@ -30,8 +30,9 @@ final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideTestCommandRegistration()
+     *
      * @param string $environment
-     * @param int $commandCount
+     * @param int    $commandCount
      */
     public function testCommandsRegistration($environment, $commandCount)
     {
@@ -50,7 +51,7 @@ final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
         return [
             ['prod', 9],
             ['dev', 3],
-            ['test', 2]
+            ['test', 2],
         ];
     }
 

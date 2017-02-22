@@ -41,7 +41,7 @@ final class CoreSphereConsoleExtensionTest extends PHPUnit_Framework_TestCase
         $extensionConfig = $containerBuilder->getExtensionConfig($extension->getAlias());
         $this->assertSame([
             'resource' => '.',
-            'type' => 'extra'
+            'type' => 'extra',
         ], $extensionConfig[0]);
     }
 
@@ -53,6 +53,7 @@ final class CoreSphereConsoleExtensionTest extends PHPUnit_Framework_TestCase
         $containerBuilder = new ContainerBuilder();
         $containerBuilder->setDefinition('kernel', new Definition(SomeKernel::class))
             ->setArguments(['prod', true]);
+
         return $containerBuilder;
     }
 }
