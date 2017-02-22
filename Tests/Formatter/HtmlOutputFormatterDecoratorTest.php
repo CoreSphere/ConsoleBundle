@@ -74,6 +74,20 @@ final class HtmlOutputFormatterDecoratorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->decoratedFormatter->isDecorated());
     }
 
+    public function testUndecorated()
+    {
+        $this->decoratedFormatter->setStyle('info', new OutputFormatterStyle('green'));
+
+        $this->decoratedFormatter->setDecorated(false);
+
+        $this->assertSame(
+            '<info>Do not change</info>',
+            $this->decoratedFormatter->format(
+                '<info>Do not change</info>'
+            )
+        );
+    }
+
     public function testStyle()
     {
         $this->assertFalse($this->decoratedFormatter->hasStyle('nonExisting'));
