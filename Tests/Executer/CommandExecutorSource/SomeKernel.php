@@ -24,7 +24,7 @@ final class SomeKernel extends Kernel
     public function registerBundles()
     {
         return [
-            new FrameworkBundle()
+            new FrameworkBundle(),
         ];
     }
 
@@ -43,7 +43,7 @@ final class SomeKernel extends Kernel
      */
     public function getCacheDir()
     {
-        return sys_get_temp_dir() . '/_console_tests/temp';
+        return sys_get_temp_dir().'/_console_tests/temp';
     }
 
     /**
@@ -51,6 +51,6 @@ final class SomeKernel extends Kernel
      */
     public function getLogDir()
     {
-        return sys_get_temp_dir() . '/_console_tests/log';
+        return sys_get_temp_dir().'/_console_tests/log';
     }
 }

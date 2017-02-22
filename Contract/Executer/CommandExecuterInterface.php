@@ -18,6 +18,7 @@ interface CommandExecuterInterface
 {
     /**
      * @param string $commandString
+     *
      * @return array
      */
     public function execute($commandString);

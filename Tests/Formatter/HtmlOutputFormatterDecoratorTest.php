@@ -28,12 +28,11 @@ final class HtmlOutputFormatterDecoratorTest extends PHPUnit_Framework_TestCase
         $this->decoratedFormatter = new HtmlOutputFormatterDecorator(new OutputFormatter(true));
     }
 
-
     public function testEscapingOutput()
     {
-        $this->decoratedFormatter->setStyle('error',    new OutputFormatterStyle('white', 'red'));
-        $this->decoratedFormatter->setStyle('info',     new OutputFormatterStyle('green'));
-        $this->decoratedFormatter->setStyle('comment',  new OutputFormatterStyle('yellow'));
+        $this->decoratedFormatter->setStyle('error', new OutputFormatterStyle('white', 'red'));
+        $this->decoratedFormatter->setStyle('info', new OutputFormatterStyle('green'));
+        $this->decoratedFormatter->setStyle('comment', new OutputFormatterStyle('yellow'));
         $this->decoratedFormatter->setStyle('question', new OutputFormatterStyle('black', 'cyan'));
 
         $this->assertSame(
@@ -73,6 +72,20 @@ final class HtmlOutputFormatterDecoratorTest extends PHPUnit_Framework_TestCase
 
         $this->decoratedFormatter->setDecorated(false);
         $this->assertFalse($this->decoratedFormatter->isDecorated());
+    }
+
+    public function testUndecorated()
+    {
+        $this->decoratedFormatter->setStyle('info', new OutputFormatterStyle('green'));
+
+        $this->decoratedFormatter->setDecorated(false);
+
+        $this->assertSame(
+            '<info>Do not change</info>',
+            $this->decoratedFormatter->format(
+                '<info>Do not change</info>'
+            )
+        );
     }
 
     public function testStyle()

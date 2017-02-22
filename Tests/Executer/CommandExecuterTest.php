@@ -27,7 +27,7 @@ class CommandExecuterTest extends PHPUnit_Framework_TestCase
         $this->assertSame('prod', $result['environment']);
         $this->assertSame(0, $result['error_code']);
     }
-    
+
     public function testExecuteWithExplicitEnvironment()
     {
         $executer = $this->createExecuterWithKernel('prod', true);
@@ -52,12 +52,14 @@ class CommandExecuterTest extends PHPUnit_Framework_TestCase
 
     /**
      * @param string $env
-     * @param bool $debug
+     * @param bool   $debug
+     *
      * @return CommandExecuter
      */
     private function createExecuterWithKernel($env, $debug)
     {
         $kernel = new SomeKernel($env, $debug);
+
         return new CommandExecuter($kernel);
     }
 }

@@ -24,6 +24,7 @@ class ApplicationFactory
     {
         $application = new Application($kernel);
         $application = $this->registerCommandsToApplication($application, $kernel);
+
         return $application;
     }
 

@@ -48,7 +48,7 @@ final class KernelWithBundlesWithCommands extends Kernel
      */
     public function getCacheDir()
     {
-        return sys_get_temp_dir() . '/_console_tests/temp';
+        return sys_get_temp_dir().'/_console_tests/temp';
     }
 
     /**
@@ -56,6 +56,6 @@ final class KernelWithBundlesWithCommands extends Kernel
      */
     public function getLogDir()
     {
-        return sys_get_temp_dir() . '/_console_tests/log';
+        return sys_get_temp_dir().'/_console_tests/log';
     }
 }

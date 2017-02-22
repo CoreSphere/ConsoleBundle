@@ -28,7 +28,7 @@ class StringOutput extends Output
      */
     public function doWrite($message, $newline)
     {
-        $this->buffer .= $message . (true === $newline ? PHP_EOL : '');
+        $this->buffer .= $message.(true === $newline ? PHP_EOL : '');
     }
 
     /**

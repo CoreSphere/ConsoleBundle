@@ -54,10 +54,10 @@ final class CommandExecuter implements CommandExecuterInterface
         $errorCode = $application->run($input, $output);
 
         return [
-            'input'       => $commandString,
-            'output'      => $output->getBuffer(),
+            'input' => $commandString,
+            'output' => $output->getBuffer(),
             'environment' => $kernel->getEnvironment(),
-            'error_code'  => $errorCode
+            'error_code' => $errorCode,
         ];
     }
 
@@ -67,6 +67,7 @@ final class CommandExecuter implements CommandExecuterInterface
     private function getApplication(InputInterface $input)
     {
         $kernel = $this->getKernel($input);
+
         return new FrameworkConsoleApplication($kernel);
     }
 
@@ -83,6 +84,7 @@ final class CommandExecuter implements CommandExecuterInterface
         }
 
         $kernelClass = new ReflectionClass($this->baseKernel);
+
         return $kernelClass->newInstance($env, $debug);
     }
 }
