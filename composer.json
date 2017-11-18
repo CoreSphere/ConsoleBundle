@@ -26,7 +26,7 @@
         "doctrine/doctrine-fixtures-bundle": "^2.2",
         "doctrine/doctrine-migrations-bundle": "^1.0",
         "phpunit/phpunit": "^4.8",
-        "symfony/finder": "^2.7",
+        "symfony/finder": "^2.7|^3.0",
         "symfony/templating": "^3.2"
     },
     "autoload": {
