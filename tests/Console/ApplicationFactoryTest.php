@@ -30,11 +30,8 @@ final class ApplicationFactoryTest extends TestCase
 
     /**
      * @dataProvider provideTestCommandRegistration()
-     *
-     * @param string $environment
-     * @param int    $commandCount
      */
-    public function testCommandsRegistration($environment, $commandCount)
+    public function testCommandsRegistration(string $environment, int $commandCount)
     {
         $kernel = new KernelWithBundlesWithCommands($environment, false);
         $application = (new ApplicationFactory())->create($kernel);
