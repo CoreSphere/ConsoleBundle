@@ -11,9 +11,9 @@
 
 namespace CoreSphere\ConsoleBundle\Tests\Source;
 
-use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
-use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 
 final class KernelWithBundlesWithCommands extends Kernel
@@ -26,11 +26,7 @@ final class KernelWithBundlesWithCommands extends Kernel
         $bundles = [];
 
         if ('prod' === $this->getEnvironment()) {
-            $bundles[] = new DoctrineMigrationsBundle();
-        }
-
-        if ('dev' === $this->getEnvironment()) {
-            $bundles[] = new DoctrineFixturesBundle();
+            $bundles[] = new DoctrineBundle();
         }
 
         return $bundles;
@@ -41,6 +37,18 @@ final class KernelWithBundlesWithCommands extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function build(ContainerBuilder $containerBuilder)
+    {
+        // @todo: how to enable command loading here?
+        // ref: https://github.com/doctrine/DoctrineBundle/pull/715
+        $containerBuilder->prependExtensionConfig('doctrine', [
+            'dbal' => true,
+        ]);
     }
 
     /**

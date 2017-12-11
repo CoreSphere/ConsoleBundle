@@ -21,6 +21,7 @@ final class ApplicationFactoryTest extends TestCase
     public function testCreate()
     {
         $kernel = new KernelWithBundlesWithCommands('prod', true);
+        $kernel->boot();
 
         $this->assertInstanceOf(
             Application::class,
@@ -34,6 +35,8 @@ final class ApplicationFactoryTest extends TestCase
     public function testCommandsRegistration(string $environment, int $commandCount)
     {
         $kernel = new KernelWithBundlesWithCommands($environment, false);
+        $kernel->boot();
+
         $application = (new ApplicationFactory())->create($kernel);
 
         $commands = $application->all();
@@ -50,14 +53,5 @@ final class ApplicationFactoryTest extends TestCase
             ['dev', 3],
             ['test', 2],
         ];
-    }
-
-    public function testCommandsRegistrationWithAlreadyRegisteredCommands()
-    {
-        $kernel = new KernelWithBundlesWithCommands('prod', false);
-        $kernel->boot();
-        $application = (new ApplicationFactory())->create($kernel);
-
-        $this->assertCount(9, $application->all());
     }
 }
