@@ -31,10 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "CoreSphere\\ConsoleBundle\\": ""
-        },
-        "exclude-from-classmap": [
-            "Tests/"
-        ]
+            "CoreSphere\\ConsoleBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CoreSphere\\ConsoleBundle\\Tests\\": "tests"
+        }
     }
 }
