@@ -10,14 +10,12 @@ install:
 before_script:
   # coverage
   - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then PHPUNIT_FLAGS="--coverage-clover coverage.xml"; fi
-  # coding standard
-  - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then wget http://get.sensiolabs.org/php-cs-fixer.phar -O php-cs-fixer; fi
 
 script:
   # coverage
   - phpunit $PHPUNIT_FLAGS
   # coding standard
-  - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then php php-cs-fixer fix . --diff --dry-run -v --rules=@Symfony; fi
+  - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then vendor/bin/php-cs-fixer fix src tests --diff --dry-run -v --rules=@Symfony; fi
 
 after_script:
   - if [[ $TRAVIS_PHP_VERSION = '7.2' ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.xml; fi

@@ -25,11 +25,11 @@ final class KernelWithBundlesWithCommands extends Kernel
     {
         $bundles = [];
 
-        if (in_array($this->getEnvironment(), ['prod'])) {
+        if ('prod' === $this->getEnvironment()) {
             $bundles[] = new DoctrineMigrationsBundle();
         }
 
-        if (in_array($this->getEnvironment(), ['dev'])) {
+        if ('dev' === $this->getEnvironment()) {
             $bundles[] = new DoctrineFixturesBundle();
         }
 
