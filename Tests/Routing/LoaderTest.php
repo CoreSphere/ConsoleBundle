@@ -12,14 +12,14 @@
 namespace CoreSphere\ConsoleBundle\Tests\Routing;
 
 use CoreSphere\ConsoleBundle\Routing\Loader;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-final class LoaderTest extends PHPUnit_Framework_TestCase
+final class LoaderTest extends TestCase
 {
     /**
      * @var Loader

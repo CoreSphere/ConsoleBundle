@@ -13,10 +13,10 @@ namespace CoreSphere\ConsoleBundle\Tests\Console;
 
 use CoreSphere\ConsoleBundle\Console\ApplicationFactory;
 use CoreSphere\ConsoleBundle\Tests\Source\KernelWithBundlesWithCommands;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
+final class ApplicationFactoryTest extends TestCase
 {
     public function testCreate()
     {
