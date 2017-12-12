@@ -1,23 +1,14 @@
-<?php
-
-/*
- * This file is part of the CoreSphereConsoleBundle.
- *
- * (c) Laszlo Korte <me@laszlokorte.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+<?php declare(strict_types=1);
 
 namespace CoreSphere\ConsoleBundle\Controller;
 
-use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
+use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Templating\EngineInterface;
 
-class ConsoleController
+final class ConsoleController
 {
     /**
      * @var EngineInterface
@@ -25,7 +16,7 @@ class ConsoleController
     private $templating;
 
     /**
-     * @var CommandExecuterInterface
+     * @var CommandExecuter
      */
     private $commandExecuter;
 
@@ -37,18 +28,18 @@ class ConsoleController
     /**
      * @var string
      */
-    private $environment;
+    private $kernelEnvironment;
 
     public function __construct(
+        string $kernelEnvironment,
         EngineInterface $templating,
-        CommandExecuterInterface $commandExecuter,
-        Application $application,
-        $environment
+        CommandExecuter $commandExecuter,
+        Application $application
     ) {
+        $this->kernelEnvironment = $kernelEnvironment;
         $this->templating = $templating;
         $this->commandExecuter = $commandExecuter;
         $this->application = $application;
-        $this->environment = $environment;
     }
 
     public function consoleAction()
@@ -56,13 +47,13 @@ class ConsoleController
         return new Response(
             $this->templating->render('CoreSphereConsoleBundle:Console:console.html.twig', [
                 'working_dir' => getcwd(),
-                'environment' => $this->environment,
+                'environment' => $this->kernelEnvironment,
                 'commands' => $this->application->all(),
             ])
         );
     }
 
-    public function execAction(Request $request)
+    public function execAction(Request $request): Response
     {
         $commands = $request->request->get('commands');
         $executedCommandsOutput = [];

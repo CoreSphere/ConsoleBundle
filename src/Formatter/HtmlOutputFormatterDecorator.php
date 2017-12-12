@@ -1,13 +1,4 @@
-<?php
-
-/*
- * This file is part of the CoreSphereConsoleBundle.
- *
- * (c) Laszlo Korte <me@laszlokorte.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+<?php declare(strict_types=1);
 
 namespace CoreSphere\ConsoleBundle\Formatter;
 
@@ -16,7 +7,10 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 
 final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
 {
-    const CLI_COLORS_PATTERN = '/\033\[(([\d+];?)*)m(.*?)\033\[(([\d+];?)*)m/i';
+    /**
+     * @var string
+     */
+    private const CLI_COLORS_PATTERN = '/\033\[(([\d+];?)*)m(.*?)\033\[(([\d+];?)*)m/i';
 
     /**
      * @var string[]
@@ -56,15 +50,15 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function setDecorated($decorated)
+    public function setDecorated($decorated): void
     {
-        return $this->formatter->setDecorated($decorated);
+        $this->formatter->setDecorated($decorated);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isDecorated()
+    public function isDecorated(): bool
     {
         return $this->formatter->isDecorated();
     }
@@ -72,15 +66,15 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function setStyle($name, OutputFormatterStyleInterface $style)
+    public function setStyle($name, OutputFormatterStyleInterface $style): void
     {
-        return $this->formatter->setStyle($name, $style);
+        $this->formatter->setStyle($name, $style);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasStyle($name)
+    public function hasStyle($name): bool
     {
         return $this->formatter->hasStyle($name);
     }
@@ -88,7 +82,7 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function getStyle($name)
+    public function getStyle($name): OutputFormatterStyleInterface
     {
         return $this->formatter->getStyle($name);
     }
@@ -96,11 +90,12 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function format($message)
+    public function format($message): string
     {
         if (!$this->isDecorated()) {
             return $message;
         }
+
         $formatted = $this->formatter->format($message);
         $escaped = htmlspecialchars($formatted, ENT_QUOTES, 'UTF-8');
         $converted = preg_replace_callback(self::CLI_COLORS_PATTERN, function ($matches) {
@@ -110,10 +105,7 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
         return $converted;
     }
 
-    /**
-     * @return string
-     */
-    private function replaceFormat(array $matches)
+    private function replaceFormat(array $matches): string
     {
         $text = $matches[3];
         $styles = explode(';', $matches[1]);

@@ -1,13 +1,4 @@
-<?php
-
-/*
- * This file is part of the CoreSphereConsoleBundle.
- *
- * (c) Laszlo Korte <me@laszlokorte.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+<?php declare(strict_types=1);
 
 namespace CoreSphere\ConsoleBundle\Output;
 
@@ -16,7 +7,7 @@ use Symfony\Component\Console\Output\Output;
 /**
  * Collects console output into a string.
  */
-class StringOutput extends Output
+final class StringOutput extends Output
 {
     /**
      * @var string
@@ -31,10 +22,7 @@ class StringOutput extends Output
         $this->buffer .= $message.(true === $newline ? PHP_EOL : '');
     }
 
-    /**
-     * @return string
-     */
-    public function getBuffer()
+    public function getBuffer(): string
     {
         return $this->buffer;
     }

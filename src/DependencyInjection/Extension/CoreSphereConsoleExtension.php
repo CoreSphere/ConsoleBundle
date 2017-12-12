@@ -1,13 +1,4 @@
-<?php
-
-/*
- * This file is part of the CoreSphereConsoleBundle.
- *
- * (c) Laszlo Korte <me@laszlokorte.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+<?php declare(strict_types=1);
 
 namespace CoreSphere\ConsoleBundle\DependencyInjection\Extension;
 
@@ -22,7 +13,7 @@ final class CoreSphereConsoleExtension extends Extension implements PrependExten
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
         $loader->load('services.yml');

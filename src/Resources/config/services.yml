@@ -1,35 +1,16 @@
 services:
-    coresphere_console.controller:
-        class: CoreSphere\ConsoleBundle\Controller\ConsoleController
-        arguments:
-            - "@templating"
-            - "@coresphere_console.executer"
-            - "@coresphere_console.application"
-            - "%kernel.environment%"
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            '$kernelEnvironment': '%kernel.environment%'
 
-    coresphere_console.executer:
-        class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
-        arguments:
-            - "@kernel"
+    CoreSphere\ConsoleBundle\:
+        resource: ../..
 
-    coresphere_console.routing:
-        class: CoreSphere\ConsoleBundle\Routing\Loader
-        arguments:
-            - "@routing.loader.yml"
+    CoreSphere\ConsoleBundle\DataCollector\DataCollector:
         tags:
-            - { name: routing.loader }
+            - { name: data_collector, template: 'CoreSphereConsoleBundle:Toolbar:toolbar', id: 'coresphere_console' }
 
-    coresphere_console.toolbar:
-        class: CoreSphere\ConsoleBundle\DataCollector\DataCollector
-        tags:
-            - { name: data_collector, template: "CoreSphereConsoleBundle:Toolbar:toolbar", id: "coresphere_console" }
-
-    # console application
-    coresphere_console.application.factory:
-        class: CoreSphere\ConsoleBundle\Console\ApplicationFactory
-
-    coresphere_console.application:
-        class: Symfony\Bundle\FrameworkBundle\Console\Application
-        factory: ["@coresphere_console.application.factory", create]
-        arguments:
-            - "@kernel"
+    Symfony\Bundle\FrameworkBundle\Console\Application:
+        factory: ['@CoreSphere\ConsoleBundle\Console\ApplicationFactory', 'create']

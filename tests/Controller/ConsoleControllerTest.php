@@ -14,7 +14,6 @@ namespace CoreSphere\ConsoleBundle\Tests\Controller;
 use CoreSphere\ConsoleBundle\Console\ApplicationFactory;
 use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use CoreSphere\ConsoleBundle\Controller\ConsoleController;
-use CoreSphere\ConsoleBundle\Tests\Source\KernelWithBundlesWithCommands;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -142,18 +141,5 @@ final class ConsoleControllerTest extends TestCase
             ]);
 
         return $commandExecuterMock;
-    }
-
-    /**
-     * @param string $environment
-     *
-     * @return Application
-     */
-    private function createApplicationWithEnvironment($environment)
-    {
-        $kernel = new KernelWithBundlesWithCommands($environment, true);
-        $application = (new ApplicationFactory())->create($kernel);
-
-        return $application;
     }
 }
