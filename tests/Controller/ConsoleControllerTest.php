@@ -1,23 +1,11 @@
-<?php
-
-/*
- * This file is part of the CoreSphereConsoleBundle.
- *
- * (c) Laszlo Korte <me@laszlokorte.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+<?php declare(strict_types=1);
 
 namespace CoreSphere\ConsoleBundle\Tests\Controller;
 
-use CoreSphere\ConsoleBundle\Console\ApplicationFactory;
-use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use CoreSphere\ConsoleBundle\Controller\ConsoleController;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -31,25 +19,25 @@ final class ConsoleControllerTest extends TestCase
     public function testConsoleActionWorkingDir()
     {
         $controller = $this->createControllerWithEnvironment('prod');
-        $controller->consoleAction();
+        $controller->console();
         $this->assertSame(getcwd(), $this->renderArguments[1]['working_dir']);
     }
 
     public function testConsoleActionEnvironment()
     {
         $controller = $this->createControllerWithEnvironment('prod');
-        $controller->consoleAction();
+        $controller->console();
         $this->assertSame('prod', $this->renderArguments[1]['environment']);
 
         $controller = $this->createControllerWithEnvironment('dev');
-        $controller->consoleAction();
+        $controller->console();
         $this->assertSame('dev', $this->renderArguments[1]['environment']);
     }
 
     public function testConsoleActionCommands()
     {
         $controller = $this->createControllerWithEnvironment('prod');
-        $controller->consoleAction();
+        $controller->console();
 
         $this->assertCount(9, $this->renderArguments[1]['commands']);
     }
@@ -58,7 +46,7 @@ final class ConsoleControllerTest extends TestCase
     {
         $controller = $this->createControllerWithEnvironment('prod');
         $request = new Request([], ['commands' => ['help', 'list']]);
-        $controller->execAction($request);
+        $controller->exec($request);
 
         $commandsOutput = $this->renderArguments[1]['commands'];
         $this->assertSame([
@@ -77,7 +65,7 @@ final class ConsoleControllerTest extends TestCase
     {
         $controller = $this->createControllerWithEnvironment('prod');
         $request = new Request([], ['commands' => ['error-command', 'help']]);
-        $controller->execAction($request);
+        $controller->exec($request);
 
         $this->assertSame([[
             'error_code' => 1,

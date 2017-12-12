@@ -25,20 +25,21 @@ final class CommandExecuter
     /**
      * {@inheritdoc}
      */
-    public function execute(string $commandString)
+    public function execute(string $commandString): array
     {
+
         $input = new StringInput($commandString);
-        $output = new StringOutput();
+        $output = new StringOutput(); // service?
 
         $application = $this->getApplication($input);
-        $formatter = $output->getFormatter();
+        $formatter = $output->getFormatter();  // service?
         $kernel = $application->getKernel();
 
         chdir($kernel->getRootDir().'/..');
 
         $input->setInteractive(false);
         $formatter->setDecorated(true);
-        $output->setFormatter(new HtmlOutputFormatterDecorator($formatter));
+        $output->setFormatter(new HtmlOutputFormatterDecorator($formatter)); // service?
         $application->setAutoExit(false);
 
         $errorCode = $application->run($input, $output);
@@ -51,10 +52,7 @@ final class CommandExecuter
         ];
     }
 
-    /**
-     * @return FrameworkConsoleApplication
-     */
-    private function getApplication(InputInterface $input)
+    private function getApplication(InputInterface $input): FrameworkConsoleApplication
     {
         $kernel = $this->getKernel($input);
 

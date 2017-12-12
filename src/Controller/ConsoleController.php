@@ -42,7 +42,7 @@ final class ConsoleController
         $this->application = $application;
     }
 
-    public function consoleAction()
+    public function console(): Response
     {
         return new Response(
             $this->templating->render('CoreSphereConsoleBundle:Console:console.html.twig', [
@@ -53,7 +53,7 @@ final class ConsoleController
         );
     }
 
-    public function execAction(Request $request): Response
+    public function exec(Request $request): Response
     {
         $commands = $request->request->get('commands');
         $executedCommandsOutput = [];
