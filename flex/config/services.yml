@@ -1,3 +1,5 @@
+# move to https://github.com/symfony/recipes-contrib
+# example: https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/3.3/config/services.yaml
 services:
     _defaults:
         autowire: true
@@ -6,7 +8,7 @@ services:
             '$kernelEnvironment': '%kernel.environment%'
 
     CoreSphere\ConsoleBundle\:
-        resource: ../..
+        resource: '../..'
 
     CoreSphere\ConsoleBundle\DataCollector\DataCollector:
         tags:
