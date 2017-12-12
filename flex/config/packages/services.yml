@@ -1,0 +1,15 @@
+# move to https://github.com/symfony/recipes-contrib
+# example: https://github.com/symfony/recipes/blob/master/symfony/framework-bundle/3.3/config/services.yaml
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            '$kernelEnvironment': '%kernel.environment%'
+
+    CoreSphere\ConsoleBundle\:
+        resource: '../..'
+
+    CoreSphere\ConsoleBundle\DataCollector\DataCollector:
+        tags:
+            - { name: data_collector, template: 'CoreSphereConsoleBundle:Toolbar:toolbar', id: 'coresphere_console' }

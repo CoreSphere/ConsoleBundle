@@ -1,0 +1,13 @@
+console:
+    path: '/_console'
+    _controller: CoreSphere\ConsoleBundle\Controller\ConsoleController:console
+    methods: '[GET]'
+
+console_exec:
+    path: '/_console/commands.{_format}'
+    _controller: CoreSphere\ConsoleBundle\Controller\ConsoleController:exec
+    defaults:
+        _format: 'json'
+    methods: '[POST]'
+    requirements:
+        _format: 'json'

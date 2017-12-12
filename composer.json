@@ -15,26 +15,26 @@
         }
     ],
     "require": {
-        "php": "^5.5|^7.0",
-        "symfony/console": "~2.7|~3.0|~4.0",
-        "symfony/dependency-injection": "~2.7|~3.0|~4.0",
-        "symfony/event-dispatcher": "~2.7|~3.0|~4.0",
-        "symfony/framework-bundle": "~2.7|~3.0|~4.0",
-        "symfony/http-kernel": "~2.7|~3.0|~4.0"
+        "php": "^7.1",
+        "symfony/console": "^3.4|^4.0",
+        "symfony/dependency-injection": "^3.4|^4.0",
+        "symfony/event-dispatcher": "^3.4|^4.0",
+        "symfony/framework-bundle": "^3.4|^4.0",
+        "symfony/http-kernel": "^3.4|^4.0"
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^2.2",
-        "doctrine/doctrine-migrations-bundle": "^1.0",
-        "phpunit/phpunit": "^4.8",
-        "symfony/finder": "^2.7|~4.0",
-        "symfony/templating": "^3.2|~4.0"
+        "phpunit/phpunit": "^6.5",
+        "symfony/finder": "^4.0",
+        "symfony/templating": "^4.0"
     },
     "autoload": {
         "psr-4": {
-            "CoreSphere\\ConsoleBundle\\": ""
-        },
-        "exclude-from-classmap": [
-            "Tests/"
-        ]
+            "CoreSphere\\ConsoleBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CoreSphere\\ConsoleBundle\\Tests\\": "tests"
+        }
     }
 }

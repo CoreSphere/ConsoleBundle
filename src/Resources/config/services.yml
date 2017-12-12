@@ -1,0 +1,13 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            '$kernelEnvironment': '%kernel.environment%'
+
+    CoreSphere\ConsoleBundle\:
+        resource: '../..'
+
+    CoreSphere\ConsoleBundle\DataCollector\DataCollector:
+        tags:
+            - { name: data_collector, template: 'CoreSphereConsoleBundle:Toolbar:toolbar', id: 'coresphere_console' }
