@@ -31,4 +31,13 @@ final class DataCollector extends DataCollectorBase
     {
         return 'coresphere_console';
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function reset()
+    {
+        $this->data = [];
+    }
+    
 }
