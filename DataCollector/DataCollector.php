@@ -27,6 +27,13 @@ final class DataCollector extends DataCollectorBase
     /**
      * {@inheritdoc}
      */
+    public function reset()
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'coresphere_console';
