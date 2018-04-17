@@ -16,11 +16,11 @@
     ],
     "require": {
         "php": "^5.5|^7.0",
-        "symfony/console": "~2.7|~3.0|~4.0",
-        "symfony/dependency-injection": "~2.7|~3.0|~4.0",
-        "symfony/event-dispatcher": "~2.7|~3.0|~4.0",
-        "symfony/framework-bundle": "~2.7|~3.0|~4.0",
-        "symfony/http-kernel": "~2.7|~3.0|~4.0"
+        "symfony/console": "~2.7|~4.0",
+        "symfony/dependency-injection": "~2.7|~4.0",
+        "symfony/event-dispatcher": "~2.7|~4.0",
+        "symfony/framework-bundle": "~2.7|~4.0",
+        "symfony/http-kernel": "~2.7|~4.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^2.2",
