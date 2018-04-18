@@ -1,4 +1,4 @@
-{% extends 'CoreSphereConsoleBundle::base.html.twig'  %}
+{% extends '@CoreSphereConsole/base.html.twig'  %}
 
 {% block title %}{{ 'coresphere_console.headline.index'|trans }}{% endblock %}
 
@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block body %}
-    {%  include 'CoreSphereConsoleBundle:Console:terminal.html.twig' %}
-    {%  include 'CoreSphereConsoleBundle:Console:htmlTemplates.html.twig' %}
+    {%  include '@CoreSphereConsole/Console/terminal.html.twig' %}
+    {%  include '@CoreSphereConsole/Console/htmlTemplates.html.twig' %}
 {% endblock %}
 
 {% block javascripts %}

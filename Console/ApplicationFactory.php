@@ -43,7 +43,7 @@ class ApplicationFactory
     }
 
     /**
-     * @return Bundle[]
+     * @return BundleInterface[]
      */
     private function getBundlesFromKernel(KernelInterface $kernel)
     {

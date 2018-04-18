@@ -72,7 +72,7 @@ final class CommandExecuter implements CommandExecuterInterface
     }
 
     /**
-     * @return KernelInterface
+     * @return
      */
     private function getKernel(InputInterface $input)
     {
