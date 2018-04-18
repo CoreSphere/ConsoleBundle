@@ -1,11 +1,14 @@
 services:
+
     coresphere_console.controller:
         class: CoreSphere\ConsoleBundle\Controller\ConsoleController
+        public: true
+        tags: ['controller.service_arguments']
         arguments:
-            - "@templating"
-            - "@coresphere_console.executer"
-            - "@coresphere_console.application"
-            - "%kernel.environment%"
+            $templating: "@twig"
+            $commandExecuter: "@coresphere_console.executer"
+            $application: "@coresphere_console.application"
+            $environment: "%kernel.environment%"
 
     coresphere_console.executer:
         class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
@@ -22,7 +25,7 @@ services:
     coresphere_console.toolbar:
         class: CoreSphere\ConsoleBundle\DataCollector\DataCollector
         tags:
-            - { name: data_collector, template: "CoreSphereConsoleBundle:Toolbar:toolbar", id: "coresphere_console" }
+            - { name: data_collector, template: "@CoreSphereConsole/Toolbar/toolbar.html.twig", id: "coresphere_console" }
 
     # console application
     coresphere_console.application.factory:
