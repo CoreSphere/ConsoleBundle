@@ -39,5 +39,4 @@ final class DataCollector extends DataCollectorBase
     {
         $this->data = [];
     }
-    
 }
