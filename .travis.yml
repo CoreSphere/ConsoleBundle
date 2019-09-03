@@ -13,4 +13,4 @@ install:
   - composer -n ${HIGHEST_LOWEST-install} --prefer-dist
 
 script:
-  - phpunit $PHPUNIT_FLAGS
+  - vendor/bin/phpunit $PHPUNIT_FLAGS
