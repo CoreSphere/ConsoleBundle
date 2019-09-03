@@ -13,9 +13,9 @@ namespace CoreSphere\ConsoleBundle\Tests\Executer;
 
 use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
 use CoreSphere\ConsoleBundle\Tests\Executer\CommandExecutorSource\SomeKernel;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class CommandExecuterTest extends PHPUnit_Framework_TestCase
+class CommandExecuterTest extends TestCase
 {
     public function testExecute()
     {

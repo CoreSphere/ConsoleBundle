@@ -31,4 +31,8 @@ final class DataCollector extends DataCollectorBase
     {
         return 'coresphere_console';
     }
+
+    public function reset()
+    {
+    }
 }

@@ -15,14 +15,14 @@ use CoreSphere\ConsoleBundle\Console\ApplicationFactory;
 use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use CoreSphere\ConsoleBundle\Controller\ConsoleController;
 use CoreSphere\ConsoleBundle\Tests\Source\KernelWithBundlesWithCommands;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Templating\EngineInterface;
 
-final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
+final class ConsoleControllerTest extends TestCase
 {
     /**
      * @var array

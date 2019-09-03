@@ -12,11 +12,11 @@
 namespace CoreSphere\ConsoleBundle\Tests\DataCollector;
 
 use CoreSphere\ConsoleBundle\DataCollector\DataCollector;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class DataCollectorTest extends PHPUnit_Framework_TestCase
+final class DataCollectorTest extends TestCase
 {
     public function testWhole()
     {
