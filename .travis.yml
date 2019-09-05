@@ -10,7 +10,7 @@ env:
   - HIGHEST_LOWEST="update"
 
 before_script:
-  - if [[ $TRAVIS_PHP_VERSION = '7.3' AND $HIGHEST_LOWEST = 'update' ]]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi
+  - if [[ $TRAVIS_PHP_VERSION = '7.3' && $HIGHEST_LOWEST = 'update' ]]; then PHPUNIT_FLAGS="--coverage-clover build/logs/clover.xml"; fi
 
 install:
   - composer -n ${HIGHEST_LOWEST-install} --prefer-dist

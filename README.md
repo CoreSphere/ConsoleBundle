@@ -1,8 +1,7 @@
 ConsoleBundle
 =============
 
-[![Build Status](https://img.shields.io/travis/CoreSphere/ConsoleBundle.svg?style=flat-square)](https://travis-ci.org/CoreSphere/ConsoleBundle)
-[![Quality Score](https://img.shields.io/scrutinizer/g/CoreSphere/ConsoleBundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/CoreSphere/ConsoleBundle)
+[![Build Status](https://travis-ci.org/OpenClassrooms/ConsoleBundle.svg?branch=master)](https://travis-ci.org/OpenClassrooms/ConsoleBundle)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/CoreSphere/ConsoleBundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/CoreSphere/ConsoleBundle)
 
 
