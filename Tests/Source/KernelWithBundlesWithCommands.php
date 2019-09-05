@@ -14,6 +14,8 @@ namespace CoreSphere\ConsoleBundle\Tests\Source;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Console\DependencyInjection\AddConsoleCommandPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 
 final class KernelWithBundlesWithCommands extends Kernel
@@ -41,6 +43,13 @@ final class KernelWithBundlesWithCommands extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
+    }
+
+    protected function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new AddConsoleCommandPass());
     }
 
     /**
