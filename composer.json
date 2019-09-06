@@ -1,6 +1,6 @@
 {
-    "name": "coresphere/console-bundle",
-    "description": "This bundle allows you accessing the symfony2 console via your browser",
+    "name": "openclassrooms/console-bundle",
+    "description": "This bundle allows you accessing the symfony3-4 console via your browser",
     "keywords": ["console","javascript","symfony"],
     "type": "symfony-bundle",
     "license": "MIT",
@@ -32,7 +32,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CoreSphere\\ConsoleBundle\\": "."
+            "CoreSphere\\ConsoleBundle\\": ""
         },
         "exclude-from-classmap": [
             "Tests/"
