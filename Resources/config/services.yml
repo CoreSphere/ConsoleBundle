@@ -6,30 +6,36 @@ services:
             - "@coresphere_console.executer"
             - "@coresphere_console.application"
             - "%kernel.environment%"
+        public: true
 
     coresphere_console.executer:
         class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
         arguments:
             - "@kernel"
+        public: true
 
     coresphere_console.routing:
         class: CoreSphere\ConsoleBundle\Routing\Loader
         arguments:
             - "@routing.loader.yml"
+        public: true
         tags:
             - { name: routing.loader }
 
     coresphere_console.toolbar:
         class: CoreSphere\ConsoleBundle\DataCollector\DataCollector
+        public: true
         tags:
             - { name: data_collector, template: "CoreSphereConsoleBundle:Toolbar:toolbar", id: "coresphere_console" }
 
     # console application
     coresphere_console.application.factory:
         class: CoreSphere\ConsoleBundle\Console\ApplicationFactory
+        public: true
 
     coresphere_console.application:
         class: Symfony\Bundle\FrameworkBundle\Console\Application
         factory: ["@coresphere_console.application.factory", create]
         arguments:
             - "@kernel"
+        public: true
