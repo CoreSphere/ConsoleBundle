@@ -1,0 +1,9 @@
+coresphere_console:
+    headline:
+        index: "Console"
+    working_directory: 'Werkdirectory'
+    environment: 'Omgeving'
+    welcome_message: 'Typ %command% om een lijst te krijgen van alle commandos.'
+    loading: 'Laden...'
+    suggestion_head: 'Bedoelde u:'
+    empty_response: 'Voltooi!'
