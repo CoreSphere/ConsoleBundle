@@ -22,6 +22,7 @@
                 jQuery("#coresphere_consolebundle_console"), {
                 "commands" : {{ commands|keys|json_encode|raw }}.sort(),
                 "post_path" : "{{ path('console_exec') }}",
+                "state_path" : "{{ path('console_state') }}",
                 "environment" : "{{ environment }}",
                 "lang" : {
                     "loading" : "{{ 'coresphere_console.loading'|trans }}",
@@ -39,7 +40,8 @@
                     "suggestion_item_active" : $('#suggestion_item_active').text(),
                     "suggestion_item" : $('#suggestion_item').text(),
                     "highlight" : $('#template_console_highlight').text().trim()
-                }
+                },
+                "output_end": "{{ constant('CoreSphere\\ConsoleBundle\\Command\\ConsoleExecuteCommand::OUTPUT_END') }}"
             });
             {% endautoescape %}
         });

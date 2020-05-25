@@ -21,7 +21,8 @@
         "symfony/event-dispatcher": "~3.4|~4.0",
         "symfony/framework-bundle": "~3.4|~4.0",
         "symfony/yaml": "~3.4|~4.0",
-        "symfony/http-kernel": "~3.4|~4.0"
+        "symfony/http-kernel": "~3.4|~4.0",
+        "symfony/process": "~3.4|~4.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^2.2",

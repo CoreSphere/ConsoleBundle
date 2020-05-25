@@ -20,6 +20,8 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Templating\EngineInterface;
 
 final class ConsoleControllerTest extends TestCase
@@ -100,6 +102,7 @@ final class ConsoleControllerTest extends TestCase
             $templatingMock->reveal(),
             $commandExecuterMock->reveal(),
             $application,
+            new Session(new MockArraySessionStorage()),
             $environment
         );
     }

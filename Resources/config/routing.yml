@@ -9,3 +9,8 @@ console_exec:
     methods: [POST]
     requirements:
         _format: json
+
+console_state:
+    path:  /_console/state
+    defaults: { _controller: coresphere_console.controller:stateAction }
+    methods: [GET]

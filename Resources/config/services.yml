@@ -3,13 +3,27 @@ services:
         class: CoreSphere\ConsoleBundle\Controller\ConsoleController
         arguments:
             - "@templating"
-            - "@coresphere_console.executer"
+            - "@coresphere_console.queue_executer"
             - "@coresphere_console.application"
+            - "@session"
             - "%kernel.environment%"
         public: true
 
     coresphere_console.executer:
         class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
+        arguments:
+            - "@kernel"
+        public: true
+
+    coresphere_console.queue_executer:
+        class: CoreSphere\ConsoleBundle\Executer\QueueCommandExecuter
+        arguments:
+            - "@kernel"
+            - "@session"
+        public: true
+
+    coresphere_console.async_executer:
+        class: CoreSphere\ConsoleBundle\Executer\AsyncCommandExecuter
         arguments:
             - "@kernel"
         public: true
@@ -39,3 +53,13 @@ services:
         arguments:
             - "@kernel"
         public: true
+
+    coresphere_console.command:
+        class: CoreSphere\ConsoleBundle\Command\ConsoleExecuteCommand
+        arguments:
+            - "@kernel"
+            - "@coresphere_console.executer"
+            - "@coresphere_console.async_executer"
+        tags:
+            - { name: 'console.command' }
+
