@@ -12,6 +12,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Lock\Factory as LockFactory;
+use Symfony\Component\Lock\Store\FlockStore;
 
 class ConsoleExecuteCommand extends Command
 {
@@ -40,6 +42,11 @@ class ConsoleExecuteCommand extends Command
     private $kernel;
 
     /**
+     * @var LockFactory
+     */
+    private $locker;
+
+    /**
      * @var string
      */
     private $queueDir;
@@ -51,6 +58,7 @@ class ConsoleExecuteCommand extends Command
         $this->executer = $executer;
         $this->asyncExecuter = $asyncExecuter;
         $this->queueDir = $queueDir;
+        $this->locker = new LockFactory(new FlockStore());
         parent::__construct();
     }
 
@@ -71,25 +79,37 @@ class ConsoleExecuteCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $lock = $this->locker->createLock($this->getName());
+        if (!$lock->acquire()) {
+            return;
+        }
         $loop = $input->getOption('loop');
+        if ($loop) {
+            $output->writeln('Listening ...');
+        }
         $stream = $input->getOption('stream');
-        $output->writeln('Listening ...');
-        do {
-            $sessions = $this->fetchSessionsCommands();
-            foreach ($sessions as $sessionId => $commands) {
-                foreach ($commands as $i => $command) {
-                    try {
-                        $output->writeln("Executing $command");
-                        $command = $this->executeCommand($command, $sessionId, $stream);
-                        $output->writeln("$command done !");
-                    } catch (\Throwable $e) {
-                        $output->writeln($e);
-                    } finally {
-                        $this->removeCache($sessionId, $i);
+        try {
+            do {
+                $sessions = $this->fetchSessionsCommands();
+                foreach ($sessions as $sessionId => $commands) {
+                    foreach ($commands as $i => $command) {
+                        try {
+                            $output->writeln("Executing $command");
+                            $command = $this->executeCommand($command, $sessionId, $stream);
+                            $output->writeln("$command done !");
+                        } catch (\Throwable $e) {
+                            $output->writeln($e);
+                        } finally {
+                            $this->removeCache($sessionId, $i);
+                        }
                     }
                 }
-            }
-        } while ($loop && $this->delay());
+            } while ($loop && $this->delay());
+        } catch (\Throwable $e) {
+            $output->writeln($e);
+        } finally {
+            $lock->release();
+        }
     }
 
     private function fetchSessionsCommands(): array
