@@ -18,14 +18,33 @@ final class QueueCommandExecuter implements CommandExecuterInterface
     private $kernel;
 
     /**
+     * @var string
+     */
+    private $queueFileName;
+
+    /**
      * @var SessionInterface
      */
     private $session;
 
-    public function __construct(KernelInterface $kernel, SessionInterface $session)
+    public function __construct(KernelInterface $kernel, SessionInterface $session, string $queueDir)
     {
         $this->kernel = $kernel;
         $this->session = $session;
+        $this->queueFileName = self::getQueueFileName($queueDir);
+    }
+
+    public static function getQueueFileName(string $dir): string
+    {
+        if(!is_dir($dir) && !mkdir($dir) && !is_dir($dir)) {
+            throw new \RuntimeException("Could not create $dir directory.");
+        }
+        return $dir . '/' . self::QUEUE_FILE_NAME . '.dump';
+    }
+
+    public static function getCommandDumpFileName(string $dir, string $id): string
+    {
+        return $dir . '/' . self::QUEUE_FILE_NAME . '_' . $id . '.dump';
     }
 
     /**
@@ -37,15 +56,14 @@ final class QueueCommandExecuter implements CommandExecuterInterface
         $sessionId = $this->session->getId();
         try {
             chdir($this->kernel->getRootDir() . '/..');
-            $commandsQueueFile = self::getQueueFile($this->kernel->getLogDir());
-            $queue = $this->getQueue($commandsQueueFile);
+            $queue = $this->getQueue();
             if (!isset($queue[$sessionId])) {
                 $queue[$sessionId] = [];
             }
             if (!in_array($command, $queue[$sessionId], true)) {
                 $queue[$sessionId][microtime()] = $command;
             }
-            $this->updateQueue($commandsQueueFile, $queue);
+            $this->updateQueue($queue);
             $output = 'Queued...';
         } catch (\Throwable $e) {
             $errorCode = 1;
@@ -55,24 +73,19 @@ final class QueueCommandExecuter implements CommandExecuterInterface
         return $this->buildResponse($command, $output, $errorCode);
     }
 
-    public static function getQueueFile(string $dir): string
-    {
-        return $dir . '/' . self::QUEUE_FILE_NAME . '.dump';
-    }
-
-    private function getQueue(string $commandsQueueFile): array
+    private function getQueue(): array
     {
         $queue = [];
-        if (file_exists($commandsQueueFile) && $content = file_get_contents($commandsQueueFile)) {
+        if (file_exists($this->queueFileName) && $content = file_get_contents($this->queueFileName)) {
             $queue = unserialize($content);
         }
 
         return $queue;
     }
 
-    private function updateQueue(string $commandsQueueFile, array $queue): void
+    private function updateQueue(array $queue): void
     {
-        file_put_contents($commandsQueueFile, serialize($queue));
+        file_put_contents($this->queueFileName, serialize($queue));
     }
 
     private function buildResponse(string $command, string $output, int $errorCode): array

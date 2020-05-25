@@ -7,6 +7,7 @@ services:
             - "@coresphere_console.application"
             - "@session"
             - "%kernel.environment%"
+            - "%queue_dir%"
         public: true
 
     coresphere_console.executer:
@@ -20,6 +21,7 @@ services:
         arguments:
             - "@kernel"
             - "@session"
+            - "%queue_dir%"
         public: true
 
     coresphere_console.async_executer:
@@ -60,6 +62,9 @@ services:
             - "@kernel"
             - "@coresphere_console.executer"
             - "@coresphere_console.async_executer"
+            - "%queue_dir%"
         tags:
             - { name: 'console.command' }
 
+parameters:
+    queue_dir: "%kernel.root_dir%/queue"

@@ -13,6 +13,7 @@ namespace CoreSphere\ConsoleBundle\Controller;
 
 use CoreSphere\ConsoleBundle\Command\ConsoleExecuteCommand;
 use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
+use CoreSphere\ConsoleBundle\Executer\QueueCommandExecuter;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,9 +24,9 @@ use Symfony\Component\Templating\EngineInterface;
 class ConsoleController
 {
     /**
-     * @var KernelInterface
+     * @var string
      */
-    private $kernel;
+    private $queueDir;
 
     /**
      * @var EngineInterface
@@ -57,14 +58,15 @@ class ConsoleController
         CommandExecuterInterface $commandExecuter,
         Application $application,
         SessionInterface $session,
-        string $environment
+        string $environment,
+        string $queueDir
     ) {
         $this->templating = $templating;
         $this->commandExecuter = $commandExecuter;
         $this->application = $application;
-        $this->kernel = $application->getKernel();
         $this->environment = $environment;
         $this->session = $session;
+        $this->queueDir = $queueDir;
     }
 
     public function consoleAction(): Response
@@ -110,7 +112,7 @@ class ConsoleController
     {
         $this->ensureSessionStarted();
         $sessionId = $this->session->getId();
-        $commandDumpFile = ConsoleExecuteCommand::getCommandDumpFile($this->kernel->getLogDir(), $sessionId);
+        $commandDumpFile = QueueCommandExecuter::getCommandDumpFileName($this->queueDir, $sessionId);
         if (!file_exists($commandDumpFile)) {
             return new Response();
         }

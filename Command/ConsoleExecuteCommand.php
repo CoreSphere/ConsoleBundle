@@ -27,7 +27,7 @@ class ConsoleExecuteCommand extends Command
     /**
      * @var string
      */
-    private $commandsDumpFile;
+    private $commandsQueueFile;
 
     /**
      * @var AsyncCommandExecuter
@@ -39,12 +39,18 @@ class ConsoleExecuteCommand extends Command
      */
     private $kernel;
 
-    public function __construct(KernelInterface $kernel, CommandExecuter $executer, AsyncCommandExecuter $asyncExecuter)
+    /**
+     * @var string
+     */
+    private $queueDir;
+
+    public function __construct(KernelInterface $kernel, CommandExecuter $executer, AsyncCommandExecuter $asyncExecuter, string $queueDir)
     {
-        $this->commandsDumpFile = QueueCommandExecuter::getQueueFile($kernel->getLogDir());
+        $this->commandsQueueFile = QueueCommandExecuter::getQueueFileName($queueDir);
         $this->kernel = $kernel;
         $this->executer = $executer;
         $this->asyncExecuter = $asyncExecuter;
+        $this->queueDir = $queueDir;
         parent::__construct();
     }
 
@@ -72,29 +78,15 @@ class ConsoleExecuteCommand extends Command
             $sessions = $this->fetchSessionsCommands();
             foreach ($sessions as $sessionId => $commands) {
                 foreach ($commands as $i => $command) {
-                    $output->writeln("Executing $command");
-                    $isForcedStream = self::isForcedStream($command);
-                    if ($isForcedStream) {
-                        $command = $this->stripAsyncSuffix($command);
+                    try {
+                        $output->writeln("Executing $command");
+                        $command = $this->executeCommand($command, $sessionId, $stream);
+                        $output->writeln("$command done !");
+                    } catch (\Throwable $e) {
+                        $output->writeln($e);
+                    } finally {
+                        $this->removeCache($sessionId, $i);
                     }
-                    $fp = fopen(self::getCommandDumpFile($this->kernel->getLogDir(), $sessionId), 'wb');
-                    fwrite($fp, $command."\n");
-                    fwrite($fp, $this->kernel->getEnvironment()."\n");
-                    if ($stream || $isForcedStream) {
-                        $this->asyncExecuter->execute(
-                            $command,
-                            static function ($type, $buffer) use ($fp) {
-                                fwrite($fp, $buffer);
-                            }
-                        );
-                    } else {
-                        $result = $this->executer->execute($command);
-                        fwrite($fp, $result['output']);
-                    }
-                    fwrite($fp, self::OUTPUT_END);
-                    fclose($fp);
-                    $this->removeCache($sessionId, $i);
-                    $output->writeln("$command done !");
                 }
             }
         } while ($loop && $this->delay());
@@ -103,7 +95,7 @@ class ConsoleExecuteCommand extends Command
     private function fetchSessionsCommands(): array
     {
         $queue = [];
-        if (file_exists($this->commandsDumpFile) && $content = file_get_contents($this->commandsDumpFile)) {
+        if (file_exists($this->commandsQueueFile) && $content = file_get_contents($this->commandsQueueFile)) {
             $queue = unserialize($content);
         }
 
@@ -113,7 +105,7 @@ class ConsoleExecuteCommand extends Command
     private function removeCache(string $sessionId, string $id): void
     {
         $queue = [];
-        if (file_exists($this->commandsDumpFile) && $content = file_get_contents($this->commandsDumpFile)) {
+        if (file_exists($this->commandsQueueFile) && $content = file_get_contents($this->commandsQueueFile)) {
             $queue = unserialize($content);
         }
         if (isset($queue[$sessionId][$id])) {
@@ -123,17 +115,10 @@ class ConsoleExecuteCommand extends Command
             }
         }
         if (!$queue) {
-            if (file_exists($this->commandsDumpFile)) {
-                unlink($this->commandsDumpFile);
-            }
+            $this->clearQueue();
         } else {
-            file_put_contents($this->commandsDumpFile, serialize($queue));
+            file_put_contents($this->commandsQueueFile, serialize($queue));
         }
-    }
-
-    public static function getCommandDumpFile(string $dir, string $id): string
-    {
-        return $dir . '/' . QueueCommandExecuter::QUEUE_FILE_NAME . '_' . $id . '.dump';
     }
 
     private static function isForcedStream(string $command): bool
@@ -144,5 +129,38 @@ class ConsoleExecuteCommand extends Command
     protected function stripAsyncSuffix($command): string
     {
         return str_replace(self::STREAM_SUFFIX, '', $command);
+    }
+
+    private function clearQueue(): void
+    {
+        if (file_exists($this->commandsQueueFile)) {
+            unlink($this->commandsQueueFile);
+        }
+    }
+
+    private function executeCommand($command, $sessionId, $stream): string
+    {
+        $isForcedStream = self::isForcedStream($command);
+        if ($isForcedStream) {
+            $command = $this->stripAsyncSuffix($command);
+        }
+        $fp = fopen(QueueCommandExecuter::getCommandDumpFileName($this->queueDir, $sessionId), 'wb');
+        fwrite($fp, $command . "\n");
+        fwrite($fp, $this->kernel->getEnvironment() . "\n");
+        if ($stream || $isForcedStream) {
+            $this->asyncExecuter->execute(
+                $command,
+                static function ($type, $buffer) use ($fp) {
+                    fwrite($fp, $buffer);
+                }
+            );
+        } else {
+            $result = $this->executer->execute($command);
+            fwrite($fp, $result['output']);
+        }
+        fwrite($fp, self::OUTPUT_END);
+        fclose($fp);
+
+        return $command;
     }
 }

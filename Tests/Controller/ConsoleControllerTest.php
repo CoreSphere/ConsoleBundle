@@ -103,7 +103,8 @@ final class ConsoleControllerTest extends TestCase
             $commandExecuterMock->reveal(),
             $application,
             new Session(new MockArraySessionStorage()),
-            $environment
+            $environment,
+            'queue'
         );
     }
 
