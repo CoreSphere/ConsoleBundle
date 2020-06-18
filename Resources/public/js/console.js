@@ -597,6 +597,7 @@ window.CoreSphereConsole = (function (window) {
                })
             .done((response) => {
                 if (response.endsWith(this.options.output_end) && internalId) {
+                    response = response.replace(this.options.output_end, '');
                     clearInterval(internalId);
                     internalId = undefined;
                 }

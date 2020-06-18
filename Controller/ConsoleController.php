@@ -18,7 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Templating\EngineInterface;
 
 class ConsoleController
@@ -92,7 +91,7 @@ class ConsoleController
         $executedCommandsOutput = [];
 
         foreach ($commands as $command) {
-            $result = $this->commandExecuter->execute($command);
+            $result = $this->commandExecuter->execute($command, getcwd());
             $executedCommandsOutput[] = $result;
 
             if (0 !== $result['error_code']) {

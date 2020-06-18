@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace CoreSphere\ConsoleBundle\Command;
 
-use CoreSphere\ConsoleBundle\Executer\AsyncCommandExecuter;
-use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
+use CoreSphere\ConsoleBundle\Executer\ProcessCommandExecuter;
 use CoreSphere\ConsoleBundle\Executer\QueueCommandExecuter;
+use CoreSphere\ConsoleBundle\Executer\SymfonyCommandExecuter;
+use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,12 +19,14 @@ use Symfony\Component\Lock\Store\FlockStore;
 
 class ConsoleExecuteCommand extends Command
 {
-    public const OUTPUT_END    = "> END\n";
+    private const OPTION_LOOP      = 'loop';
 
-    public const STREAM_SUFFIX = '&stream';
+    private const OPTION_NO_STREAM = 'no-stream';
+
+    public const  OUTPUT_END       = "> END\n";
 
     /**
-     * @var AsyncCommandExecuter
+     * @var ProcessCommandExecuter
      */
     private $asyncExecuter;
 
@@ -32,9 +36,14 @@ class ConsoleExecuteCommand extends Command
     private $commandsQueueFile;
 
     /**
-     * @var AsyncCommandExecuter
+     * @var ProcessCommandExecuter
      */
     private $executer;
+
+    /**
+     * @var InputInterface
+     */
+    private $input;
 
     /**
      * @var KernelInterface
@@ -51,7 +60,7 @@ class ConsoleExecuteCommand extends Command
      */
     private $queueDir;
 
-    public function __construct(KernelInterface $kernel, CommandExecuter $executer, AsyncCommandExecuter $asyncExecuter, string $queueDir)
+    public function __construct(KernelInterface $kernel, SymfonyCommandExecuter $executer, ProcessCommandExecuter $asyncExecuter, string $queueDir)
     {
         $this->commandsQueueFile = QueueCommandExecuter::getQueueFileName($queueDir);
         $this->kernel = $kernel;
@@ -62,12 +71,12 @@ class ConsoleExecuteCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('oc:console:execute:commands')
              ->setDescription('execute commands from console dump')
-             ->addOption('loop', 'l', InputOption::VALUE_NONE)
-             ->addOption('stream', 's', InputOption::VALUE_NONE);
+             ->addOption(self::OPTION_LOOP, 'l', InputOption::VALUE_NONE)
+             ->addOption(self::OPTION_NO_STREAM, 's', InputOption::VALUE_NONE);
     }
 
     private function delay(): bool
@@ -79,24 +88,24 @@ class ConsoleExecuteCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->input = $input;
         $lock = $this->locker->createLock($this->getName());
         if (!$lock->acquire()) {
             return;
         }
-        $loop = $input->getOption('loop');
+        $loop = $input->getOption(self::OPTION_LOOP);
         if ($loop) {
             $output->writeln('Listening ...');
         }
-        $stream = $input->getOption('stream');
         try {
             do {
                 $sessions = $this->fetchSessionsCommands();
                 foreach ($sessions as $sessionId => $commands) {
                     foreach ($commands as $i => $command) {
                         try {
-                            $output->writeln("Executing $command");
-                            $command = $this->executeCommand($command, $sessionId, $stream);
-                            $output->writeln("$command done !");
+                            $output->writeln("Executing {$command['command']}");
+                            $this->executeCommand($command);
+                            $output->writeln("done !");
                         } catch (\Throwable $e) {
                             $output->writeln($e);
                         } finally {
@@ -141,16 +150,6 @@ class ConsoleExecuteCommand extends Command
         }
     }
 
-    private static function isForcedStream(string $command): bool
-    {
-        return substr($command, -strlen(self::STREAM_SUFFIX)) === self::STREAM_SUFFIX;
-    }
-
-    protected function stripAsyncSuffix($command): string
-    {
-        return str_replace(self::STREAM_SUFFIX, '', $command);
-    }
-
     private function clearQueue(): void
     {
         if (file_exists($this->commandsQueueFile)) {
@@ -158,29 +157,34 @@ class ConsoleExecuteCommand extends Command
         }
     }
 
-    private function executeCommand($command, $sessionId, $stream): string
+    private function executeCommand(array $command): array
     {
-        $isForcedStream = self::isForcedStream($command);
-        if ($isForcedStream) {
-            $command = $this->stripAsyncSuffix($command);
-        }
+        $workingDir = $command['dir'];
+        $commandLine = $command['command'];
+        $stream = $command['stream'] && !$this->input->getOption(self::OPTION_NO_STREAM);
+        $sessionId = $command['sessionId'];
+
         $fp = fopen(QueueCommandExecuter::getCommandDumpFileName($this->queueDir, $sessionId), 'wb');
-        fwrite($fp, $command . "\n");
+        fwrite($fp, $commandLine . "\n");
         fwrite($fp, $this->kernel->getEnvironment() . "\n");
-        if ($stream || $isForcedStream) {
-            $this->asyncExecuter->execute(
-                $command,
+        if ($stream) {
+            $result = $this->asyncExecuter->execute(
+                $commandLine,
+                $workingDir,
+                true,
                 static function ($type, $buffer) use ($fp) {
+                    $formatter = new HtmlOutputFormatterDecorator(new OutputFormatter(true));
+                    $buffer = $formatter->format($buffer);
                     fwrite($fp, $buffer);
                 }
             );
         } else {
-            $result = $this->executer->execute($command);
+            $result = $this->executer->execute($commandLine, $workingDir);
             fwrite($fp, $result['output']);
         }
         fwrite($fp, self::OUTPUT_END);
         fclose($fp);
 
-        return $command;
+        return $result;
     }
 }

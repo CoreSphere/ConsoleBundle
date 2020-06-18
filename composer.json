@@ -23,7 +23,8 @@
         "symfony/yaml": "~3.4|~4.0",
         "symfony/http-kernel": "~3.4|~4.0",
         "symfony/process": "~3.4|~4.0",
-        "symfony/lock": "~3.4|~4.0"
+        "symfony/lock": "~3.4|~4.0",
+        "symfony/translation": "~3.4|~4.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^2.2",

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoreSphere\ConsoleBundle\Executer;
 
 use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -27,18 +28,25 @@ final class QueueCommandExecuter implements CommandExecuterInterface
      */
     private $session;
 
-    public function __construct(KernelInterface $kernel, SessionInterface $session, string $queueDir)
+    /**
+     * @var \Symfony\Bundle\FrameworkBundle\Translation\Translator
+     */
+    private $translator;
+
+    public function __construct(KernelInterface $kernel, SessionInterface $session, string $queueDir, TranslatorInterface $translator)
     {
         $this->kernel = $kernel;
         $this->session = $session;
         $this->queueFileName = self::getQueueFileName($queueDir);
+        $this->translator = $translator;
     }
 
     public static function getQueueFileName(string $dir): string
     {
-        if(!is_dir($dir) && !mkdir($dir) && !is_dir($dir)) {
+        if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
             throw new \RuntimeException("Could not create $dir directory.");
         }
+
         return $dir . '/' . self::QUEUE_FILE_NAME . '.dump';
     }
 
@@ -47,10 +55,7 @@ final class QueueCommandExecuter implements CommandExecuterInterface
         return $dir . '/' . self::QUEUE_FILE_NAME . '_' . $id . '.dump';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function execute($command)
+    public function execute(string $command, string $workingDir = null, bool $stream = true): array
     {
         $errorCode = 0;
         $sessionId = $this->session->getId();
@@ -61,10 +66,14 @@ final class QueueCommandExecuter implements CommandExecuterInterface
                 $queue[$sessionId] = [];
             }
             if (!in_array($command, $queue[$sessionId], true)) {
-                $queue[$sessionId][microtime()] = $command;
+                $time = microtime();
+                $queue[$sessionId][$time]['command'] = $command;
+                $queue[$sessionId][$time]['dir'] = $workingDir;
+                $queue[$sessionId][$time]['stream'] = $stream;
+                $queue[$sessionId][$time]['sessionId'] = $sessionId;
             }
             $this->updateQueue($queue);
-            $output = 'Queued...';
+            $output = $this->translator->trans('coresphere_console.loading');
         } catch (\Throwable $e) {
             $errorCode = 1;
             $output = (string) $e;

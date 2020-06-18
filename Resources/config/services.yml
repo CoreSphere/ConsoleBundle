@@ -10,8 +10,8 @@ services:
             - "%queue_dir%"
         public: true
 
-    coresphere_console.executer:
-        class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
+    coresphere_console.symfony_executer:
+        class: CoreSphere\ConsoleBundle\Executer\SymfonyCommandExecuter
         arguments:
             - "@kernel"
         public: true
@@ -22,10 +22,11 @@ services:
             - "@kernel"
             - "@session"
             - "%queue_dir%"
+            - "@translator"
         public: true
 
-    coresphere_console.async_executer:
-        class: CoreSphere\ConsoleBundle\Executer\AsyncCommandExecuter
+    coresphere_console.process_executer:
+        class: CoreSphere\ConsoleBundle\Executer\ProcessCommandExecuter
         arguments:
             - "@kernel"
         public: true
@@ -60,11 +61,11 @@ services:
         class: CoreSphere\ConsoleBundle\Command\ConsoleExecuteCommand
         arguments:
             - "@kernel"
-            - "@coresphere_console.executer"
-            - "@coresphere_console.async_executer"
+            - "@coresphere_console.symfony_executer"
+            - "@coresphere_console.process_executer"
             - "%queue_dir%"
         tags:
             - { name: 'console.command' }
 
 parameters:
-    queue_dir: "%kernel.root_dir%/queue"
+    queue_dir: "/tmp/coresphere_console"

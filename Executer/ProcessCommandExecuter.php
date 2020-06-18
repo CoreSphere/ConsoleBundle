@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
-final class AsyncCommandExecuter implements CommandExecuterInterface
+final class ProcessCommandExecuter implements CommandExecuterInterface
 {
     /**
      * @var KernelInterface
@@ -21,13 +21,10 @@ final class AsyncCommandExecuter implements CommandExecuterInterface
         $this->kernel = $kernel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function execute($command, callable $callback = null)
+    public function execute(string $command, string $workingDir = null, bool $stream = true, callable $callback = null): array
     {
         $phpPath = $this->getPhpPath();
-        $process = new Process([$phpPath, 'app/console', $command, '--env=' . $this->kernel->getEnvironment()]);
+        $process = Process::fromShellCommandline("$phpPath app/console $command --env={$this->kernel->getEnvironment()} --ansi", $workingDir);
         $process->run($callback);
 
         return [
