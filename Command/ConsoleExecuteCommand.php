@@ -19,6 +19,8 @@ use Symfony\Component\Lock\Store\FlockStore;
 
 class ConsoleExecuteCommand extends Command
 {
+    private const LOG_DATE_FORMAT  = '[Y-m-d H:i:s] ';
+
     private const OPTION_LOOP      = 'loop';
 
     private const OPTION_NO_STREAM = 'no-stream';
@@ -103,9 +105,9 @@ class ConsoleExecuteCommand extends Command
                 foreach ($sessions as $sessionId => $commands) {
                     foreach ($commands as $i => $command) {
                         try {
-                            $output->writeln("Executing {$command['command']}");
+                            $output->writeln(date(self::LOG_DATE_FORMAT) . "Start {$command['command']}");
                             $this->executeCommand($command);
-                            $output->writeln("done !");
+                            $output->writeln(date(self::LOG_DATE_FORMAT) . "End {$command['command']}");
                         } catch (\Throwable $e) {
                             $output->writeln($e);
                         } finally {
