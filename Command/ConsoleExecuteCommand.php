@@ -19,6 +19,8 @@ use Symfony\Component\Lock\Store\FlockStore;
 
 class ConsoleExecuteCommand extends Command
 {
+    private const TTL              = 900;
+
     private const LOG_DATE_FORMAT  = '[Y-m-d H:i:s] ';
 
     private const OPTION_LOOP      = 'loop';
@@ -30,7 +32,7 @@ class ConsoleExecuteCommand extends Command
     /**
      * @var ProcessCommandExecuter
      */
-    private $asyncExecuter;
+    private $processExecuter;
 
     /**
      * @var string
@@ -40,7 +42,7 @@ class ConsoleExecuteCommand extends Command
     /**
      * @var ProcessCommandExecuter
      */
-    private $executer;
+    private $symfonyExecuter;
 
     /**
      * @var InputInterface
@@ -58,6 +60,11 @@ class ConsoleExecuteCommand extends Command
     private $locker;
 
     /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    /**
      * @var string
      */
     private $queueDir;
@@ -66,8 +73,8 @@ class ConsoleExecuteCommand extends Command
     {
         $this->commandsQueueFile = QueueCommandExecuter::getQueueFileName($queueDir);
         $this->kernel = $kernel;
-        $this->executer = $executer;
-        $this->asyncExecuter = $asyncExecuter;
+        $this->symfonyExecuter = $executer;
+        $this->processExecuter = $asyncExecuter;
         $this->queueDir = $queueDir;
         $this->locker = new LockFactory(new FlockStore());
         parent::__construct();
@@ -90,7 +97,9 @@ class ConsoleExecuteCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $start = time();
         $this->input = $input;
+        $this->output = $output;
         $lock = $this->locker->createLock($this->getName());
         if (!$lock->acquire()) {
             return;
@@ -104,18 +113,13 @@ class ConsoleExecuteCommand extends Command
                 $sessions = $this->fetchSessionsCommands();
                 foreach ($sessions as $sessionId => $commands) {
                     foreach ($commands as $i => $command) {
-                        try {
-                            $output->writeln(date(self::LOG_DATE_FORMAT) . "Start {$command['command']}");
-                            $this->executeCommand($command);
-                            $output->writeln(date(self::LOG_DATE_FORMAT) . "End {$command['command']}");
-                        } catch (\Throwable $e) {
-                            $output->writeln($e);
-                        } finally {
-                            $this->removeCache($sessionId, $i);
-                        }
+                        $output->writeln(date(self::LOG_DATE_FORMAT) . "Start {$command['command']}");
+                        $this->executeCommand($command);
+                        $output->writeln(date(self::LOG_DATE_FORMAT) . "End {$command['command']}");
+                        $this->removeCache($sessionId, $i);
                     }
                 }
-            } while ($loop && $this->delay());
+            } while ($loop && $this->delay() && !$this->isExpired($start));
         } catch (\Throwable $e) {
             $output->writeln($e);
         } finally {
@@ -159,7 +163,7 @@ class ConsoleExecuteCommand extends Command
         }
     }
 
-    private function executeCommand(array $command): array
+    private function executeCommand(array $command): void
     {
         $workingDir = $command['dir'];
         $commandLine = $command['command'];
@@ -169,24 +173,32 @@ class ConsoleExecuteCommand extends Command
         $fp = fopen(QueueCommandExecuter::getCommandDumpFileName($this->queueDir, $sessionId), 'wb');
         fwrite($fp, $commandLine . "\n");
         fwrite($fp, $this->kernel->getEnvironment() . "\n");
-        if ($stream) {
-            $result = $this->asyncExecuter->execute(
-                $commandLine,
-                $workingDir,
-                true,
-                static function ($type, $buffer) use ($fp) {
-                    $formatter = new HtmlOutputFormatterDecorator(new OutputFormatter(true));
-                    $buffer = $formatter->format($buffer);
-                    fwrite($fp, $buffer);
-                }
-            );
-        } else {
-            $result = $this->executer->execute($commandLine, $workingDir);
-            fwrite($fp, $result['output']);
+        try {
+            if ($stream) {
+                $this->processExecuter->execute(
+                    $commandLine,
+                    $workingDir,
+                    true,
+                    static function ($type, $buffer) use ($fp) {
+                        $formatter = new HtmlOutputFormatterDecorator(new OutputFormatter(true));
+                        $buffer = $formatter->format($buffer);
+                        fwrite($fp, $buffer);
+                    }
+                );
+            } else {
+                $result = $this->symfonyExecuter->execute($commandLine, $workingDir);
+                fwrite($fp, $result['output']);
+            }
+        } catch (\Throwable $e) {
+            fwrite($fp, $e->getMessage());
+            $this->output->writeln($e);
         }
         fwrite($fp, self::OUTPUT_END);
         fclose($fp);
+    }
 
-        return $result;
+    private function isExpired(int $start): bool
+    {
+        return time() > $start + self::TTL;
     }
 }
