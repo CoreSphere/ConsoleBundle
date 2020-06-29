@@ -1,21 +1,13 @@
-/*
- * This file is part of the CoreSphereConsoleBundle.
- *
- * (c) Laszlo Korte <me@laszlokorte.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 window.CoreSphereConsole = (function (window) {
     "use strict";
 
+    var $, default_options, helpers, keys, ConsoleBackend, Console, internalId;
     if (typeof window.jQuery === "undefined") {
         window.alert('jQuery has not been loaded');
         return;
     }
 
-    var $ = window.jQuery,
+    $ = window.jQuery,
 
         default_options = {
             'filters' : {
@@ -63,7 +55,7 @@ window.CoreSphereConsole = (function (window) {
                 var range, sel, textRange;
                 el.focus();
                 if (typeof window.getSelection !== "undefined"
-                        && typeof window.document.createRange !== "undefined") {
+                    && typeof window.document.createRange !== "undefined") {
                     range = window.document.createRange();
                     sel = window.getSelection();
                     range.selectNodeContents(el);
@@ -110,6 +102,7 @@ window.CoreSphereConsole = (function (window) {
             this.unlock();
             this.focus();
             this.welcome();
+            this.state();
         };
 
     ConsoleBackend.prototype.knownCommands = [];
@@ -541,6 +534,9 @@ window.CoreSphereConsole = (function (window) {
     };
 
     Console.prototype.commandComplete = function (response) {
+        if (!internalId) {
+            this.listen();
+        }
         var answer, htmlCode, cmd,
             results = response.results,
             tplCmd = this.options.templates.command,
@@ -567,7 +563,7 @@ window.CoreSphereConsole = (function (window) {
         this.log.append(
             this.options.templates.error
                 .replace("%message%", msg)
-                .replace("%error%", error)
+                .replace("%error%", error ? error : JSON.stringify(JSON.parse(xhr.responseText).error, null, 2))
                 .replace("%command%", '')
         );
     };
@@ -580,8 +576,6 @@ window.CoreSphereConsole = (function (window) {
     };
 
     Console.prototype.sendCommands = function (commands) {
-
-        var this_console = this;
 
         return $.ajax({
             url: this.options.post_path,
@@ -596,6 +590,43 @@ window.CoreSphereConsole = (function (window) {
 
             .always(this.commandAfter.bind(this));
     };
+
+    Console.prototype.state = function () {
+        $.ajax({
+                   url: this.options.state_path, type: 'GET', dataType: 'text',
+               })
+            .done((response) => {
+                if (response.endsWith(this.options.output_end) && internalId) {
+                    response = response.replace(this.options.output_end, '');
+                    clearInterval(internalId);
+                    internalId = undefined;
+                }
+                if (response) {
+                    let lines = response.split("\n");
+                    let command = lines.shift();
+                    lines.shift();
+                    response = "\n"+ lines.join("\n");
+                    let output = this.log.find('.console_log_output:last');
+                    if (output[0]) {
+                        this.log.find('.console_log_output:last').html(response);
+                    } else {
+                        this.log.append(this.options.templates.command
+                                            .replace('%command%', command)
+                                            .replace('%environment%', '')
+                                            .replace('%output%', response)
+                        );
+                    }
+                }
+            })
+    }
+
+    Console.prototype.listen = function () {
+        if (internalId) {
+            return;
+        }
+        console.log('Listening on ' + this.options.state_path);
+        internalId = setInterval(Console.prototype.state.bind(this), 1000);
+    }
 
     return Console;
 

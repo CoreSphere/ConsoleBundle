@@ -3,13 +3,30 @@ services:
         class: CoreSphere\ConsoleBundle\Controller\ConsoleController
         arguments:
             - "@templating"
-            - "@coresphere_console.executer"
+            - "@coresphere_console.queue_executer"
             - "@coresphere_console.application"
+            - "@session"
             - "%kernel.environment%"
+            - "%queue_dir%"
         public: true
 
-    coresphere_console.executer:
-        class: CoreSphere\ConsoleBundle\Executer\CommandExecuter
+    coresphere_console.symfony_executer:
+        class: CoreSphere\ConsoleBundle\Executer\SymfonyCommandExecuter
+        arguments:
+            - "@kernel"
+        public: true
+
+    coresphere_console.queue_executer:
+        class: CoreSphere\ConsoleBundle\Executer\QueueCommandExecuter
+        arguments:
+            - "@kernel"
+            - "@session"
+            - "%queue_dir%"
+            - "@translator"
+        public: true
+
+    coresphere_console.process_executer:
+        class: CoreSphere\ConsoleBundle\Executer\ProcessCommandExecuter
         arguments:
             - "@kernel"
         public: true
@@ -39,3 +56,16 @@ services:
         arguments:
             - "@kernel"
         public: true
+
+    coresphere_console.command:
+        class: CoreSphere\ConsoleBundle\Command\ConsoleExecuteCommand
+        arguments:
+            - "@kernel"
+            - "@coresphere_console.symfony_executer"
+            - "@coresphere_console.process_executer"
+            - "%queue_dir%"
+        tags:
+            - { name: 'console.command' }
+
+parameters:
+    queue_dir: "/tmp/coresphere_console"

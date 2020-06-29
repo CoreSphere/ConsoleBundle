@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-final class CommandExecuter implements CommandExecuterInterface
+final class SymfonyCommandExecuter implements CommandExecuterInterface
 {
     /**
      * @var KernelInterface
@@ -32,10 +32,7 @@ final class CommandExecuter implements CommandExecuterInterface
         $this->baseKernel = $baseKernel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function execute($commandString)
+    public function execute(string $commandString, string $workingDir = null, bool $stream = true): array
     {
         $input = new StringInput($commandString);
         $output = new StringOutput();
@@ -44,18 +41,26 @@ final class CommandExecuter implements CommandExecuterInterface
         $formatter = $output->getFormatter();
         $kernel = $application->getKernel();
 
-        chdir($kernel->getRootDir().'/..');
+        if ($workingDir) {
+            chdir($workingDir);
+        } else {
+            chdir($kernel->getRootDir().'/..');
+        }
 
         $input->setInteractive(false);
         $formatter->setDecorated(true);
         $output->setFormatter(new HtmlOutputFormatterDecorator($formatter));
         $application->setAutoExit(false);
-
+        ob_start();
         $errorCode = $application->run($input, $output);
+        if (!$result = $output->getBuffer()) {
+          $result = ob_get_contents();
+        }
+        ob_end_clean();
 
         return [
             'input' => $commandString,
-            'output' => $output->getBuffer(),
+            'output' => $result,
             'environment' => $kernel->getEnvironment(),
             'error_code' => $errorCode,
         ];

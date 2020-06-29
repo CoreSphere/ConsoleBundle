@@ -11,7 +11,7 @@
 
 namespace CoreSphere\ConsoleBundle\Tests\Executer;
 
-use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
+use CoreSphere\ConsoleBundle\Executer\SymfonyCommandExecuter;
 use CoreSphere\ConsoleBundle\Tests\Executer\CommandExecutorSource\SomeKernel;
 use PHPUnit\Framework\TestCase;
 
@@ -54,12 +54,12 @@ class CommandExecuterTest extends TestCase
      * @param string $env
      * @param bool   $debug
      *
-     * @return CommandExecuter
+     * @return SymfonyCommandExecuter
      */
     private function createExecuterWithKernel($env, $debug)
     {
         $kernel = new SomeKernel($env, $debug);
 
-        return new CommandExecuter($kernel);
+        return new SymfonyCommandExecuter($kernel);
     }
 }
