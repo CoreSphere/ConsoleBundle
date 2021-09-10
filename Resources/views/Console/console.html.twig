@@ -41,7 +41,8 @@
                     "suggestion_item" : $('#suggestion_item').text(),
                     "highlight" : $('#template_console_highlight').text().trim()
                 },
-                "output_end": "{{ constant('CoreSphere\\ConsoleBundle\\Command\\ConsoleExecuteCommand::OUTPUT_END') }}"
+                "output_end": "{{ constant('CoreSphere\\ConsoleBundle\\Command\\ConsoleExecuteCommand::OUTPUT_END') }}",
+                "sync": {{ sync }}
             });
             {% endautoescape %}
         });

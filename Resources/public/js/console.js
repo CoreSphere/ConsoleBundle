@@ -282,7 +282,10 @@ window.CoreSphereConsole = (function (window) {
                             .replace('%message%', this_console.options.lang.loading)
                         );
 
-                        this_console.sendCommands(command.split(this_console.options.command_splitter));
+                        this_console.sendCommands(
+                            command.split(this_console.options.command_splitter),
+                            this_console.options.sync
+                        );
                     } else {
                         this_console.focus();
                     }
@@ -575,10 +578,10 @@ window.CoreSphereConsole = (function (window) {
         this.focus();
     };
 
-    Console.prototype.sendCommands = function (commands) {
+    Console.prototype.sendCommands = function (commands, sync) {
 
         return $.ajax({
-            url: this.options.post_path,
+            url: this.options.post_path + '?sync='+sync,
             type: "POST",
             data: ({"commands" : commands}),
             dataType: "json"

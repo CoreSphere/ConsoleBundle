@@ -12,8 +12,8 @@
 namespace CoreSphere\ConsoleBundle\Controller;
 
 use CoreSphere\ConsoleBundle\Command\ConsoleExecuteCommand;
-use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use CoreSphere\ConsoleBundle\Executer\QueueCommandExecuter;
+use CoreSphere\ConsoleBundle\Executer\SymfonyCommandExecuter;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,24 +23,14 @@ use Symfony\Component\Templating\EngineInterface;
 class ConsoleController
 {
     /**
-     * @var string
-     */
-    private $queueDir;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var CommandExecuterInterface
-     */
-    private $commandExecuter;
-
-    /**
      * @var Application
      */
     private $application;
+
+    /**
+     * @var QueueCommandExecuter
+     */
+    private $asyncCommandExecuter;
 
     /**
      * @var string
@@ -48,27 +38,49 @@ class ConsoleController
     private $environment;
 
     /**
+     * @var string
+     */
+    private $queueDir;
+
+    /**
      * @var SessionInterface
      */
     private $session;
 
+    /**
+     * @var bool
+     */
+    private $sync = false;
+
+    /**
+     * @var SymfonyCommandExecuter
+     */
+    private $syncCommandExecuter;
+
+    /**
+     * @var EngineInterface
+     */
+    private $templating;
+
     public function __construct(
-        EngineInterface $templating,
-        CommandExecuterInterface $commandExecuter,
-        Application $application,
-        SessionInterface $session,
-        string $environment,
-        string $queueDir
+        EngineInterface        $templating,
+        QueueCommandExecuter   $asyncCommandExecuter,
+        SymfonyCommandExecuter $symfonyCommandExecuter,
+        Application            $application,
+        SessionInterface       $session,
+        string                 $environment,
+        string                 $queueDir
     ) {
         $this->templating = $templating;
-        $this->commandExecuter = $commandExecuter;
+        $this->asyncCommandExecuter = $asyncCommandExecuter;
+        $this->syncCommandExecuter = $symfonyCommandExecuter;
         $this->application = $application;
         $this->environment = $environment;
         $this->session = $session;
         $this->queueDir = $queueDir;
     }
 
-    public function consoleAction(): Response
+    public function consoleAction(Request $request): Response
     {
         $this->ensureSessionStarted();
 
@@ -79,9 +91,17 @@ class ConsoleController
                     'working_dir' => getcwd(),
                     'environment' => $this->environment,
                     'commands'    => $this->application->all(),
+                    'sync'        => $request->get('sync', 'false') === 'true',
                 ]
             )
         );
+    }
+
+    private function ensureSessionStarted(): void
+    {
+        if ($this->session->isStarted()) {
+            $this->session->start();
+        }
     }
 
     public function execAction(Request $request): Response
@@ -91,7 +111,11 @@ class ConsoleController
         $executedCommandsOutput = [];
 
         foreach ($commands as $command) {
-            $result = $this->commandExecuter->execute($command, getcwd());
+            if ($request->get('sync', false)) {
+                $result = $this->syncCommandExecuter->execute($command, getcwd());
+            } else {
+                $result = $this->asyncCommandExecuter->execute($command, getcwd());
+            }
             $executedCommandsOutput[] = $result;
 
             if (0 !== $result['error_code']) {
@@ -121,13 +145,6 @@ class ConsoleController
         }
 
         return new Response($content);
-    }
-
-    private function ensureSessionStarted(): void
-    {
-        if ($this->session->isStarted()) {
-            $this->session->start();
-        }
     }
 
     protected function commandCompeleted(string $content): bool
