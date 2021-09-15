@@ -99,7 +99,7 @@ class ConsoleController
 
     private function ensureSessionStarted(): void
     {
-        if ($this->session->isStarted()) {
+        if (!$this->session->isStarted()) {
             $this->session->start();
         }
     }
