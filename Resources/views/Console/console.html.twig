@@ -42,7 +42,7 @@
                     "highlight" : $('#template_console_highlight').text().trim()
                 },
                 "output_end": "{{ constant('CoreSphere\\ConsoleBundle\\Command\\ConsoleExecuteCommand::OUTPUT_END') }}",
-                "sync": {{ sync }}
+                "sync": "{{ sync }}"
             });
             {% endautoescape %}
         });
