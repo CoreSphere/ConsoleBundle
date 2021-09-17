@@ -127,10 +127,10 @@ class ConsoleController
         return new JsonResponse(['results' => $executedCommandsOutput]);
     }
 
-    public function stateAction(): Response
+    public function stateAction(Request $request): Response
     {
         $this->ensureSessionStarted();
-        $sessionId = $this->session->getId();
+        $sessionId = $request->query->get('id', $this->session->getId());
         $commandDumpFile = QueueCommandExecuter::getCommandDumpFileName($this->queueDir, $sessionId);
         if (!file_exists($commandDumpFile)) {
             return new Response();
