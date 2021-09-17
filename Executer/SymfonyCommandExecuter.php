@@ -59,7 +59,7 @@ final class SymfonyCommandExecuter implements CommandExecuterInterface
         ob_end_clean();
 
         return [
-            'input' => $commandString,
+            'command' => $commandString,
             'output' => $result,
             'environment' => $kernel->getEnvironment(),
             'error_code' => $errorCode,

@@ -15,6 +15,7 @@ use CoreSphere\ConsoleBundle\Command\ConsoleExecuteCommand;
 use CoreSphere\ConsoleBundle\Executer\QueueCommandExecuter;
 use CoreSphere\ConsoleBundle\Executer\SymfonyCommandExecuter;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -123,12 +124,7 @@ class ConsoleController
             }
         }
 
-        return new Response(
-            $this->templating->render(
-                'CoreSphereConsoleBundle:Console:result.json.twig',
-                ['commands' => $executedCommandsOutput]
-            )
-        );
+        return new JsonResponse(['results' => $executedCommandsOutput]);
     }
 
     public function stateAction(): Response

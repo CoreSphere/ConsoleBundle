@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace CoreSphere\ConsoleBundle\Executer;
 
 use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class QueueCommandExecuter implements CommandExecuterInterface
 {
@@ -79,7 +79,7 @@ final class QueueCommandExecuter implements CommandExecuterInterface
             $output = (string) $e;
         }
 
-        return $this->buildResponse($command, $output, $errorCode);
+        return $this->buildResponse($command, $output, $errorCode, $sessionId);
     }
 
     private function getQueue(): array
@@ -97,13 +97,14 @@ final class QueueCommandExecuter implements CommandExecuterInterface
         file_put_contents($this->queueFileName, serialize($queue));
     }
 
-    private function buildResponse(string $command, string $output, int $errorCode): array
+    private function buildResponse(string $command, string $output, int $errorCode, string $id): array
     {
         return [
-            'input'       => $command,
+            'command'     => $command,
             'output'      => $output,
             'environment' => $this->kernel->getEnvironment(),
             'error_code'  => $errorCode,
+            'id'          => $id,
         ];
     }
 }
