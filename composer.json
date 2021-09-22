@@ -1,7 +1,7 @@
 {
     "name": "coresphere/console-bundle",
-    "description": "This bundle allows you accessing the symfony2 console via your browser",
-    "keywords": ["console","javascript","symfony"],
+    "description": "This bundle allows you accessing the symfony console via your browser",
+    "keywords": ["console", "javascript", "symfony"],
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -15,19 +15,21 @@
         }
     ],
     "require": {
-        "php": "^5.5|^7.0",
-        "symfony/console": "~2.7|~3.0|~4.0",
-        "symfony/dependency-injection": "~2.7|~3.0|~4.0",
-        "symfony/event-dispatcher": "~2.7|~3.0|~4.0",
-        "symfony/framework-bundle": "~2.7|~3.0|~4.0",
-        "symfony/http-kernel": "~2.7|~3.0|~4.0"
+        "php": ">=7.4",
+        "symfony/console": "^5.3|^6.0",
+        "symfony/dependency-injection": "^5.3|^6.0",
+        "symfony/event-dispatcher": "^5.3|^6.0",
+        "symfony/framework-bundle": "^5.3|^6.0",
+        "symfony/http-kernel": "^5.3|^6.0",
+        "symfony/twig-bundle": "^5.3|^6.0",
+        "twig/twig": "^3.3"
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^2.2",
-        "doctrine/doctrine-migrations-bundle": "^1.0",
-        "phpunit/phpunit": "^4.8",
-        "symfony/finder": "^2.7|~4.0",
-        "symfony/templating": "^3.2|~4.0"
+        "doctrine/doctrine-fixtures-bundle": "^3.4.0",
+        "doctrine/doctrine-migrations-bundle": "^3.1",
+        "phpunit/phpunit": "^9.5",
+        "symfony/finder": "^5.3|^6.0",
+        "symfony/templating": "^5.3|^6.0"
     },
     "autoload": {
         "psr-4": {

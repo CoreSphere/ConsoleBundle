@@ -15,32 +15,19 @@ use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Bundle\TwigBundle\TwigEngine;
+use Twig\Environment;
 
 class ConsoleController
 {
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var CommandExecuterInterface
-     */
-    private $commandExecuter;
-
-    /**
-     * @var Application
-     */
-    private $application;
-
-    /**
-     * @var string
-     */
-    private $environment;
+    private Environment $templating;
+    private CommandExecuterInterface $commandExecuter;
+    private Application $application;
+    private string $environment;
 
     public function __construct(
-        EngineInterface $templating,
+        Environment $templating,
         CommandExecuterInterface $commandExecuter,
         Application $application,
         $environment
@@ -51,10 +38,16 @@ class ConsoleController
         $this->environment = $environment;
     }
 
-    public function consoleAction()
+    /**
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\LoaderError
+     */
+    public function consoleAction(): Response
     {
         return new Response(
-            $this->templating->render('CoreSphereConsoleBundle:Console:console.html.twig', [
+
+            $this->templating->render('@CoreSphereConsole/Console/console.html.twig', [
                 'working_dir' => getcwd(),
                 'environment' => $this->environment,
                 'commands' => $this->application->all(),
@@ -62,7 +55,12 @@ class ConsoleController
         );
     }
 
-    public function execAction(Request $request)
+    /**
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\LoaderError
+     */
+    public function execAction(Request $request): Response
     {
         $commands = $request->request->get('commands');
         $executedCommandsOutput = [];
@@ -78,7 +76,7 @@ class ConsoleController
 
         return new Response(
             $this->templating->render(
-                'CoreSphereConsoleBundle:Console:result.json.twig',
+                '@CoreSphereConsole/Console/result.json.twig',
                 ['commands' => $executedCommandsOutput]
             )
         );

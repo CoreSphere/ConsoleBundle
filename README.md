@@ -6,7 +6,7 @@ ConsoleBundle
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/CoreSphere/ConsoleBundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/CoreSphere/ConsoleBundle)
 
 
-This bundle allows you accessing the Symfony2 console via your browser.
+This bundle allows you accessing the Symfony console via your browser.
 
 Features
 --------
@@ -19,7 +19,7 @@ Features
 Installation
 ------------
 
-0. Make sure you have php 5.5 or newer installed. Make sure your composer file does not override the required php version of your project with in older one via the `config.plattform.php` setting.
+0. Make sure you have php 7.4 or newer installed. Make sure your composer file does not override the required php version of your project with in older one via the `config.plattform.php` setting.
 
 1. Install the latest version via composer:
 
@@ -82,13 +82,3 @@ Dependencies
 
  * jQuery
  * Twig
-
-Compatibility
--------------
-
-Tested with:
-
- * Chrome
- * Firefox 4
- * Opera 11
- * Safari 5

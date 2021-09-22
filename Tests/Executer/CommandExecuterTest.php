@@ -13,24 +13,28 @@ namespace CoreSphere\ConsoleBundle\Tests\Executer;
 
 use CoreSphere\ConsoleBundle\Executer\CommandExecuter;
 use CoreSphere\ConsoleBundle\Tests\Executer\CommandExecutorSource\SomeKernel;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class CommandExecuterTest extends PHPUnit_Framework_TestCase
+class CommandExecuterTest extends TestCase
 {
     public function testExecute()
     {
-        $executer = $this->createExecuterWithKernel('prod', true);
+        $executer = $this->createExecuterWithKernel('prod');
         $result = $executer->execute('list');
 
         $this->assertSame('list', $result['input']);
         $this->assertContains('Lists commands', $result['output']);
+        #$this->assertStringContainsString('Lists commands', $result['output']);
         $this->assertSame('prod', $result['environment']);
         $this->assertSame(0, $result['error_code']);
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testExecuteWithExplicitEnvironment()
     {
-        $executer = $this->createExecuterWithKernel('prod', true);
+        $executer = $this->createExecuterWithKernel('prod');
         $result = $executer->execute('list --env=dev');
 
         $this->assertSame('list --env=dev', $result['input']);
@@ -39,9 +43,12 @@ class CommandExecuterTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $result['error_code']);
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testExecuteNonExistingCommand()
     {
-        $executer = $this->createExecuterWithKernel('dev', true);
+        $executer = $this->createExecuterWithKernel('dev');
         $result = $executer->execute('someNonExistingCommand');
 
         $this->assertSame('someNonExistingCommand', $result['input']);
@@ -50,15 +57,9 @@ class CommandExecuterTest extends PHPUnit_Framework_TestCase
         $this->assertSame(1, $result['error_code']);
     }
 
-    /**
-     * @param string $env
-     * @param bool   $debug
-     *
-     * @return CommandExecuter
-     */
-    private function createExecuterWithKernel($env, $debug)
+    private function createExecuterWithKernel(string $env): CommandExecuter
     {
-        $kernel = new SomeKernel($env, $debug);
+        $kernel = new SomeKernel($env, true);
 
         return new CommandExecuter($kernel);
     }

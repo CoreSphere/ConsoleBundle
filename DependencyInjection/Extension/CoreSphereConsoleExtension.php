@@ -21,6 +21,7 @@ final class CoreSphereConsoleExtension extends Extension implements PrependExten
 {
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {

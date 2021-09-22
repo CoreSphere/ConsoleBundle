@@ -12,18 +12,15 @@
 namespace CoreSphere\ConsoleBundle\Tests\Formatter;
 
 use CoreSphere\ConsoleBundle\Formatter\HtmlOutputFormatterDecorator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
-final class HtmlOutputFormatterDecoratorTest extends PHPUnit_Framework_TestCase
+final class HtmlOutputFormatterDecoratorTest extends TestCase
 {
-    /**
-     * @var HtmlOutputFormatterDecorator
-     */
-    private $decoratedFormatter;
+    private HtmlOutputFormatterDecorator $decoratedFormatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->decoratedFormatter = new HtmlOutputFormatterDecorator(new OutputFormatter(true));
     }

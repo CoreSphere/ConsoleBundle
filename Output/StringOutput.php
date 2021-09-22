@@ -18,10 +18,7 @@ use Symfony\Component\Console\Output\Output;
  */
 class StringOutput extends Output
 {
-    /**
-     * @var string
-     */
-    protected $buffer = '';
+    protected string $buffer = '';
 
     /**
      * {@inheritdoc}
@@ -31,10 +28,7 @@ class StringOutput extends Output
         $this->buffer .= $message.(true === $newline ? PHP_EOL : '');
     }
 
-    /**
-     * @return string
-     */
-    public function getBuffer()
+    public function getBuffer(): string
     {
         return $this->buffer;
     }

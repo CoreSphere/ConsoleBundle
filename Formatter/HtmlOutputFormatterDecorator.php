@@ -21,7 +21,7 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     /**
      * @var string[]
      */
-    private $styles = [
+    private array $styles = [
         '30' => 'color:rgba(0,0,0,1)',
         '31' => 'color:rgba(230,50,50,1)',
         '32' => 'color:rgba(50,230,50,1)',
@@ -43,10 +43,8 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
         '8' => 'visibility:hidden',
     ];
 
-    /**
-     * @var OutputFormatterInterface
-     */
-    private $formatter;
+
+    private OutputFormatterInterface $formatter;
 
     public function __construct(OutputFormatterInterface $formatter)
     {
@@ -64,7 +62,7 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function isDecorated()
+    public function isDecorated(): bool
     {
         return $this->formatter->isDecorated();
     }
@@ -80,7 +78,7 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function hasStyle($name)
+    public function hasStyle($name): bool
     {
         return $this->formatter->hasStyle($name);
     }
@@ -88,7 +86,7 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function getStyle($name)
+    public function getStyle($name): OutputFormatterStyleInterface
     {
         return $this->formatter->getStyle($name);
     }
@@ -110,10 +108,7 @@ final class HtmlOutputFormatterDecorator implements OutputFormatterInterface
         return $converted;
     }
 
-    /**
-     * @return string
-     */
-    private function replaceFormat(array $matches)
+    private function replaceFormat(array $matches): string
     {
         $text = $matches[3];
         $styles = explode(';', $matches[1]);

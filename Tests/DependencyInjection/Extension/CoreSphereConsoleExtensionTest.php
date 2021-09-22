@@ -14,12 +14,15 @@ namespace CoreSphere\ConsoleBundle\Tests\DependencyInjection\Extension;
 use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use CoreSphere\ConsoleBundle\DependencyInjection\Extension\CoreSphereConsoleExtension;
 use CoreSphere\ConsoleBundle\Tests\Executer\CommandExecutorSource\SomeKernel;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-final class CoreSphereConsoleExtensionTest extends PHPUnit_Framework_TestCase
+final class CoreSphereConsoleExtensionTest extends TestCase
 {
+    /**
+     * @throws \Exception
+     */
     public function testLoad()
     {
         $containerBuilder = $this->createAndPrepareContainerBuilder();
@@ -45,10 +48,7 @@ final class CoreSphereConsoleExtensionTest extends PHPUnit_Framework_TestCase
         ], $extensionConfig[0]);
     }
 
-    /**
-     * @return ContainerBuilder
-     */
-    private function createAndPrepareContainerBuilder()
+    private function createAndPrepareContainerBuilder(): ContainerBuilder
     {
         $containerBuilder = new ContainerBuilder();
         $containerBuilder->setDefinition('kernel', new Definition(SomeKernel::class))
