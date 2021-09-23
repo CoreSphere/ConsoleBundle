@@ -15,8 +15,6 @@ use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Twig\Environment;
 
 class ConsoleController
@@ -30,7 +28,7 @@ class ConsoleController
         Environment $templating,
         CommandExecuterInterface $commandExecuter,
         Application $application,
-        $environment
+        string $environment
     ) {
         $this->templating = $templating;
         $this->commandExecuter = $commandExecuter;

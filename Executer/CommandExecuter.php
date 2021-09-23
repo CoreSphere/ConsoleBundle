@@ -32,6 +32,7 @@ final class CommandExecuter implements CommandExecuterInterface
     /**
      * {@inheritdoc}
      * @throws \ReflectionException
+     * @throws \Exception
      */
     public function execute(string $commandString): array
     {

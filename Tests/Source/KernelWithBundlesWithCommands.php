@@ -11,6 +11,7 @@
 
 namespace CoreSphere\ConsoleBundle\Tests\Source;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -26,6 +27,7 @@ final class KernelWithBundlesWithCommands extends Kernel
         $bundles = [];
 
         if (in_array($this->getEnvironment(), ['prod'])) {
+            #$bundles[] = new DoctrineBundle();
             $bundles[] = new DoctrineMigrationsBundle();
         }
 

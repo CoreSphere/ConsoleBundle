@@ -32,9 +32,9 @@ final class CoreSphereConsoleExtension extends Extension implements PrependExten
     /**
      * {@inheritdoc}
      */
-    public function prepend(ContainerBuilder $containerBuilder)
+    public function prepend(ContainerBuilder $container)
     {
-        $containerBuilder->prependExtensionConfig($this->getAlias(), [
+        $container->prependExtensionConfig($this->getAlias(), [
             'resource' => '.',
             'type' => 'extra',
         ]);

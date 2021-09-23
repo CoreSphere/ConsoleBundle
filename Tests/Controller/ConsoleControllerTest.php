@@ -46,6 +46,7 @@ final class ConsoleControllerTest extends WebTestCase
         $this->assertSame('dev', $this->renderArguments[1]['environment']);
     }
 
+
     public function testConsoleActionCommands()
     {
         $controller = $this->createControllerWithEnvironment('prod');
