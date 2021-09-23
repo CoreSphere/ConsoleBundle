@@ -49,7 +49,3 @@
 
     <logging/>
 </phpunit>
-<!--
-bootstrap="Tests/bootstrap.php"
-         bootstrap="vendor/autoload.php"
--->
