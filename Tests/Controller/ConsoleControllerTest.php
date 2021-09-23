@@ -17,15 +17,17 @@ use CoreSphere\ConsoleBundle\Controller\ConsoleController;
 use CoreSphere\ConsoleBundle\Tests\Source\KernelWithBundlesWithCommands;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 final class ConsoleControllerTest extends WebTestCase
 #final class ConsoleControllerTest extends TestCase
 {
+    use ProphecyTrait;
     private array $renderArguments = [];
 
     public function testConsoleActionWorkingDir()
@@ -101,7 +103,7 @@ final class ConsoleControllerTest extends WebTestCase
 
     private function createTemplatingMock(): ObjectProphecy
     {
-        $templatingMock = $this->prophesize(EngineInterface::class);
+        $templatingMock = $this->prophesize(Environment::class);
         $that = $this;
         $templatingMock->render(Argument::type('string'), Argument::type('array'))->will(
             function ($args) use ($that) {

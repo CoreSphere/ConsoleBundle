@@ -13,11 +13,14 @@ namespace CoreSphere\ConsoleBundle\Tests\DataCollector;
 
 use CoreSphere\ConsoleBundle\DataCollector\DataCollector;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class DataCollectorTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testWhole()
     {
         $dataCollector = new DataCollector();

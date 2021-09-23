@@ -13,6 +13,7 @@ namespace CoreSphere\ConsoleBundle\Tests\Routing;
 
 use CoreSphere\ConsoleBundle\Routing\Loader;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
@@ -21,6 +22,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 final class LoaderTest extends TestCase
 {
+    use ProphecyTrait;
     private Loader $loader;
 
     protected function setUp(): void
