@@ -5,6 +5,7 @@ services:
             - "@templating"
             - "@coresphere_console.queue_executer"
             - "@coresphere_console.symfony_executer"
+            - "@coresphere_console.process_executer"
             - "@coresphere_console.application"
             - "@session"
             - "%kernel.environment%"

@@ -24,11 +24,11 @@ final class ProcessCommandExecuter implements CommandExecuterInterface
     public function execute(string $command, string $workingDir = null, bool $stream = true, callable $callback = null): array
     {
         $phpPath = $this->getPhpPath();
-        $process = Process::fromShellCommandline("$phpPath app/console $command --env={$this->kernel->getEnvironment()} --ansi", $workingDir);
+        $process = Process::fromShellCommandline("$phpPath app/console $command --env={$this->kernel->getEnvironment()}", $workingDir);
         $process->run($callback);
 
         return [
-            'input'       => $command,
+            'command'     => $command,
             'output'      => $process->getOutput(),
             'environment' => $this->kernel->getEnvironment(),
             'error_code'  => $process->getExitCode(),

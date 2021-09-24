@@ -12,6 +12,7 @@
 namespace CoreSphere\ConsoleBundle\Controller;
 
 use CoreSphere\ConsoleBundle\Command\ConsoleExecuteCommand;
+use CoreSphere\ConsoleBundle\Executer\ProcessCommandExecuter;
 use CoreSphere\ConsoleBundle\Executer\QueueCommandExecuter;
 use CoreSphere\ConsoleBundle\Executer\SymfonyCommandExecuter;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -49,14 +50,14 @@ class ConsoleController
     private $session;
 
     /**
-     * @var bool
-     */
-    private $sync = false;
-
-    /**
      * @var SymfonyCommandExecuter
      */
     private $syncCommandExecuter;
+
+    /**
+     * @var ProcessCommandExecuter
+     */
+    private $processCommandExecuter;
 
     /**
      * @var EngineInterface
@@ -67,6 +68,7 @@ class ConsoleController
         EngineInterface        $templating,
         QueueCommandExecuter   $asyncCommandExecuter,
         SymfonyCommandExecuter $symfonyCommandExecuter,
+        ProcessCommandExecuter $processCommandExecuter,
         Application            $application,
         SessionInterface       $session,
         string                 $environment,
@@ -79,6 +81,7 @@ class ConsoleController
         $this->environment = $environment;
         $this->session = $session;
         $this->queueDir = $queueDir;
+        $this->processCommandExecuter = $processCommandExecuter;
     }
 
     public function consoleAction(Request $request): Response
@@ -92,7 +95,7 @@ class ConsoleController
                     'working_dir' => getcwd(),
                     'environment' => $this->environment,
                     'commands'    => $this->application->all(),
-                    'sync'        => $request->get('sync', 'false') === 'true',
+                    'context'     => $request->get('context', 'async'),
                 ]
             )
         );
@@ -110,12 +113,17 @@ class ConsoleController
         $this->ensureSessionStarted();
         $commands = $request->request->get('commands');
         $executedCommandsOutput = [];
+        $context = $request->get('context', 'async');
 
         foreach ($commands as $command) {
-            if ($request->get('sync', false)) {
+            if ($context === 'process') {
+                $result = $this->processCommandExecuter->execute($command, getcwd());
+            } elseif ($context === 'sync') {
                 $result = $this->syncCommandExecuter->execute($command, getcwd());
-            } else {
+            } elseif ($context === 'stream') {
                 $result = $this->asyncCommandExecuter->execute($command, getcwd());
+            } else {
+                $result = $this->asyncCommandExecuter->execute($command, getcwd(), false);
             }
             $executedCommandsOutput[] = $result;
 
