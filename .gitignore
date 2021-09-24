@@ -1,2 +1,12 @@
 /vendor/
 composer.lock
+
+build/
+.php_cs.cache
+.phpcs-cache
+.phpunit.result.cache
+composer.phar
+phpunit.phar
+rector.php
+.idea/
+_gsdata_/

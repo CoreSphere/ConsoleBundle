@@ -16,10 +16,5 @@ namespace CoreSphere\ConsoleBundle\Contract\Executer;
  */
 interface CommandExecuterInterface
 {
-    /**
-     * @param string $commandString
-     *
-     * @return array
-     */
-    public function execute($commandString);
+    public function execute(string $commandString): array;
 }

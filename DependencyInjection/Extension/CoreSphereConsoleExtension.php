@@ -17,10 +17,17 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
 
+/**
+ * This is the class that loads and manages your bundle configuration
+ * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}.
+ *
+ * @see https://symfony.com/doc/current/bundles/configuration.html
+ */
 final class CoreSphereConsoleExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -31,11 +38,19 @@ final class CoreSphereConsoleExtension extends Extension implements PrependExten
     /**
      * {@inheritdoc}
      */
-    public function prepend(ContainerBuilder $containerBuilder)
+    public function prepend(ContainerBuilder $container)
     {
-        $containerBuilder->prependExtensionConfig($this->getAlias(), [
+        $container->prependExtensionConfig($this->getAlias(), [
             'resource' => '.',
             'type' => 'extra',
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAlias(): string
+    {
+        return 'core_sphere_console';
     }
 }

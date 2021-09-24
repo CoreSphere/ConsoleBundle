@@ -1,31 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit colors="true"
+<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
+<!-- Symfony: xsi:noNamespaceSchemaLocation="bin/.phpunit/phpunit.xsd" -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
          backupGlobals="false"
+         colors="true"
          backupStaticAttributes="false"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
          bootstrap="vendor/autoload.php"
 >
+    <php>
+        <env name="SYMFONY_PHPUNIT_REMOVE" value="" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9" />
 
-    <filter>
-        <whitelist>
-            <directory>.</directory>
-            <exclude>
-                <directory>Tests</directory>
-                <directory>vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+        <server name="KERNEL_CLASS" value="App\Tests\App\AppKernel"/>
+        <server name="KERNEL_DIR" value="./Tests/App"/>
+        <ini name="zend.enable_gc" value="0"/>
+    </php>
+
+    <coverage processUncoveredFiles="false">
+        <include>
+            <directory suffix=".php">.</directory>
+        </include>
+        <exclude>
+            <directory>./github</directory>
+            <directory>./build</directory>
+            <directory>./Tests</directory>
+            <directory>./vendor</directory>
+        </exclude>
+        <report>
+            <clover outputFile="build/logs/clover.xml"/>
+        </report>
+    </coverage>
 
     <testsuites>
-        <testsuite>
+        <testsuite name="ConsoleBundle test suite">
             <directory>Tests</directory>
         </testsuite>
     </testsuites>
 
+    <logging/>
 </phpunit>

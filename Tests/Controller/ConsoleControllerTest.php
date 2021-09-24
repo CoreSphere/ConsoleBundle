@@ -15,19 +15,18 @@ use CoreSphere\ConsoleBundle\Console\ApplicationFactory;
 use CoreSphere\ConsoleBundle\Contract\Executer\CommandExecuterInterface;
 use CoreSphere\ConsoleBundle\Controller\ConsoleController;
 use CoreSphere\ConsoleBundle\Tests\Source\KernelWithBundlesWithCommands;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
-final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
+final class ConsoleControllerTest extends TestCase
 {
-    /**
-     * @var array
-     */
-    private $renderArguments = [];
+    use ProphecyTrait;
+    private array $renderArguments = [];
 
     public function testConsoleActionWorkingDir()
     {
@@ -46,6 +45,7 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         $controller->consoleAction();
         $this->assertSame('dev', $this->renderArguments[1]['environment']);
     }
+
 
     public function testConsoleActionCommands()
     {
@@ -85,12 +85,7 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         ]], $this->renderArguments[1]['commands']);
     }
 
-    /**
-     * @param string $environment
-     *
-     * @return ConsoleController
-     */
-    private function createControllerWithEnvironment($environment)
+    private function createControllerWithEnvironment(string $environment): ConsoleController
     {
         $templatingMock = $this->createTemplatingMock();
         $commandExecuterMock = $this->createCommandExecuterMock();
@@ -104,12 +99,9 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return ObjectProphecy
-     */
-    private function createTemplatingMock()
+    private function createTemplatingMock(): ObjectProphecy
     {
-        $templatingMock = $this->prophesize(EngineInterface::class);
+        $templatingMock = $this->prophesize(Environment::class);
         $that = $this;
         $templatingMock->render(Argument::type('string'), Argument::type('array'))->will(
             function ($args) use ($that) {
@@ -120,10 +112,7 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         return $templatingMock;
     }
 
-    /**
-     * @return ObjectProphecy
-     */
-    private function createCommandExecuterMock()
+    private function createCommandExecuterMock(): ObjectProphecy
     {
         $commandExecuterMock = $this->prophesize(CommandExecuterInterface::class);
         $commandExecuterMock->execute(Argument::exact('error-command'))
@@ -144,16 +133,10 @@ final class ConsoleControllerTest extends PHPUnit_Framework_TestCase
         return $commandExecuterMock;
     }
 
-    /**
-     * @param string $environment
-     *
-     * @return Application
-     */
-    private function createApplicationWithEnvironment($environment)
+    private function createApplicationWithEnvironment(string $environment): Application
     {
         $kernel = new KernelWithBundlesWithCommands($environment, true);
-        $application = (new ApplicationFactory())->create($kernel);
 
-        return $application;
+        return (new ApplicationFactory())->create($kernel);
     }
 }

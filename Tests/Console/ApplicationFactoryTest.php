@@ -13,10 +13,10 @@ namespace CoreSphere\ConsoleBundle\Tests\Console;
 
 use CoreSphere\ConsoleBundle\Console\ApplicationFactory;
 use CoreSphere\ConsoleBundle\Tests\Source\KernelWithBundlesWithCommands;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
+final class ApplicationFactoryTest extends TestCase
 {
     public function testCreate()
     {
@@ -30,11 +30,8 @@ final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideTestCommandRegistration()
-     *
-     * @param string $environment
-     * @param int    $commandCount
      */
-    public function testCommandsRegistration($environment, $commandCount)
+    public function testCommandsRegistration(string $environment, int $commandCount)
     {
         $kernel = new KernelWithBundlesWithCommands($environment, false);
         $application = (new ApplicationFactory())->create($kernel);
@@ -43,14 +40,11 @@ final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertCount($commandCount, $commands);
     }
 
-    /**
-     * @return string[]
-     */
-    public function provideTestCommandRegistration()
+    public function provideTestCommandRegistration(): array
     {
         return [
-            ['prod', 9],
-            ['dev', 3],
+            ['prod', 2],
+            ['dev', 2],
             ['test', 2],
         ];
     }
@@ -61,6 +55,6 @@ final class ApplicationFactoryTest extends PHPUnit_Framework_TestCase
         $kernel->boot();
         $application = (new ApplicationFactory())->create($kernel);
 
-        $this->assertCount(9, $application->all());
+        $this->assertCount(2, $application->all());
     }
 }

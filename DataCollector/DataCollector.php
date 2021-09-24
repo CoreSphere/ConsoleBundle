@@ -20,15 +20,18 @@ final class DataCollector extends DataCollectorBase
     /**
      * {@inheritdoc}
      */
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'coresphere_console';
     }
+
+    public function reset()
+    {}
 }

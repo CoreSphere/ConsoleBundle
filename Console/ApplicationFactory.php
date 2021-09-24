@@ -12,28 +12,18 @@
 namespace CoreSphere\ConsoleBundle\Console;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ApplicationFactory
 {
-    /**
-     * @return Application
-     */
-    public function create(KernelInterface $kernel)
+    public function create(KernelInterface $kernel): Application
     {
-        $application = new Application($kernel);
-        $application = $this->registerCommandsToApplication($application, $kernel);
-
-        return $application;
+        return $this->registerCommandsToApplication(new Application($kernel), $kernel);
     }
 
-    /**
-     * @return Application
-     */
-    private function registerCommandsToApplication(Application $application, KernelInterface $kernel)
+    private function registerCommandsToApplication(Application $application, KernelInterface $kernel): Application
     {
-        chdir($kernel->getRootDir().'/..');
+        chdir($kernel->getProjectDir());
 
         foreach ($this->getBundlesFromKernel($kernel) as $bundle) {
             $bundle->registerCommands($application);
@@ -42,10 +32,7 @@ class ApplicationFactory
         return $application;
     }
 
-    /**
-     * @return Bundle[]
-     */
-    private function getBundlesFromKernel(KernelInterface $kernel)
+    private function getBundlesFromKernel(KernelInterface $kernel): array
     {
         if ($bundles = $kernel->getBundles()) {
             return $bundles;

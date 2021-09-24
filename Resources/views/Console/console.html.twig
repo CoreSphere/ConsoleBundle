@@ -1,4 +1,4 @@
-{% extends 'CoreSphereConsoleBundle::base.html.twig'  %}
+{% extends '@CoreSphereConsole/base.html.twig' %}
 
 {% block title %}{{ 'coresphere_console.headline.index'|trans }}{% endblock %}
 
@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block body %}
-    {%  include 'CoreSphereConsoleBundle:Console:terminal.html.twig' %}
-    {%  include 'CoreSphereConsoleBundle:Console:htmlTemplates.html.twig' %}
+    {% include '@CoreSphereConsole/Console/terminal.html.twig' %}
+    {% include '@CoreSphereConsole/Console/htmlTemplates.html.twig' %}
 {% endblock %}
 
 {% block javascripts %}
@@ -20,27 +20,27 @@
             {% autoescape 'js' %}
             var coresphere_console = new CoreSphereConsole(
                 jQuery("#coresphere_consolebundle_console"), {
-                "commands" : {{ commands|keys|json_encode|raw }}.sort(),
-                "post_path" : "{{ path('console_exec') }}",
-                "environment" : "{{ environment }}",
-                "lang" : {
-                    "loading" : "{{ 'coresphere_console.loading'|trans }}",
-                    "suggestion_head" : "{{ 'coresphere_console.suggestion_head'|trans }}",
-                    "environment" : "{{ 'coresphere_console.environment'|trans }}",
-                    "empty_response" : "{{ 'coresphere_console.empty_response'|trans }}",
-                    "welcome_message" : "{{ 'coresphere_console.welcome_message'|trans({'%command%': '<code class=\"console_command\">list</code>'}) }}"
-                },
-                "templates" : {
-                    "error" : $("#template_console_error").text(),
-                    "command" : $("#template_console_command").text(),
-                    "environment" : $("#template_console_environment").text(),
-                    "suggestion_list" : $('#template_suggestion_list').text(),
-                    "loading" : $('#template_console_loading').text(),
-                    "suggestion_item_active" : $('#suggestion_item_active').text(),
-                    "suggestion_item" : $('#suggestion_item').text(),
-                    "highlight" : $('#template_console_highlight').text().trim()
-                }
-            });
+                    "commands" : {{ commands|keys|json_encode|raw }}.sort(),
+                    "post_path" : "{{ path('console_exec') }}",
+                    "environment" : "{{ environment }}",
+                    "lang" : {
+                        "loading" : "{{ 'coresphere_console.loading'|trans }}",
+                        "suggestion_head" : "{{ 'coresphere_console.suggestion_head'|trans }}",
+                        "environment" : "{{ 'coresphere_console.environment'|trans }}",
+                        "empty_response" : "{{ 'coresphere_console.empty_response'|trans }}",
+                        "welcome_message" : "{{ 'coresphere_console.welcome_message'|trans({'%command%': '<code class=\"console_command\">list</code>'}) }}"
+                    },
+                    "templates" : {
+                        "error" : $("#template_console_error").text(),
+                        "command" : $("#template_console_command").text(),
+                        "environment" : $("#template_console_environment").text(),
+                        "suggestion_list" : $('#template_suggestion_list').text(),
+                        "loading" : $('#template_console_loading').text(),
+                        "suggestion_item_active" : $('#suggestion_item_active').text(),
+                        "suggestion_item" : $('#suggestion_item').text(),
+                        "highlight" : $('#template_console_highlight').text().trim()
+                    }
+                });
             {% endautoescape %}
         });
     </script>

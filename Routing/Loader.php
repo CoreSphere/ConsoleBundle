@@ -18,10 +18,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 final class Loader implements LoaderInterface
 {
-    /**
-     * @var YamlFileLoader
-     */
-    private $yamlFileLoader;
+    private YamlFileLoader $yamlFileLoader;
 
     public function __construct(YamlFileLoader $yamlFileLoader)
     {
@@ -44,7 +41,7 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, $type = null): bool
     {
         return 'extra' === $type;
     }

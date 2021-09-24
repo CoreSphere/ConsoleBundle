@@ -22,10 +22,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 final class CommandExecuter implements CommandExecuterInterface
 {
-    /**
-     * @var KernelInterface
-     */
-    private $baseKernel;
+    private KernelInterface $baseKernel;
 
     public function __construct(KernelInterface $baseKernel)
     {
@@ -34,8 +31,10 @@ final class CommandExecuter implements CommandExecuterInterface
 
     /**
      * {@inheritdoc}
+     * @throws \ReflectionException
+     * @throws \Exception
      */
-    public function execute($commandString)
+    public function execute(string $commandString): array
     {
         $input = new StringInput($commandString);
         $output = new StringOutput();
@@ -44,7 +43,7 @@ final class CommandExecuter implements CommandExecuterInterface
         $formatter = $output->getFormatter();
         $kernel = $application->getKernel();
 
-        chdir($kernel->getRootDir().'/..');
+        chdir($kernel->getProjectDir());
 
         $input->setInteractive(false);
         $formatter->setDecorated(true);
@@ -62,9 +61,9 @@ final class CommandExecuter implements CommandExecuterInterface
     }
 
     /**
-     * @return FrameworkConsoleApplication
+     * @throws \ReflectionException
      */
-    private function getApplication(InputInterface $input)
+    private function getApplication(InputInterface $input): FrameworkConsoleApplication
     {
         $kernel = $this->getKernel($input);
 
@@ -72,7 +71,8 @@ final class CommandExecuter implements CommandExecuterInterface
     }
 
     /**
-     * @return KernelInterface
+     * @return object
+     * @throws \ReflectionException
      */
     private function getKernel(InputInterface $input)
     {
