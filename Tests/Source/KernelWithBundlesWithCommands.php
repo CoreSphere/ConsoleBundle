@@ -14,6 +14,8 @@ namespace CoreSphere\ConsoleBundle\Tests\Source;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -27,12 +29,15 @@ final class KernelWithBundlesWithCommands extends Kernel
         $bundles = [];
 
         if (in_array($this->getEnvironment(), ['prod'])) {
-            #$bundles[] = new DoctrineBundle();
-            $bundles[] = new DoctrineMigrationsBundle();
+
+            $bundles[] = new DoctrineBundle();
+            #$bundles[] = new DoctrineMigrationsBundle();
         }
 
         if (in_array($this->getEnvironment(), ['dev'])) {
-            $bundles[] = new DoctrineFixturesBundle();
+            $bundles[] = new DoctrineBundle();
+            #$bundles[] = new TwigBundle();
+            #$bundles[] = new DoctrineFixturesBundle();
         }
 
         return $bundles;

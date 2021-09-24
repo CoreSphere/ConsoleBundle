@@ -20,12 +20,10 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 
-final class ConsoleControllerTest extends WebTestCase
-#final class ConsoleControllerTest extends TestCase
+final class ConsoleControllerTest extends TestCase
 {
     use ProphecyTrait;
     private array $renderArguments = [];

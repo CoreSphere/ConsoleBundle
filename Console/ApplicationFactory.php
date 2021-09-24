@@ -12,21 +12,17 @@
 namespace CoreSphere\ConsoleBundle\Console;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ApplicationFactory
 {
     public function create(KernelInterface $kernel): Application
     {
-        $application = new Application($kernel);
-
-        return $this->registerCommandsToApplication($application, $kernel);
+        return $this->registerCommandsToApplication(new Application($kernel), $kernel);
     }
 
     private function registerCommandsToApplication(Application $application, KernelInterface $kernel): Application
     {
-        #chdir($kernel->getRootDir().'/..');
         chdir($kernel->getProjectDir());
 
         foreach ($this->getBundlesFromKernel($kernel) as $bundle) {

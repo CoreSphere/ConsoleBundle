@@ -43,8 +43,8 @@ final class ApplicationFactoryTest extends TestCase
     public function provideTestCommandRegistration(): array
     {
         return [
-            ['prod', 9],
-            ['dev', 3],
+            ['prod', 2],
+            ['dev', 2],
             ['test', 2],
         ];
     }
@@ -55,6 +55,6 @@ final class ApplicationFactoryTest extends TestCase
         $kernel->boot();
         $application = (new ApplicationFactory())->create($kernel);
 
-        $this->assertCount(9, $application->all());
+        $this->assertCount(2, $application->all());
     }
 }

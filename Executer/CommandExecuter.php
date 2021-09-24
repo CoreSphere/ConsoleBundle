@@ -43,7 +43,6 @@ final class CommandExecuter implements CommandExecuterInterface
         $formatter = $output->getFormatter();
         $kernel = $application->getKernel();
 
-        #chdir($kernel->getRootDir().'/..');
         chdir($kernel->getProjectDir());
 
         $input->setInteractive(false);

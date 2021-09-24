@@ -19,8 +19,9 @@ class CoreSphereConsoleBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): CoreSphereConsoleExtension
     {
         return new CoreSphereConsoleExtension();
     }
+
 }

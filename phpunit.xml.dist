@@ -15,6 +15,7 @@
          bootstrap="vendor/autoload.php"
 >
     <php>
+        <env name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
@@ -43,7 +44,7 @@
 
     <testsuites>
         <testsuite name="ConsoleBundle test suite">
-            <directory suffix="Test.php">Tests</directory>
+            <directory>Tests</directory>
         </testsuite>
     </testsuites>
 

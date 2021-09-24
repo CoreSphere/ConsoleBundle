@@ -44,8 +44,7 @@ class ConsoleController
     public function consoleAction(): Response
     {
         return new Response(
-
-            $this->templating->render('@CoreSphereConsole/Console/console.html.twig', [
+            $this->templating->render('@CoreSphereConsole/Console:console.html.twig', [
                 'working_dir' => getcwd(),
                 'environment' => $this->environment,
                 'commands' => $this->application->all(),
